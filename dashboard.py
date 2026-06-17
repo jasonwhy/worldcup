@@ -84,29 +84,68 @@ for m in results["matches"]:
     played_map[f"{m['home']}-{m['away']}"] = m
 
 # Group all scheduled matches by date
+venue_tz = {
+    # Match: (UTC_offset_in_June, venue_city)
+    "MEX-RSA": (-6, "Mexico City"), "KOR-CZE": (-6, "Mexico City"),
+    "CAN-BIH": (-4, "Toronto"), "USA-PAR": (-7, "Los Angeles"),
+    "HAI-SCO": (-7, "San Francisco"), "AUS-TUR": (-7, "Seattle"),
+    "BRA-MAR": (-4, "Atlanta"), "QAT-SUI": (-7, "Vancouver"),
+    "GER-CUW": (-5, "Houston"), "NED-JPN": (-5, "Dallas"),
+    "CIV-ECU": (-5, "Kansas City"), "SWE-TUN": (-6, "Monterrey"),
+    "ESP-CPV": (-4, "Atlanta"), "BEL-EGY": (-7, "Seattle"),
+    "KSA-URU": (-4, "Miami"), "IRN-NZL": (-7, "Los Angeles"),
+    "FRA-SEN": (-4, "New Jersey"), "IRQ-NOR": (-4, "Boston"),
+    "ARG-ALG": (-5, "Kansas City"), "AUT-JOR": (-7, "San Francisco"),
+    "POR-COD": (-5, "Houston"), "ENG-CRO": (-5, "Dallas"),
+    "GHA-PAN": (-4, "Toronto"), "COL-UZB": (-6, "Mexico City"),
+    "CZE-RSA": (-7, "Los Angeles"), "SUI-BIH": (-7, "San Francisco"),
+    "CAN-QAT": (-7, "Vancouver"), "MEX-KOR": (-4, "Philadelphia"),
+}
+
+def format_match_time(beijing_time, utc_offset):
+    """将北京时间(UTC+8)转为当地时间和东8区时间显示"""
+    bj_parts = beijing_time.split()
+    bj_date = bj_parts[0]  # "6/18"
+    bj_hh, bj_mm = bj_parts[1].split(":") if len(bj_parts)>1 else ("00","00")
+    # 当地时间 = 北京时间 + (local_utc - 8)
+    local_hour = int(bj_hh) + (utc_offset - 8)
+    local_day_offset = 0
+    if local_hour < 0:
+        local_hour += 24; local_day_offset = -1
+    elif local_hour >= 24:
+        local_hour -= 24; local_day_offset = 1
+    # Format local date
+    month, day = bj_date.split("/")
+    local_month, local_day = int(month), int(day) + local_day_offset
+    return f"{local_month}/{local_day} {local_hour:02d}:{bj_mm}", f"{month}/{day} {bj_hh}:{bj_mm}"
+
 schedule_by_date = {}
 for match_id, time_str in sorted(MATCH_SCHEDULE.items()):
     parts = time_str.split()
-    d = parts[0]  # "6/11"
+    d = parts[0]
     t = parts[1] if len(parts)>1 else ""
     if d not in schedule_by_date:
         schedule_by_date[d] = []
     schedule_by_date[d].append((match_id, t))
 
 schedule_rows = ""
-for d in sorted(schedule_by_date.keys(), key=lambda x: (int(x.split('/')[0]), int(x.split('/')[1]))):
-    matches = schedule_by_date[d]
+for sdate in sorted(schedule_by_date.keys(), key=lambda x: (int(x.split('/')[0]), int(x.split('/')[1]))):
+    matches = schedule_by_date[sdate]
     played_count = sum(1 for m,t in matches if m in played_map)
     total_count = len(matches)
     label = "✅ 已完赛" if played_count == total_count else ("🔄 进行中" if played_count > 0 else "📅 待赛")
 
     schedule_rows += f"""<div class="matchday-group">
-    <div class="matchday-header"><span class="matchday-date">{d}</span><span class="matchday-badge">{label}</span><span class="matchday-count">{played_count}/{total_count}</span></div>"""
+    <div class="matchday-header"><span class="matchday-date">{sdate}</span><span class="matchday-badge">{label}</span><span class="matchday-count">{played_count}/{total_count}</span></div>"""
 
     for match_id, kickoff in matches:
         home, away = match_id.split("-")
         hn = teams.get(home,{}).get("name",home)
         an = teams.get(away,{}).get("name",away)
+
+        vinfo = venue_tz.get(match_id, (-5, ""))
+        local_utc, venue = vinfo[0], vinfo[1]
+        local_time, bj_time = format_match_time(f"{sdate} {kickoff}", local_utc)
 
         if match_id in played_map:
             m = played_map[match_id]
@@ -114,7 +153,7 @@ for d in sorted(schedule_by_date.keys(), key=lambda x: (int(x.split('/')[0]), in
             score = m["score"]
             cls = "result-win" if ok=="✅" else "result-loss"
             schedule_rows += f"""<div class="match-card played {cls}">
-            <div class="match-time">{d} {kickoff}</div>
+            <div class="match-time">🏟 {venue} 当地 {local_time} | 🇨🇳 北京 {bj_time}</div>
             <div class="match-teams">{flag(hn)} <span class="match-score">{score}</span> {flag(an)}</div>
             <div class="match-note">{m['note'][:30]}</div></div>"""
         elif match_id in live_map:
@@ -124,7 +163,7 @@ for d in sorted(schedule_by_date.keys(), key=lambda x: (int(x.split('/')[0]), in
             minute = lm.get("minute", "LIVE")
             source = lm.get("source", "")
             schedule_rows += f"""<div class="match-card live-now">
-            <div class="match-time"><span class="live-dot"></span> {minute}' · 来源:{source}</div>
+            <div class="match-time"><span class="live-dot"></span> {minute}' · 🏟 {venue} · 🇨🇳 北京 {bj_time}</div>
             <div class="match-teams">{flag(hn)} <span class="match-score live-score">{hg}-{ag}</span> {flag(an)}</div>
             <div class="match-note" style="color:var(--red);font-weight:600">🔴 比赛进行中</div></div>"""
         else:
@@ -132,18 +171,15 @@ for d in sorted(schedule_by_date.keys(), key=lambda x: (int(x.split('/')[0]), in
                 p = predict(match_id)
                 if "error" not in p:
                     r = p["prediction"]
-                    w,d,l = r['win_pct'], r['draw_pct'], r['lose_pct']
+                    sw,sd,sl = r['win_pct'], r['draw_pct'], r['lose_pct']
                     top = r['top_scores'][0]['score']
-                    xg = f"{r['xg_home']:.1f}-{r['xg_away']:.1f}"
-                    cold = r.get('cold_alert','')
-                    cold_cls = "cold-high" if "高" in cold else ("cold-mid" if "中" in cold else "")
                     schedule_rows += f"""<div class="match-card upcoming">
-                    <div class="match-time">{d} {kickoff}</div>
+                    <div class="match-time">🏟 {venue} · 🇨🇳 北京 {bj_time}</div>
                     <div class="match-teams">{flag(hn)} <span class="match-vs">vs</span> {flag(an)}</div>
                     <div class="match-prediction">
-                      <span class="pred-item win">W {w:.0f}%</span>
-                      <span class="pred-item draw">D {d:.0f}%</span>
-                      <span class="pred-item lose">L {l:.0f}%</span>
+                      <span class="pred-item win">W {sw:.0f}%</span>
+                      <span class="pred-item draw">D {sd:.0f}%</span>
+                      <span class="pred-item lose">L {sl:.0f}%</span>
                       <span class="pred-score">🏆 {top}</span>
                     </div></div>"""
                 else:
@@ -163,9 +199,9 @@ for m in results["matches"]:
     results_by_date[m["date"]].append(m)
 
 result_rows = ""
-for d in sorted(results_by_date.keys(), key=lambda x: (int(x.split('/')[0]), int(x.split('/')[1])), reverse=True):
-    day_matches = results_by_date[d]
-    result_rows += f"""<div class="matchday-group"><div class="matchday-header"><span class="matchday-date">{d}</span></div><table class="data-table"><thead><tr><th>比赛</th><th>比分</th><th>判</th><th>备注</th></tr></thead><tbody>"""
+for rdate in sorted(results_by_date.keys(), key=lambda x: (int(x.split('/')[0]), int(x.split('/')[1])), reverse=True):
+    day_matches = results_by_date[rdate]
+    result_rows += f"""<div class="matchday-group"><div class="matchday-header"><span class="matchday-date">{rdate}</span></div><table class="data-table"><thead><tr><th>比赛</th><th>比分</th><th>判</th><th>备注</th></tr></thead><tbody>"""
     for m in day_matches:
         hn = teams.get(m["home"],{}).get("name",m["home"])
         an = teams.get(m["away"],{}).get("name",m["away"])
