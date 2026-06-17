@@ -1,6 +1,16 @@
 {
-  "updated": "2026-06-18T00:10:48",
-  "matches_in_progress": [],
+  "updated": "2026-06-18T01:36:00",
+  "matches_in_progress": [
+    {
+      "match_id": "POR-COD",
+      "home_goals": 1,
+      "away_goals": 0,
+      "minute": "36",
+      "source": "FotMob/SPORTINGNEWS",
+      "updated": "01:37",
+      "note": "Joao Neves 6分头球破门, 葡萄牙控球率80%"
+    }
+  ],
   "live_sources": [
     "fotmob",
     "sofascore",
