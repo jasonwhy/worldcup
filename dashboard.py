@@ -440,6 +440,27 @@ cold_teams.sort(key=lambda x: x[2])
 hot_rows = "".join(f'<span class="trend-badge hot">{F.get(n,"🏳️")} {n} +{gd}</span>' for tid,n,gd,sc in hot_teams[:6])
 cold_rows = "".join(f'<span class="trend-badge cold">{F.get(n,"🏳️")} {n} {gd}</span>' for tid,n,gd,sc in cold_teams[:4])
 
+# --- Live Now (for Highlights panel) ---
+live_now_html = ""
+if live_scores.get("matches_in_progress"):
+    live_now_html = '<div class="hl-card live-hl-card"><div class="hl-card-title">🔴 正在直播</div>'
+    for lm in live_scores["matches_in_progress"]:
+        mid = lm["match_id"]
+        home, away = mid.split("-")
+        hn = teams.get(home,{}).get("name",home)
+        an = teams.get(away,{}).get("name",away)
+        hg = lm.get("home_goals",0)
+        ag = lm.get("away_goals",0)
+        minute = lm.get("minute","LIVE")
+        note = lm.get("note","")
+        vinfo = venue_tz.get(mid, (-5, ""))
+        _, bj_time = format_match_time(MATCH_SCHEDULE.get(mid, "? ?:?"), vinfo[0])
+        live_now_html += f"""<div class="live-hl-match">
+        <div class="live-hl-header"><span class="live-dot"></span> {minute}\' · 🇨🇳 北京 {bj_time}</div>
+        <div class="live-hl-teams">{flag(hn)} <span class="live-score">{hg}-{ag}</span> {flag(an)}</div>
+        <div class="live-hl-note">{note[:45]}</div></div>"""
+    live_now_html += '</div>'
+
 # ============================================================
 # CSS (FIFA/Fox-inspired dark theme)
 # ============================================================
@@ -587,6 +608,12 @@ a{color:var(--blue);text-decoration:none}
 .bracket-pair{background:var(--bg-secondary);border-radius:var(--radius-sm);padding:8px 12px;border:1px solid var(--border)}
 .bracket-label{font-size:10px;color:var(--text-muted);margin-bottom:3px}
 .bracket-teams{font-size:12px;font-weight:600}
+/* Live highlight card */
+.live-hl-card{border-color:var(--red);background:linear-gradient(135deg,#1a060a,#1a0a10);animation:live-glow 2s infinite}
+.live-hl-match{background:rgba(255,23,68,.08);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:6px;border-left:3px solid var(--red)}
+.live-hl-header{font-size:10px;color:var(--text-muted);margin-bottom:4px}
+.live-hl-teams{font-size:14px;font-weight:700;margin:4px 0}
+.live-hl-note{font-size:10px;color:var(--text-secondary)}
 /* Trend badges */
 .trend-badge{display:inline-block;padding:3px 8px;border-radius:12px;font-size:10px;font-weight:600}
 .trend-badge.hot{background:var(--green-bg);color:var(--green);border:1px solid rgba(0,200,83,.3)}
@@ -674,6 +701,8 @@ html = f"""<!DOCTYPE html><html lang="zh"><head><meta charset="UTF-8"><meta name
 <div id="highlights" class="panel active">
   <h2 style="font-size:16px;color:var(--accent);margin-bottom:12px">🔥 赛事亮点</h2>
   <div class="highlights-grid">
+    <!-- Live Now -->
+    {live_now_html}
     <!-- Golden Boot -->
     <div class="hl-card">
       <div class="hl-card-title">👟 金靴争夺</div>
