@@ -1,9 +1,10 @@
 """
-竞彩投注方案自动生成引擎 v3.0
-新增: 让球胜平负 + 自由过关容错(3串4) + 稳胆标签 + 资金管理优化
+竞彩投注方案自动生成引擎 v3.1
+新增: SP动态读取 + 截止时间检查 + 今日不推荐机制
 """
 import json, math
 from pathlib import Path
+from datetime import datetime
 from .predictor import predict
 
 # 国旗映射
@@ -51,8 +52,8 @@ RULE = {
     "budget": 200,
     "banker_pct": 0.20, "parlay_pct": 0.35,
     "balanced_pct": 0.15, "flexi_pct": 0.20, "aggressive_pct": 0.10,
-    # 单关可用场次(来源: 网易彩票标注"单")
-    "single_matches": ["ENG-CRO", "GHA-PAN"],
+    # 单关场次: 动态从SP数据读取, 此列表为兜底
+    "single_matches": [],
 }
 
 # 比赛时间表 (北京时间)
@@ -102,38 +103,21 @@ def cold_rank(alert: str) -> int:
     return 0
 
 
-# 竞彩官方SP值（来源：网易彩票 sports.163.com/caipiao 2026-06-17）
-REAL_SP = {
-    # 6/17 K+L组
-    "POR-COD": {"home": 1.13, "draw": 5.86, "away": 13.5},
-    "ENG-CRO": {"home": 1.53, "draw": 3.50, "away": 5.25},
-    "GHA-PAN": {"home": 1.96, "draw": 3.05, "away": 3.43},
-    "COL-UZB": {"home": 1.24, "draw": 4.65, "away": 9.25},
-    # 6/16 I+J组（已赛，供复盘）
-    "ARG-ALG": {"home": 1.26, "draw": 4.40, "away": 9.20},
-    "FRA-SEN": {"home": 1.30, "draw": 4.20, "away": 8.50},
-    "IRQ-NOR": {"home": 7.50, "draw": 5.20, "away": 1.30},
-    "AUT-JOR": {"home": 1.26, "draw": 4.65, "away": 8.25},
-    # 6/18 A+B组（预告）
-    "CZE-RSA": {"home": 1.74, "draw": 3.20, "away": 4.15},
-    "SUI-BIH": {"home": 1.35, "draw": 4.10, "away": 6.90},
-    "CAN-QAT": {"home": 1.24, "draw": 4.70, "away": 9.10},
-    "MEX-KOR": {"home": 1.86, "draw": 3.00, "away": 3.87},
-}
-# 让球盘SP（来源同上）
-REAL_HANDICAP_SP = {
-    "POR-COD": {"line": -2, "home": 2.66, "draw": 3.94, "away": 2.00},
-    "ENG-CRO": {"line": -1, "home": 2.84, "draw": 3.20, "away": 2.15},
-    "GHA-PAN": {"line": -1, "home": 4.25, "draw": 3.52, "away": 1.64},
-    "COL-UZB": {"line": +1, "home": 3.20, "draw": 3.44, "away": 1.90},
-}
-REAL_TOTAL_GOALS_SP = {
-    "ARG-ALG": {2: 3.40, 3: 3.60},
-    "FRA-SEN": {2: 3.20, 3: 3.50},
-}
-REAL_SCORE_SP = {
-    "ARG-ALG": {"2-0": 4.75, "1-0": 5.60, "2-1": 7.00, "1-1": 6.50},
-}
+# SP数据从 sp.json 动态读取（来源：网易彩票 sports.163.com/caipiao）
+def _load_sp():
+    sp_path = DATA_DIR / "sp.json"
+    if sp_path.exists():
+        with open(sp_path) as f:
+            return json.load(f)
+    return {"matches": {}, "handicap": {}, "total_goals": {}, "score": {}}
+
+def _get_sp() -> dict:
+    return _load_sp()
+
+REAL_SP = lambda: _get_sp().get("matches", {})
+REAL_HANDICAP_SP = lambda: _get_sp().get("handicap", {})
+REAL_TOTAL_GOALS_SP = lambda: _get_sp().get("total_goals", {})
+REAL_SCORE_SP = lambda: _get_sp().get("score", {})
 
 
 def _model_odds(prob: float) -> float:
@@ -141,25 +125,65 @@ def _model_odds(prob: float) -> float:
     return round(1.0 / (prob / 100) * 0.71, 2)
 
 
+def _sp_data():
+    """统一获取SP数据，自动刷新"""
+    return _get_sp()
+
+def _match_sp(match_id: str) -> dict:
+    return _sp_data().get("matches", {}).get(match_id, {})
+
+def _match_handicap_sp(match_id: str) -> dict:
+    return _sp_data().get("handicap", {}).get(match_id, {})
+
+def _match_tg_sp(match_id: str) -> dict:
+    return _sp_data().get("total_goals", {}).get(match_id, {})
+
+def _match_score_sp(match_id: str) -> dict:
+    return _sp_data().get("score", {}).get(match_id, {})
+
+def _is_single_match(match_id: str) -> bool:
+    """从SP数据动态判断是否为单关场次"""
+    return _match_sp(match_id).get("single", False)
+
+def _check_deadline(match_id: str) -> tuple:
+    """检查投注截止时间。返回 (can_bet, reason)"""
+    time_str = MATCH_SCHEDULE.get(match_id, "")
+    if not time_str:
+        return False, "无赛程"
+    try:
+        parts = time_str.split()
+        m, d = parts[0].split("/")
+        h, mi = parts[1].split(":")
+        kickoff = datetime(2026, int(m), int(d), int(h), int(mi))
+        now = datetime.now()
+        minutes_left = (kickoff - now).total_seconds() / 60
+        if minutes_left < 0:
+            return False, "已开球"
+        if minutes_left < 15:
+            return False, f"距开球仅{minutes_left:.0f}分钟(需>15分钟)"
+        return True, f"距开球{minutes_left:.0f}分钟"
+    except:
+        return False, "时间解析失败"
+
 def est_odds(prob: float, bet_type: str = "wdl", match_id: str = None,
              pick: str = None, direction: str = None) -> float:
     """赔率估算：优先竞彩官方SP，无数据时模型反推"""
-    if match_id and match_id in REAL_SP:
-        sp = REAL_SP[match_id]
-        if bet_type == "wdl":
-            if direction == "home": return sp.get("home", _model_odds(prob))
-            if direction == "away": return sp.get("away", _model_odds(prob))
-            if direction == "draw": return sp.get("draw", _model_odds(prob))
-            # 兜底：从pick字符串推断
-            if pick:
-                if "主胜" in str(pick): return sp["home"]
-                if "客胜" in str(pick): return sp["away"]
-                if "平" in str(pick): return sp["draw"]
-    if match_id and match_id in REAL_TOTAL_GOALS_SP and bet_type == "total_goals":
-        tg = int(str(pick).replace("总进球", "").replace("球", "")) if pick else 2
-        return REAL_TOTAL_GOALS_SP[match_id].get(tg, 3.20)
-    if match_id and match_id in REAL_SCORE_SP and bet_type == "score":
-        return REAL_SCORE_SP[match_id].get(str(pick), round(1.0 / 0.10 * 0.71, 1))
+    sp = _match_sp(match_id) if match_id else {}
+    if sp and bet_type == "wdl":
+        if direction == "home": return sp.get("home", _model_odds(prob))
+        if direction == "away": return sp.get("away", _model_odds(prob))
+        if direction == "draw": return sp.get("draw", _model_odds(prob))
+        if pick:
+            if "主胜" in str(pick): return sp.get("home", _model_odds(prob))
+            if "客胜" in str(pick): return sp.get("away", _model_odds(prob))
+            if "平" in str(pick): return sp.get("draw", _model_odds(prob))
+    tg_sp = _match_tg_sp(match_id) if match_id else {}
+    if tg_sp and bet_type == "total_goals":
+        tg = str(int(str(pick).replace("总进球","").replace("球",""))) if pick else "2"
+        return tg_sp.get(tg, 3.20)
+    score_sp = _match_score_sp(match_id) if match_id else {}
+    if score_sp and bet_type == "score":
+        return score_sp.get(str(pick), round(1.0/0.10*0.71, 1))
     return _model_odds(prob)
 
 
@@ -246,13 +270,32 @@ def classify_match(match_id: str, p: dict) -> dict:
 
 
 def generate_plan(matches: list) -> dict:
-    results = {}
+    # P0: 截止时间检查 — 跳过已开球或不足15分钟的场次
+    skipped_deadline = []
+    valid_matches = []
     for m in matches:
+        can_bet, reason = _check_deadline(m)
+        if can_bet:
+            valid_matches.append(m)
+        else:
+            skipped_deadline.append((m, reason))
+
+    results = {}
+    for m in valid_matches:
         p = predict(m)
         if "error" not in p:
             results[m] = classify_match(m, p)
 
-    if not results: return {"error": "无有效比赛"}
+    if not results:
+        skip_msg = ""
+        if skipped_deadline:
+            names = ", ".join(m for m,_ in skipped_deadline[:4])
+            skip_msg = f" (已跳过: {names}等{len(skipped_deadline)}场)"
+        return {"error": f"无有效比赛{skip_msg}", "skipped": skipped_deadline}
+
+    # 动态单关: 从SP数据读取 + 硬编码兜底
+    dyn_singles = {m for m in results if _is_single_match(m)}
+    dyn_singles.update(RULE.get("single_matches", []))
 
     classified = list(results.values())
     conservative_pool = [c for c in classified if c["is_conservative"]]
@@ -315,10 +358,10 @@ def generate_plan(matches: list) -> dict:
     if not (balanced_wdl and balanced_tg): b_reserve += b_balanced; b_balanced = 0
     if len(aggressive_bet) < 3: b_reserve += b_aggressive; b_aggressive = 0
 
-    # 单关推荐: 从开放单关的场次中, 选模型方向明确的
+    # 单关推荐: 从动态单关列表中选方向明确的场次
     single_bets = []
     for c in classified:
-        if (c["match_id"] in RULE.get("single_matches", [])
+        if (c["match_id"] in dyn_singles
                 and not c["is_excluded"]
                 and c["direction"] != "draw"
                 and c["dir_prob"] >= 40):
@@ -340,7 +383,7 @@ def generate_plan(matches: list) -> dict:
     bal_combined = 0
     if balanced_wdl and balanced_tg:
         wdl_sp = est_odds(balanced_wdl["dir_prob"], match_id=balanced_wdl["match_id"], direction=balanced_wdl["direction"])
-        tg_sp = REAL_TOTAL_GOALS_SP.get(balanced_tg["match_id"], {}).get(balanced_tg.get("total_goals_signal", 2), 3.20)
+        tg_sp = _match_tg_sp(balanced_tg["match_id"]).get(str(balanced_tg.get("total_goals_signal", 2)), 3.20)
         bal_combined = round(wdl_sp * tg_sp, 2)
 
     # 自由过关3串4
@@ -393,8 +436,9 @@ def generate_plan(matches: list) -> dict:
             return f"⚠️ {label}赔率{odds}偏高(>2.5), 准确率可能不足50%"
 
     plan = {
-        "generated_by": "模型自动输出 v3.0 (让球+自由过关+稳胆)",
+        "generated_by": "模型自动输出 v3.1 (截止检查+动态SP+不推荐机制)",
         "total_budget": RULE["budget"],
+        "skipped": skipped_deadline,
         "classified": {
             "banker_pool": [c["match_name"] for c in banker_pool],
             "conservative_pool": [c["match_name"] for c in conservative_pool],
@@ -479,13 +523,26 @@ def generate_plan(matches: list) -> dict:
 
 
 def format_lottery(plan: dict) -> str:
-    if "error" in plan: return f"❌ {plan['error']}"
+    if "error" in plan:
+        msg = f"❌ {plan['error']}"
+        skipped = plan.get("skipped", [])
+        if skipped:
+            msg += f"\n   跳过场次: {', '.join(m+'('+r+')' for m,r in skipped[:5])}"
+            msg += "\n💡 建议: 今日无可投场次, 保留资金等待明日"
+        return msg
 
     L = []
     L.append("=" * 70)
-    L.append("  竞彩足球 2026世界杯 自动投注方案 v3.0")
+    L.append("  竞彩足球 2026世界杯 自动投注方案 v3.1")
     L.append(f"  引擎: {plan['generated_by']}  |  预算: {plan['total_budget']}元")
     L.append("=" * 70)
+
+    # Deadline skipped info
+    skipped = plan.get("skipped", [])
+    if skipped:
+        L.append(f"\n⚠️ 已跳过 {len(skipped)} 场 (开球/不足15分钟):")
+        for m, reason in skipped[:4]:
+            L.append(f"  • {m}: {reason}")
 
     c = plan["classified"]
     L.append(f"\n📋 场次: 稳胆{c['banker_pool'][:3]} | 稳健{c['conservative_pool'][:3]} | 排除{c['excluded_pool']}")
@@ -564,5 +621,5 @@ def format_lottery(plan: dict) -> str:
         L.append(f"\n⚠️ 风险提示:")
         for n in plan["risk_notes"]: L.append(f"  • {n}")
 
-    L.append(f"\n📐 模型自动输出 v3.0 | 让球+自由过关容错+稳胆 | 竞彩90分钟赛果为准")
+    L.append(f"\n📐 模型自动输出 v3.1 | 截止检查+动态SP+不推荐 | 竞彩90分钟赛果为准")
     return "\n".join(L)
