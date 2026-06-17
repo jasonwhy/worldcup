@@ -25,10 +25,12 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Generate Dashboard
-        run: python3 dashboard.py
+        run: |
+          python3 dashboard.py
+          cp dashboard.html index.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
