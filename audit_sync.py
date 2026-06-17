@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
-三层审计系统 v3.0
+四层审计系统 v4.0
 Layer 1: 数据一致性 — JSON文件交叉验证 + dashboard.py数据源检查
 Layer 2: 媒体源时效 — 检查每个源的上次更新时间, 标记过期源
 Layer 3: 内容新鲜度 — 检查伤病/八卦/新闻条目的实际更新时间
+Layer 4: 投注合规 — 检查SP数据覆盖、截止时间、方案合理性
 """
 import json, sys, os
 from pathlib import Path
@@ -23,7 +24,7 @@ def check(cond, msg, severity=FAIL):
 
 # ============================================================
 print("=" * 70)
-print("  三层审计 v3.0: 数据一致性 + 媒体源新鲜度 + 内容新鲜度")
+print("  四层审计 v4.0: 数据 + 源 + 内容 + 投注")
 print(f"  审计时间: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
 print("=" * 70)
 
@@ -223,6 +224,88 @@ if missing_injury:
     print(f"  💡 已赛球队缺伤病追踪 ({len(missing_injury)}支): {', '.join(sorted(list(missing_injury))[:8])}...")
 if missing_gossip:
     print(f"  💡 已赛球队缺八卦追踪 ({len(missing_gossip)}支): {', '.join(sorted(list(missing_gossip))[:8])}...")
+
+# === LAYER 4: 投注合规 (Lottery v3.1) ===
+print("\n💰 Layer 4: 投注方案合规")
+
+# 4.1 SP数据文件检查
+sp_path = DATA / "sp.json"
+if sp_path.exists():
+    sp_data = load("sp.json")
+    sp_matches = sp_data.get("matches", {})
+    handicap_sp = sp_data.get("handicap", {})
+    sp_updated = sp_data.get("updated", "")
+    if sp_updated:
+        try:
+            sp_days = (date.today() - datetime.strptime(sp_updated[:10], "%Y-%m-%d").date()).days
+            check(sp_days <= 2, f"sp.json {sp_days}天未更新", WARN if sp_days > 1 else PASS)
+            print(f"  sp.json: {len(sp_matches)}场SP, {len(handicap_sp)}场让球盘, 更新于{sp_updated[:10]}")
+        except: pass
+else:
+    check(False, "sp.json 不存在! 方案将使用模型估算赔率", FAIL)
+
+# 4.2 SP覆盖率 vs 待赛赛程
+from engine.lottery import MATCH_SCHEDULE
+results_data = json.load(open(DATA/"results.json"))
+played = {f"{m['home']}-{m['away']}" for m in results_data["matches"]}
+upcoming = {mid for mid in MATCH_SCHEDULE if mid not in played}
+covered = {mid for mid in upcoming if mid in sp_matches}
+missing_sp = upcoming - covered
+check(len(covered) >= len(upcoming) * 0.5,
+      f"SP覆盖 {len(covered)}/{len(upcoming)} 待赛 ({len(covered)/max(1,len(upcoming))*100:.0f}%)",
+      WARN if len(missing_sp) > len(upcoming) // 2 else PASS)
+if missing_sp:
+    print(f"  ⚠️ 缺SP数据 ({len(missing_sp)}场): {', '.join(sorted(list(missing_sp))[:8])}")
+
+# 4.3 截止时间审计: 检查待赛中有多少已过截止
+from datetime import datetime as dt
+deadline_skipped = 0
+for mid in upcoming:
+    ts = MATCH_SCHEDULE.get(mid, "")
+    if not ts: continue
+    try:
+        parts = ts.split(); m, d = parts[0].split("/"); h, mi = parts[1].split(":")
+        kickoff = dt(2026, int(m), int(d), int(h), int(mi))
+        if kickoff <= dt.now():
+            deadline_skipped += 1
+    except: pass
+check(deadline_skipped == 0,
+      f"{deadline_skipped}场已过截止时间(方案v3.1会自动跳过)",
+      WARN if deadline_skipped > 0 else PASS)
+
+# 4.4 投注方案可用性测试
+try:
+    sys.path.insert(0, str(Path(".")))
+    from engine.lottery import generate_plan
+    test_matches = sorted(list(upcoming))[:8] if len(upcoming) >= 4 else sorted(list(upcoming))
+    if test_matches:
+        plan = generate_plan(test_matches)
+        has_error = "error" in plan
+        skipped_count = len(plan.get("skipped", []))
+        if has_error and skipped_count < len(test_matches):
+            check(False, "方案生成异常: 部分场次可用但标记error", FAIL)
+        elif has_error:
+            print("  ⚠️ 方案: 今日全部不可投(截止已过)")
+            check(True, "", PASS)
+        else:
+            usable = len(plan.get("classified",{}).get("conservative_pool",[]))
+            check(True, f"方案生成正常: {usable}场保守池可用", PASS)
+        if skipped_count:
+            print(f"  ⚠️ 截止跳过{skipped_count}场: {', '.join(m for m,_ in plan.get('skipped',[])[:4])}")
+except Exception as e:
+    check(False, f"方案引擎异常: {e}", FAIL)
+
+# 4.5 SP数据合理性
+if sp_matches:
+    odd_sp = []
+    for mid, odds in sp_matches.items():
+        h, d, a = odds.get("home", 0), odds.get("draw", 0), odds.get("away", 0)
+        if h == 0: continue
+        implied = 1/h + 1/d + 1/a
+        if implied > 1.15: odd_sp.append(f"{mid}(返还{implied:.0%})")
+        if implied < 0.85: odd_sp.append(f"{mid}(返还{implied:.0%})")
+    check(len(odd_sp) == 0, f"SP异常场次: {', '.join(odd_sp[:3])}" if odd_sp else "SP返还率合理",
+          WARN if odd_sp else PASS)
 
 # 汇总
 total_issues = len(issues)
