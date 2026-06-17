@@ -1,0 +1,286 @@
+{
+  "BRA": [
+    {
+      "player": "Rodrygo",
+      "position": "forward",
+      "role": "core_scorer",
+      "status": "out",
+      "return_date": null,
+      "irreplaceability": 2.0,
+      "date": "2026-06-17"
+    },
+    {
+      "player": "Estevao",
+      "position": "forward",
+      "role": "core_creator",
+      "status": "out",
+      "return_date": null,
+      "irreplaceability": 2.0,
+      "date": "2026-06-17"
+    },
+    {
+      "player": "Eder Militao",
+      "position": "defender",
+      "role": "defense_leader",
+      "status": "out",
+      "return_date": null,
+      "irreplaceability": 1.5,
+      "date": "2026-06-17"
+    },
+    {
+      "player": "Vanderson",
+      "position": "defender",
+      "role": "regular_starter",
+      "status": "out",
+      "return_date": null,
+      "irreplaceability": 1.0,
+      "date": "2026-06-17"
+    },
+    {
+      "player": "Neymar",
+      "position": "forward",
+      "role": "superstar",
+      "status": "out",
+      "return_date": "2026-06-28",
+      "irreplaceability": 3.0,
+      "date": "2026-06-17",
+      "reason": "Grade2小腿撕裂(5/17桑托斯比赛), 巴西队医确认小组赛全缺, 球迷怒斥'身体已废', 目标淘汰赛复出"
+    }
+  ],
+  "NED": [
+    {
+      "player": "Xavi Simons",
+      "position": "midfielder",
+      "role": "core_creator",
+      "status": "out",
+      "return_date": null,
+      "irreplaceability": 2.0,
+      "date": "2026-06-17"
+    },
+    {
+      "player": "Jurrien Timber",
+      "position": "defender",
+      "role": "defense_leader",
+      "status": "out",
+      "return_date": null,
+      "irreplaceability": 1.5,
+      "date": "2026-06-17"
+    },
+    {
+      "player": "Matthijs de Ligt",
+      "position": "defender",
+      "role": "defense_leader",
+      "status": "out",
+      "return_date": null,
+      "irreplaceability": 1.5,
+      "date": "2026-06-17"
+    },
+    {
+      "player": "Jerdy Schouten",
+      "position": "midfielder",
+      "role": "regular_starter",
+      "status": "out",
+      "return_date": null,
+      "irreplaceability": 1.0,
+      "date": "2026-06-17"
+    }
+  ],
+  "JPN": [
+    {
+      "player": "Kaoru Mitoma",
+      "position": "forward",
+      "role": "core_scorer",
+      "status": "out",
+      "return_date": null,
+      "irreplaceability": 2.0,
+      "date": "2026-06-17"
+    },
+    {
+      "player": "Takumi Minamino",
+      "position": "midfielder",
+      "role": "regular_starter",
+      "status": "out",
+      "return_date": null,
+      "irreplaceability": 1.5,
+      "date": "2026-06-17"
+    },
+    {
+      "player": "Wataru Endo",
+      "position": "midfielder",
+      "role": "regular_starter",
+      "status": "out_retired",
+      "return_date": null,
+      "irreplaceability": 1.0,
+      "date": "2026-06-17"
+    }
+  ],
+  "GER": [
+    {
+      "player": "Serge Gnabry",
+      "position": "forward",
+      "role": "regular_starter",
+      "status": "out",
+      "return_date": null,
+      "irreplaceability": 1.5,
+      "date": "2026-06-17"
+    },
+    {
+      "player": "Marc-Andre ter Stegen",
+      "position": "goalkeeper",
+      "role": "regular_starter",
+      "status": "out",
+      "return_date": null,
+      "irreplaceability": 1.0,
+      "date": "2026-06-17"
+    },
+    {
+      "player": "Lennart Karl",
+      "position": "midfielder",
+      "role": "rotation",
+      "status": "out",
+      "return_date": null,
+      "irreplaceability": 0.5,
+      "date": "2026-06-17"
+    }
+  ],
+  "FRA": [
+    {
+      "player": "Hugo Ekitike",
+      "position": "forward",
+      "role": "rotation",
+      "status": "out",
+      "return_date": null,
+      "irreplaceability": 0.5,
+      "date": "2026-06-17"
+    }
+  ],
+  "POR": [
+    {
+      "player": "Ruben Dias",
+      "position": "defender",
+      "role": "defense_leader",
+      "status": "out",
+      "return_date": "2026-06-23",
+      "irreplaceability": 1.5,
+      "reason": "训练受伤未达100%状态, Martinez确认'不冒险', 缺战刚果金首战, 目标6/23回归",
+      "date": "2026-06-17"
+    }
+  ],
+  "GHA": [
+    {
+      "player": "Thomas Partey",
+      "position": "midfielder",
+      "role": "core_creator",
+      "status": "out",
+      "return_date": "2026-06-23",
+      "irreplaceability": 2.0,
+      "reason": "被拒绝进入加拿大, 缺席首战vs Panama; Ghana中场核心缺失",
+      "date": "2026-06-17"
+    },
+    {
+      "player": "Mohammed Kudus",
+      "position": "midfielder",
+      "role": "core_creator",
+      "status": "out",
+      "return_date": null,
+      "irreplaceability": 2.0,
+      "date": "2026-06-17",
+      "reason": "股四头肌伤缺阵整个世界杯, Ghana进攻创造力大减"
+    }
+  ],
+  "SCO": [
+    {
+      "player": "Billy Gilmour",
+      "position": "midfielder",
+      "role": "regular_starter",
+      "status": "out",
+      "return_date": null,
+      "irreplaceability": 1.0,
+      "date": "2026-06-17"
+    }
+  ],
+  "ESP": [
+    {
+      "player": "Fermin Lopez",
+      "position": "midfielder",
+      "role": "rotation",
+      "status": "out",
+      "return_date": null,
+      "irreplaceability": 0.5,
+      "date": "2026-06-17"
+    },
+    {
+      "player": "Lamine Yamal",
+      "position": "forward",
+      "role": "core_scorer",
+      "status": "active",
+      "return_date": "2026-06-15",
+      "irreplaceability": 2.0,
+      "date": "2026-06-17",
+      "reason": "左腿筋伤愈, 对佛得角替补出场, De la Fuente确认'理想状态'"
+    }
+  ],
+  "ENG": [
+    {
+      "player": "Tino Livramento",
+      "position": "defender",
+      "role": "rotation",
+      "status": "out",
+      "return_date": null,
+      "irreplaceability": 0.5,
+      "reason": "训练中小腿受伤, 已由Chalobah替换; Trent Alexander-Arnold再次被无视引发争议(Maguire: '避免不必要的媒体关注')",
+      "date": "2026-06-17"
+    }
+  ],
+  "USA": [
+    {
+      "player": "Christian Pulisic",
+      "position": "forward",
+      "role": "core_scorer",
+      "status": "doubtful",
+      "return_date": "2026-06-19",
+      "irreplaceability": 2.0,
+      "date": "2026-06-17",
+      "reason": "对巴拉圭半场小腿被撞换下, Pochettino称'预防性换人', Adams说'他会好的', 单独训练day-to-day"
+    },
+    {
+      "player": "Patrick Agyemang",
+      "position": "forward",
+      "role": "rotation",
+      "status": "out",
+      "return_date": null,
+      "irreplaceability": 0.5,
+      "date": "2026-06-17"
+    },
+    {
+      "player": "Johnny Cardoso",
+      "position": "midfielder",
+      "role": "regular_starter",
+      "status": "out",
+      "return_date": null,
+      "irreplaceability": 1.0,
+      "date": "2026-06-17"
+    }
+  ],
+  "CAN": [
+    {
+      "player": "Alphonso Davies",
+      "position": "defender",
+      "role": "core_creator",
+      "status": "active",
+      "return_date": "2026-06-18",
+      "irreplaceability": 2.0,
+      "date": "2026-06-17",
+      "reason": "左腿筋伤(5月初欧冠半决赛), 缺战波黑, CBC预测'几乎确定'缺战卡塔尔, 训练受限"
+    },
+    {
+      "player": "Marcelo Flores",
+      "position": "forward",
+      "role": "rotation",
+      "status": "out",
+      "return_date": null,
+      "irreplaceability": 0.5,
+      "date": "2026-06-17"
+    }
+  ]
+}

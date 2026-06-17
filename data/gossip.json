@@ -1,0 +1,334 @@
+{
+  "IRN": {
+    "locker_room": {
+      "score": -4,
+      "reason": "政治压力+基地被迫搬迁+签证被拒→球员心理压力极限",
+      "original_score": -4
+    },
+    "political": {
+      "level": 5,
+      "score": -7,
+      "reason": "对美战争状态刚解除+基地从图森搬蒂华纳+核心团队签证被拒+LA diaspora示威+球迷限制入境",
+      "original_score": -7
+    },
+    "player_off_field": {
+      "score": -2,
+      "reason": "Taremi公开批评FIFA:世界杯体验被政治破坏",
+      "original_score": -2
+    }
+  },
+  "IRQ": {
+    "locker_room": {
+      "score": -1,
+      "reason": "部分球员在美国机场被扣留问话→心理影响",
+      "original_score": -1
+    },
+    "political": {
+      "level": 4,
+      "score": -5,
+      "reason": "球员在美机场被扣留问话→情绪受挫",
+      "original_score": -5
+    },
+    "player_off_field": {
+      "score": 0,
+      "reason": "",
+      "original_score": 0
+    }
+  },
+  "POR": {
+    "locker_room": {
+      "score": -3.8,
+      "reason": "Ronaldo首发争议升级: IBTimes分析称41岁CR7已成'负担', 不压迫不冲刺, 沙特联赛水平遭质疑; Braga主席攻击Martinez(5/24); 足协与CR7商业合作嫌疑",
+      "date": "2026-06-17",
+      "original_score": -4
+    },
+    "political": {
+      "level": 0,
+      "score": 0,
+      "reason": "",
+      "original_score": 0
+    },
+    "player_off_field": {
+      "score": -3,
+      "reason": "Ronaldo热身赛空门不进→信心危机; 但Bruno Fernandes力挺'我们都看他踢球长大'; 全员Diogo Jota腕带→团结度+2",
+      "positive_signal": "Martinez:C罗训练强度如首次参赛",
+      "original_score": -3
+    }
+  },
+  "SEN": {
+    "locker_room": {
+      "score": 0,
+      "reason": "",
+      "original_score": 0
+    },
+    "political": {
+      "level": 3,
+      "score": -3,
+      "reason": "旅行禁令覆盖国→大量球迷无法入境→实质客场劣势",
+      "original_score": -3
+    },
+    "player_off_field": {
+      "score": 0,
+      "reason": "",
+      "original_score": 0
+    }
+  },
+  "HAI": {
+    "locker_room": {
+      "score": 0,
+      "reason": "",
+      "original_score": 0
+    },
+    "political": {
+      "level": 3,
+      "score": -3,
+      "reason": "旅行禁令覆盖国",
+      "original_score": -3
+    },
+    "player_off_field": {
+      "score": 0,
+      "reason": "",
+      "original_score": 0
+    }
+  },
+  "CIV": {
+    "locker_room": {
+      "score": 0,
+      "reason": "",
+      "original_score": 0
+    },
+    "political": {
+      "level": 3,
+      "score": -3,
+      "reason": "旅行禁令覆盖国",
+      "original_score": -3
+    },
+    "player_off_field": {
+      "score": 0,
+      "reason": "",
+      "original_score": 0
+    }
+  },
+  "TUN": {
+    "locker_room": {
+      "score": -2.9,
+      "reason": "1-5惨败瑞典后士气崩溃, 主帅Lamouchi预计被解雇→赛前内乱(ESPN); 下一场对日本压力巨大",
+      "date": "2026-06-17",
+      "original_score": -3
+    },
+    "political": {
+      "level": 0,
+      "score": 0,
+      "reason": "",
+      "original_score": 0
+    },
+    "player_off_field": {
+      "score": -1,
+      "reason": "1-5惨败瑞典后士气崩溃风险",
+      "original_score": -1
+    }
+  },
+  "KSA": {
+    "locker_room": {
+      "score": 1,
+      "reason": "1-1乌拉圭超预期表现, 临阵换帅事件(4/16)已完全消化, 球队氛围积极",
+      "original_score": 1
+    },
+    "political": {
+      "level": 0,
+      "score": 0,
+      "reason": "",
+      "original_score": 0
+    },
+    "player_off_field": {
+      "score": 0,
+      "reason": "",
+      "original_score": 0
+    }
+  },
+  "BRA": {
+    "locker_room": {
+      "score": -3.8,
+      "reason": "Neymar小组赛全缺→球迷怒斥'身体已废''为钱入选', Ancelotti辩护'经验价值', 巴西更衣室压力巨大",
+      "date": "2026-06-17",
+      "original_score": -4
+    },
+    "political": {
+      "level": 0,
+      "score": 0,
+      "reason": "",
+      "original_score": 0
+    },
+    "player_off_field": {
+      "score": -2,
+      "reason": "Neymar宣布第三胎+桑托斯合同纠纷, 外界质疑专注度",
+      "original_score": -2
+    }
+  },
+  "NED": {
+    "locker_room": {
+      "score": -1,
+      "reason": "Van Dijk公开批评世界杯补水暂停制度→潜在不满情绪",
+      "original_score": -1
+    },
+    "political": {
+      "level": 0,
+      "score": 0,
+      "reason": "",
+      "original_score": 0
+    },
+    "player_off_field": {
+      "score": 0,
+      "reason": "",
+      "original_score": 0
+    }
+  },
+  "GHA": {
+    "locker_room": {
+      "score": -0.9,
+      "reason": "Thomas Partey被拒绝进入加拿大→缺席首战vs Panama(Yahoo Sports独家)",
+      "date": "2026-06-15",
+      "original_score": -1
+    },
+    "political": {
+      "level": 3,
+      "score": -3,
+      "reason": "核心球员Partey被加拿大拒绝入境→球队受影响",
+      "original_score": -3
+    },
+    "player_off_field": {
+      "score": 0,
+      "reason": "",
+      "original_score": 0
+    }
+  },
+  "USA": {
+    "locker_room": {
+      "score": 0,
+      "reason": "4-1巴拉圭士气爆棚, 场倾斜率80.5%为1998年以来第4高, Pulisic小腿轻伤但无大碍",
+      "original_score": 0
+    },
+    "political": {
+      "level": 0,
+      "score": 0,
+      "reason": "",
+      "original_score": 0
+    },
+    "player_off_field": {
+      "score": 2,
+      "reason": "Balogun双响金靴并列领跑, 进攻火力被市场严重重估(+5000→+4000夺冠赔率)",
+      "original_score": 2
+    }
+  },
+  "AUS": {
+    "locker_room": {
+      "score": 0,
+      "reason": "2-0土耳其爆冷, Irankunda世界杯处子球致敬Cahill, Beach 8次扑救",
+      "original_score": 0
+    },
+    "political": {
+      "level": 0,
+      "score": 0,
+      "reason": "",
+      "original_score": 0
+    },
+    "player_off_field": {
+      "score": 1,
+      "reason": "Irankunda 20岁创澳大利亚世界杯最年轻进球纪录→士气加成",
+      "original_score": 1
+    }
+  },
+  "ARG": {
+    "locker_room": {
+      "score": -1.9,
+      "reason": "Messi帽子戏法但疑似红牌未判(ESPN:100%红牌), FIFA被指控保护巨星; Haaland发Snap致敬又引争议",
+      "date": "2026-06-17",
+      "original_score": -2
+    },
+    "political": {
+      "level": 0,
+      "score": 0,
+      "reason": "",
+      "original_score": 0
+    },
+    "player_off_field": {
+      "score": 0,
+      "reason": "Messi第6届世界杯帽子戏法, 状态火热",
+      "original_score": 0
+    }
+  },
+  "ENG": {
+    "locker_room": {
+      "score": -1.9,
+      "reason": "Trent Alexander-Arnold被排除名单→Carragher称Tuchel'优先和谐>实力', Maguire透露'避免媒体干扰'; Chalobah顶替Livramento入选引发争议",
+      "date": "2026-06-17",
+      "original_score": -2
+    },
+    "political": {
+      "level": 1,
+      "score": -1,
+      "reason": "Tuchel选人持续遭英媒围攻, 多名高调球员缺席, '个人恩怨'传闻流传",
+      "original_score": -1
+    },
+    "player_off_field": {
+      "score": 0,
+      "reason": "",
+      "original_score": 0
+    }
+  },
+  "CRO": {
+    "locker_room": {
+      "score": -1,
+      "reason": "Modric第5届世界杯, 核心老化问题突出; 对英格兰开幕战被普遍看低",
+      "date": "2026-06-17",
+      "original_score": -1
+    },
+    "political": {
+      "level": 0,
+      "score": 0,
+      "reason": "",
+      "original_score": 0
+    },
+    "player_off_field": {
+      "score": 0,
+      "reason": "",
+      "original_score": 0
+    }
+  },
+  "NOR": {
+    "locker_room": {
+      "score": 2,
+      "reason": "Haaland首轮双响+4-1伊拉克, 挪威I组榜首, 球队信心爆棚",
+      "original_score": 2
+    },
+    "political": {
+      "level": 0,
+      "score": 0,
+      "reason": "",
+      "original_score": 0
+    },
+    "player_off_field": {
+      "score": 1,
+      "reason": "Haaland金靴并列领跑(2球), 发Snap致敬Messi引热议",
+      "original_score": 1
+    }
+  },
+  "FRA": {
+    "locker_room": {
+      "score": 1,
+      "reason": "Mbappe双响+世界波3-1塞内加尔, 法国开门红; Saliba伤愈复出防线完整",
+      "original_score": 1
+    },
+    "political": {
+      "level": 0,
+      "score": 0,
+      "reason": "",
+      "original_score": 0
+    },
+    "player_off_field": {
+      "score": 1,
+      "reason": "Mbappe金靴并列领跑, 状态火热",
+      "original_score": 1
+    }
+  }
+}

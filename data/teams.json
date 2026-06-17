@@ -1,0 +1,734 @@
+{
+  "FRA": {
+    "name": "France",
+    "fifa_rank": 2,
+    "elo_rating": 1950,
+    "confederation": "UEFA",
+    "market_value_eur": 1100000000,
+    "recent_10": {"w": 7, "d": 2, "l": 1, "gf": 24, "ga": 7, "opponent_avg_rank": 22},
+    "recent_5": {"w": 4, "d": 1, "l": 0, "gf": 13, "ga": 3, "opponent_avg_rank": 18},
+    "tournament_exp": 15,
+    "top5_league_starters": 11,
+    "key_players": {
+      "striker": {"name": "Kylian Mbappe", "recent_goal_rate": 1.1, "season_avg": 0.85},
+      "midfielder": {"name": "Ousmane Dembele", "recent_key_pass": 2.8, "season_avg": 2.5},
+      "goalkeeper": {"name": "Mike Maignan", "recent_save_pct": 0.76, "season_avg": 0.78}
+    },
+    "odds": {"outright": 450, "group_winner": -250, "to_advance": -800},
+    "odds_history": {"7d_ago": 500, "30d_ago": 550},
+    "group": "I"
+  },
+  "ESP": {
+    "name": "Spain",
+    "fifa_rank": 1,
+    "elo_rating": 1979,
+    "confederation": "UEFA",
+    "market_value_eur": 1050000000,
+    "recent_10": {"w": 8, "d": 1, "l": 1, "gf": 26, "ga": 5, "opponent_avg_rank": 20},
+    "recent_5": {"w": 4, "d": 1, "l": 0, "gf": 12, "ga": 2, "opponent_avg_rank": 25},
+    "tournament_exp": 10,
+    "top5_league_starters": 9,
+    "key_players": {
+      "striker": {"name": "Ferran Torres", "recent_goal_rate": 0.5, "season_avg": 0.60},
+      "midfielder": {"name": "Pedri", "recent_key_pass": 3.2, "season_avg": 3.0},
+      "goalkeeper": {"name": "Unai Simon", "recent_save_pct": 0.80, "season_avg": 0.79}
+    },
+    "odds": {"outright": 500, "group_winner": -200, "to_advance": -700},
+    "odds_history": {"7d_ago": 450, "30d_ago": 420},
+    "group": "H"
+  },
+  "ARG": {
+    "name": "Argentina",
+    "fifa_rank": 3,
+    "elo_rating": 1920,
+    "confederation": "CONMEBOL",
+    "market_value_eur": 850000000,
+    "recent_10": {"w": 8, "d": 1, "l": 1, "gf": 22, "ga": 6, "opponent_avg_rank": 30},
+    "recent_5": {"w": 4, "d": 1, "l": 0, "gf": 11, "ga": 2, "opponent_avg_rank": 35},
+    "tournament_exp": 18,
+    "top5_league_starters": 8,
+    "key_players": {
+      "striker": {"name": "Lionel Messi", "recent_goal_rate": 0.85, "season_avg": 0.80},
+      "midfielder": {"name": "Rodrigo De Paul", "recent_key_pass": 2.2, "season_avg": 2.0},
+      "goalkeeper": {"name": "Emiliano Martinez", "recent_save_pct": 0.82, "season_avg": 0.78}
+    },
+    "odds": {"outright": 1000, "group_winner": -200, "to_advance": -700},
+    "odds_history": {"7d_ago": 900, "30d_ago": 850},
+    "group": "J"
+  },
+  "ENG": {
+    "name": "England",
+    "fifa_rank": 4,
+    "elo_rating": 1886,
+    "confederation": "UEFA",
+    "market_value_eur": 1200000000,
+    "recent_10": {"w": 7, "d": 2, "l": 1, "gf": 25, "ga": 8, "opponent_avg_rank": 25},
+    "recent_5": {"w": 4, "d": 0, "l": 1, "gf": 14, "ga": 4, "opponent_avg_rank": 22},
+    "tournament_exp": 12,
+    "top5_league_starters": 11,
+    "key_players": {
+      "striker": {"name": "Harry Kane", "recent_goal_rate": 1.2, "season_avg": 1.18},
+      "midfielder": {"name": "Jude Bellingham", "recent_key_pass": 2.5, "season_avg": 2.3},
+      "goalkeeper": {"name": "Jordan Pickford", "recent_save_pct": 0.74, "season_avg": 0.72}
+    },
+    "odds": {"outright": 700, "group_winner": -300, "to_advance": -900},
+    "odds_history": {"7d_ago": 750, "30d_ago": 700},
+    "group": "L"
+  },
+  "BRA": {
+    "name": "Brazil",
+    "fifa_rank": 6,
+    "elo_rating": 1880,
+    "confederation": "CONMEBOL",
+    "market_value_eur": 950000000,
+    "recent_10": {"w": 6, "d": 2, "l": 2, "gf": 18, "ga": 9, "opponent_avg_rank": 18},
+    "recent_5": {"w": 3, "d": 1, "l": 1, "gf": 8, "ga": 5, "opponent_avg_rank": 20},
+    "tournament_exp": 14,
+    "top5_league_starters": 9,
+    "key_players": {
+      "striker": {"name": "Vinicius Jr", "recent_goal_rate": 0.55, "season_avg": 0.65},
+      "midfielder": {"name": "Bruno Guimaraes", "recent_key_pass": 1.8, "season_avg": 2.0},
+      "goalkeeper": {"name": "Alisson", "recent_save_pct": 0.77, "season_avg": 0.79}
+    },
+    "odds": {"outright": 1000, "group_winner": -175, "to_advance": -600},
+    "odds_history": {"7d_ago": 900, "30d_ago": 800},
+    "group": "C"
+  },
+  "POR": {
+    "name": "Portugal",
+    "fifa_rank": 5,
+    "elo_rating": 1900,
+    "confederation": "UEFA",
+    "market_value_eur": 900000000,
+    "recent_10": {"w": 7, "d": 1, "l": 2, "gf": 22, "ga": 8, "opponent_avg_rank": 28},
+    "recent_5": {"w": 4, "d": 0, "l": 1, "gf": 12, "ga": 4, "opponent_avg_rank": 30},
+    "tournament_exp": 10,
+    "top5_league_starters": 8,
+    "key_players": {
+      "striker": {"name": "Cristiano Ronaldo", "recent_goal_rate": 0.30, "season_avg": 0.70},
+      "midfielder": {"name": "Bruno Fernandes", "recent_key_pass": 3.5, "season_avg": 3.2},
+      "goalkeeper": {"name": "Diogo Costa", "recent_save_pct": 0.75, "season_avg": 0.76}
+    },
+    "odds": {"outright": 750, "group_winner": -250, "to_advance": -750},
+    "odds_history": {"7d_ago": 800, "30d_ago": 1400},
+    "group": "K"
+  },
+  "GER": {
+    "name": "Germany",
+    "fifa_rank": 10,
+    "elo_rating": 1867,
+    "confederation": "UEFA",
+    "market_value_eur": 850000000,
+    "recent_10": {"w": 6, "d": 2, "l": 2, "gf": 28, "ga": 12, "opponent_avg_rank": 22},
+    "recent_5": {"w": 4, "d": 0, "l": 1, "gf": 18, "ga": 5, "opponent_avg_rank": 30},
+    "tournament_exp": 12,
+    "top5_league_starters": 8,
+    "key_players": {
+      "striker": {"name": "Kai Havertz", "recent_goal_rate": 0.90, "season_avg": 0.55},
+      "midfielder": {"name": "Jamal Musiala", "recent_key_pass": 3.0, "season_avg": 2.8},
+      "goalkeeper": {"name": "Alexander Nubel", "recent_save_pct": 0.73, "season_avg": 0.74}
+    },
+    "odds": {"outright": 1400, "group_winner": -320, "to_advance": -10000},
+    "odds_history": {"7d_ago": 1400, "30d_ago": 1300, "post_match_shift": "7-1 Curaçao后小组赢盘-210→-320, 出线-1200→-10000"},
+    "group": "E"
+  },
+  "NED": {
+    "name": "Netherlands",
+    "fifa_rank": 7,
+    "elo_rating": 1840,
+    "confederation": "UEFA",
+    "market_value_eur": 750000000,
+    "recent_10": {"w": 6, "d": 3, "l": 1, "gf": 20, "ga": 8, "opponent_avg_rank": 20},
+    "recent_5": {"w": 3, "d": 2, "l": 0, "gf": 10, "ga": 5, "opponent_avg_rank": 18},
+    "tournament_exp": 8,
+    "top5_league_starters": 7,
+    "key_players": {
+      "striker": {"name": "Cody Gakpo", "recent_goal_rate": 0.60, "season_avg": 0.55},
+      "midfielder": {"name": "Ryan Gravenberch", "recent_key_pass": 2.0, "season_avg": 1.8},
+      "goalkeeper": {"name": "Bart Verbruggen", "recent_save_pct": 0.72, "season_avg": 0.71}
+    },
+    "odds": {"outright": 1800, "group_winner": -150, "to_advance": -500},
+    "odds_history": {"7d_ago": 1700, "30d_ago": 1600},
+    "group": "F"
+  },
+  "BEL": {
+    "name": "Belgium",
+    "fifa_rank": 9,
+    "elo_rating": 1820,
+    "confederation": "UEFA",
+    "market_value_eur": 500000000,
+    "recent_10": {"w": 6, "d": 2, "l": 2, "gf": 18, "ga": 10, "opponent_avg_rank": 28},
+    "recent_5": {"w": 3, "d": 1, "l": 1, "gf": 9, "ga": 6, "opponent_avg_rank": 30},
+    "tournament_exp": 8,
+    "top5_league_starters": 6,
+    "key_players": {
+      "striker": {"name": "Romelu Lukaku", "recent_goal_rate": 0.80, "season_avg": 0.75},
+      "midfielder": {"name": "Kevin De Bruyne", "recent_key_pass": 3.0, "season_avg": 3.5},
+      "goalkeeper": {"name": "Matz Sels", "recent_save_pct": 0.74, "season_avg": 0.72}
+    },
+    "odds": {"outright": 4000, "group_winner": -175, "to_advance": -450},
+    "odds_history": {"7d_ago": 3500, "30d_ago": 3300},
+    "group": "G"
+  },
+  "NOR": {
+    "name": "Norway",
+    "fifa_rank": 31,
+    "elo_rating": 1800,
+    "confederation": "UEFA",
+    "market_value_eur": 500000000,
+    "recent_10": {"w": 7, "d": 2, "l": 1, "gf": 25, "ga": 8, "opponent_avg_rank": 25},
+    "recent_5": {"w": 4, "d": 1, "l": 0, "gf": 14, "ga": 3, "opponent_avg_rank": 22},
+    "tournament_exp": 0,
+    "top5_league_starters": 5,
+    "key_players": {
+      "striker": {"name": "Erling Haaland", "recent_goal_rate": 1.40, "season_avg": 1.10},
+      "midfielder": {"name": "Martin Odegaard", "recent_key_pass": 3.8, "season_avg": 3.2},
+      "goalkeeper": {"name": "Orjan Nyland", "recent_save_pct": 0.70, "season_avg": 0.69}
+    },
+    "odds": {"outright": 3000, "group_winner": 200, "to_advance": -200},
+    "odds_history": {"7d_ago": 3300, "30d_ago": 4000},
+    "group": "I"
+  },
+  "MAR": {
+    "name": "Morocco",
+    "fifa_rank": 12,
+    "elo_rating": 1780,
+    "confederation": "CAF",
+    "market_value_eur": 350000000,
+    "recent_10": {"w": 7, "d": 2, "l": 1, "gf": 18, "ga": 5, "opponent_avg_rank": 30},
+    "recent_5": {"w": 4, "d": 1, "l": 0, "gf": 10, "ga": 2, "opponent_avg_rank": 25},
+    "tournament_exp": 6,
+    "top5_league_starters": 6,
+    "key_players": {
+      "striker": {"name": "Youssef En-Nesyri", "recent_goal_rate": 0.60, "season_avg": 0.55},
+      "midfielder": {"name": "Ayyoub Bouaddi", "recent_key_pass": 2.0, "season_avg": 1.8},
+      "goalkeeper": {"name": "Yassine Bounou", "recent_save_pct": 0.82, "season_avg": 0.80}
+    },
+    "odds": {"outright": 5000, "group_winner": 350, "to_advance": -150},
+    "odds_history": {"7d_ago": 5000, "30d_ago": 6600},
+    "group": "C"
+  },
+  "COL": {
+    "name": "Colombia",
+    "fifa_rank": 14,
+    "elo_rating": 1790,
+    "confederation": "CONMEBOL",
+    "market_value_eur": 350000000,
+    "recent_10": {"w": 7, "d": 2, "l": 1, "gf": 16, "ga": 6, "opponent_avg_rank": 25},
+    "recent_5": {"w": 4, "d": 1, "l": 0, "gf": 9, "ga": 3, "opponent_avg_rank": 28},
+    "tournament_exp": 4,
+    "top5_league_starters": 5,
+    "key_players": {
+      "striker": {"name": "Luis Diaz", "recent_goal_rate": 0.70, "season_avg": 0.55},
+      "midfielder": {"name": "James Rodriguez", "recent_key_pass": 2.5, "season_avg": 2.8},
+      "goalkeeper": {"name": "Camilo Vargas", "recent_save_pct": 0.73, "season_avg": 0.72}
+    },
+    "odds": {"outright": 4000, "group_winner": 150, "to_advance": -175},
+    "odds_history": {"7d_ago": 4500, "30d_ago": 5000},
+    "group": "K"
+  },
+  "SEN": {
+    "name": "Senegal", "fifa_rank": 20, "elo_rating": 1750, "confederation": "CAF",
+    "market_value_eur": 300000000, "tournament_exp": 4, "top5_league_starters": 5,
+    "recent_10": {"w": 6, "d": 2, "l": 2, "gf": 15, "ga": 7, "opponent_avg_rank": 28},
+    "recent_5": {"w": 3, "d": 1, "l": 1, "gf": 6, "ga": 4, "opponent_avg_rank": 25},
+    "key_players": {
+      "striker": {"name": "Sadio Mane", "recent_goal_rate": 0.50, "season_avg": 0.60},
+      "midfielder": {"name": "Pape Sarr", "recent_key_pass": 1.5, "season_avg": 1.3},
+      "goalkeeper": {"name": "Edouard Mendy", "recent_save_pct": 0.76, "season_avg": 0.77}
+    },
+    "odds": {"outright": 12500, "group_winner": 500, "to_advance": -120},
+    "odds_history": {"7d_ago": 12500, "30d_ago": 9000},
+    "group": "I"
+  },
+  "URU": {
+    "name": "Uruguay", "fifa_rank": 13, "elo_rating": 1803, "confederation": "CONMEBOL",
+    "market_value_eur": 400000000, "tournament_exp": 8, "top5_league_starters": 6,
+    "recent_10": {"w": 5, "d": 3, "l": 2, "gf": 14, "ga": 8, "opponent_avg_rank": 20},
+    "recent_5": {"w": 3, "d": 1, "l": 1, "gf": 7, "ga": 4, "opponent_avg_rank": 22},
+    "key_players": {
+      "striker": {"name": "Federico Vinas", "recent_goal_rate": 0.45, "season_avg": 0.50},
+      "midfielder": {"name": "Federico Valverde", "recent_key_pass": 2.5, "season_avg": 2.3},
+      "goalkeeper": {"name": "Fernando Muslera", "recent_save_pct": 0.73, "season_avg": 0.72}
+    },
+    "odds": {"outright": 6600, "group_winner": 250, "to_advance": -175},
+    "odds_history": {"7d_ago": 6600, "30d_ago": 6600},
+    "group": "H"
+  },
+  "AUT": {
+    "name": "Austria", "fifa_rank": 22, "elo_rating": 1770, "confederation": "UEFA",
+    "market_value_eur": 280000000, "tournament_exp": 0, "top5_league_starters": 6,
+    "recent_10": {"w": 6, "d": 1, "l": 3, "gf": 18, "ga": 10, "opponent_avg_rank": 25},
+    "recent_5": {"w": 3, "d": 1, "l": 1, "gf": 9, "ga": 5, "opponent_avg_rank": 22},
+    "key_players": {
+      "striker": {"name": "Marcel Sabitzer", "recent_goal_rate": 0.55, "season_avg": 0.45},
+      "midfielder": {"name": "Konrad Laimer", "recent_key_pass": 1.8, "season_avg": 1.6},
+      "goalkeeper": {"name": "Alexander Schlager", "recent_save_pct": 0.71, "season_avg": 0.70}
+    },
+    "odds": {"outright": 15000, "group_winner": 500, "to_advance": 120},
+    "odds_history": {"7d_ago": 15000, "30d_ago": 15000},
+    "group": "J"
+  },
+  "JPN": {
+    "name": "Japan", "fifa_rank": 18, "elo_rating": 1760, "confederation": "AFC",
+    "market_value_eur": 280000000, "tournament_exp": 4, "top5_league_starters": 5,
+    "recent_10": {"w": 7, "d": 1, "l": 2, "gf": 20, "ga": 8, "opponent_avg_rank": 30},
+    "recent_5": {"w": 3, "d": 1, "l": 1, "gf": 10, "ga": 5, "opponent_avg_rank": 25},
+    "key_players": {
+      "striker": {"name": "Koki Ogawa", "recent_goal_rate": 0.65, "season_avg": 0.50},
+      "midfielder": {"name": "Takefusa Kubo", "recent_key_pass": 2.2, "season_avg": 2.0},
+      "goalkeeper": {"name": "Zion Suzuki", "recent_save_pct": 0.72, "season_avg": 0.70}
+    },
+    "odds": {"outright": 5000, "group_winner": 350, "to_advance": -150},
+    "odds_history": {"7d_ago": 6000, "30d_ago": 6000},
+    "group": "F"
+  },
+  "USA": {
+    "name": "United States", "fifa_rank": 16, "elo_rating": 1765, "confederation": "CONCACAF",
+    "market_value_eur": 350000000, "tournament_exp": 2, "top5_league_starters": 6,
+    "recent_10": {"w": 6, "d": 2, "l": 2, "gf": 20, "ga": 10, "opponent_avg_rank": 30},
+    "recent_5": {"w": 4, "d": 0, "l": 1, "gf": 13, "ga": 5, "opponent_avg_rank": 28},
+    "key_players": {
+      "striker": {"name": "Folarin Balogun", "recent_goal_rate": 1.00, "season_avg": 0.60},
+      "midfielder": {"name": "Giovanni Reyna", "recent_key_pass": 2.0, "season_avg": 1.8},
+      "goalkeeper": {"name": "Matt Turner", "recent_save_pct": 0.71, "season_avg": 0.70}
+    },
+    "odds": {"outright": 6000, "group_winner": -210, "to_advance": -10000},
+    "odds_history": {"7d_ago": 5000, "30d_ago": 6600, "post_match_shift": "4-1巴拉圭后出线赔率-750→-10000, 夺冠+5000→+4000→Fox确认爱国注涌入"},
+    "group": "D"
+  },
+  "MEX": {
+    "name": "Mexico", "fifa_rank": 15, "elo_rating": 1775, "confederation": "CONCACAF",
+    "market_value_eur": 250000000, "tournament_exp": 10, "top5_league_starters": 4,
+    "recent_10": {"w": 6, "d": 2, "l": 2, "gf": 16, "ga": 9, "opponent_avg_rank": 25},
+    "recent_5": {"w": 4, "d": 0, "l": 1, "gf": 10, "ga": 4, "opponent_avg_rank": 30},
+    "key_players": {
+      "striker": {"name": "Raul Jimenez", "recent_goal_rate": 0.70, "season_avg": 0.55},
+      "midfielder": {"name": "Erik Lira", "recent_key_pass": 1.5, "season_avg": 1.3},
+      "goalkeeper": {"name": "Luis Malagon", "recent_save_pct": 0.74, "season_avg": 0.72}
+    },
+    "odds": {"outright": 5000, "group_winner": -150, "to_advance": -500},
+    "odds_history": {"7d_ago": 5000, "30d_ago": 6600},
+    "group": "A"
+  },
+  "KOR": {
+    "name": "South Korea", "fifa_rank": 30, "elo_rating": 1720, "confederation": "AFC",
+    "market_value_eur": 200000000, "tournament_exp": 4, "top5_league_starters": 4,
+    "recent_10": {"w": 6, "d": 2, "l": 2, "gf": 18, "ga": 10, "opponent_avg_rank": 30},
+    "recent_5": {"w": 4, "d": 1, "l": 0, "gf": 11, "ga": 4, "opponent_avg_rank": 32},
+    "key_players": {
+      "striker": {"name": "Son Heung-min", "recent_goal_rate": 0.70, "season_avg": 0.65},
+      "midfielder": {"name": "Hwang In-beom", "recent_key_pass": 2.0, "season_avg": 1.8},
+      "goalkeeper": {"name": "Kim Seung-gyu", "recent_save_pct": 0.75, "season_avg": 0.73}
+    },
+    "odds": {"outright": 40000, "group_winner": 200, "to_advance": -120},
+    "odds_history": {"7d_ago": 40000, "30d_ago": 40000},
+    "group": "A"
+  },
+  "RSA": {
+    "name": "South Africa", "fifa_rank": 55, "elo_rating": 1580, "confederation": "CAF",
+    "market_value_eur": 80000000, "tournament_exp": 2, "top5_league_starters": 2,
+    "recent_10": {"w": 4, "d": 3, "l": 3, "gf": 10, "ga": 11, "opponent_avg_rank": 35},
+    "recent_5": {"w": 2, "d": 2, "l": 1, "gf": 5, "ga": 6, "opponent_avg_rank": 33},
+    "key_players": {
+      "striker": {"name": "Lyle Foster", "recent_goal_rate": 0.40, "season_avg": 0.45},
+      "midfielder": {"name": "Sphephelo Sithole", "recent_key_pass": 1.0, "season_avg": 1.0},
+      "goalkeeper": {"name": "Ronwen Williams", "recent_save_pct": 0.74, "season_avg": 0.73}
+    },
+    "odds": {"outright": 200000, "group_winner": 2000, "to_advance": 300},
+    "odds_history": {"7d_ago": 200000, "30d_ago": 200000},
+    "group": "A"
+  },
+  "CZE": {
+    "name": "Czechia", "fifa_rank": 35, "elo_rating": 1680, "confederation": "UEFA",
+    "market_value_eur": 150000000, "tournament_exp": 2, "top5_league_starters": 4,
+    "recent_10": {"w": 5, "d": 2, "l": 3, "gf": 14, "ga": 12, "opponent_avg_rank": 28},
+    "recent_5": {"w": 2, "d": 1, "l": 2, "gf": 6, "ga": 7, "opponent_avg_rank": 25},
+    "key_players": {
+      "striker": {"name": "Patrik Schick", "recent_goal_rate": 0.55, "season_avg": 0.60},
+      "midfielder": {"name": "Tomas Soucek", "recent_key_pass": 1.5, "season_avg": 1.5},
+      "goalkeeper": {"name": "Matej Kovar", "recent_save_pct": 0.72, "season_avg": 0.71}
+    },
+    "odds": {"outright": 50000, "group_winner": 400, "to_advance": 100},
+    "odds_history": {"7d_ago": 50000, "30d_ago": 50000},
+    "group": "A"
+  },
+  "CAN": {
+    "name": "Canada", "fifa_rank": 30, "elo_rating": 1730, "confederation": "CONCACAF",
+    "market_value_eur": 250000000, "tournament_exp": 2, "top5_league_starters": 5,
+    "recent_10": {"w": 5, "d": 3, "l": 2, "gf": 15, "ga": 10, "opponent_avg_rank": 30},
+    "recent_5": {"w": 2, "d": 2, "l": 1, "gf": 7, "ga": 6, "opponent_avg_rank": 28},
+    "key_players": {
+      "striker": {"name": "Jonathan David", "recent_goal_rate": 0.65, "season_avg": 0.60},
+      "midfielder": {"name": "Stephen Eustaquio", "recent_key_pass": 1.8, "season_avg": 1.6},
+      "goalkeeper": {"name": "Maxime Crepeau", "recent_save_pct": 0.70, "season_avg": 0.69}
+    },
+    "odds": {"outright": 22500, "group_winner": 250, "to_advance": -130},
+    "odds_history": {"7d_ago": 22500, "30d_ago": 22500},
+    "group": "B"
+  },
+  "SUI": {
+    "name": "Switzerland", "fifa_rank": 11, "elo_rating": 1810, "confederation": "UEFA",
+    "market_value_eur": 300000000, "tournament_exp": 6, "top5_league_starters": 5,
+    "recent_10": {"w": 5, "d": 4, "l": 1, "gf": 16, "ga": 7, "opponent_avg_rank": 22},
+    "recent_5": {"w": 3, "d": 2, "l": 0, "gf": 8, "ga": 3, "opponent_avg_rank": 20},
+    "key_players": {
+      "striker": {"name": "Breel Embolo", "recent_goal_rate": 0.50, "season_avg": 0.55},
+      "midfielder": {"name": "Granit Xhaka", "recent_key_pass": 2.5, "season_avg": 2.3},
+      "goalkeeper": {"name": "Yann Sommer", "recent_save_pct": 0.78, "season_avg": 0.77}
+    },
+    "odds": {"outright": 8000, "group_winner": 150, "to_advance": -250},
+    "odds_history": {"7d_ago": 8000, "30d_ago": 7000},
+    "group": "B"
+  },
+  "QAT": {
+    "name": "Qatar", "fifa_rank": 45, "elo_rating": 1550, "confederation": "AFC",
+    "market_value_eur": 50000000, "tournament_exp": 2, "top5_league_starters": 1,
+    "recent_10": {"w": 3, "d": 3, "l": 4, "gf": 10, "ga": 15, "opponent_avg_rank": 38},
+    "recent_5": {"w": 2, "d": 1, "l": 2, "gf": 5, "ga": 7, "opponent_avg_rank": 35},
+    "key_players": {
+      "striker": {"name": "Akram Afif", "recent_goal_rate": 0.55, "season_avg": 0.60},
+      "midfielder": {"name": "Abdulaziz Hatem", "recent_key_pass": 1.2, "season_avg": 1.0},
+      "goalkeeper": {"name": "Meshaal Barsham", "recent_save_pct": 0.65, "season_avg": 0.66}
+    },
+    "odds": {"outright": 200000, "group_winner": 2500, "to_advance": 350},
+    "odds_history": {"7d_ago": 200000, "30d_ago": 200000},
+    "group": "B"
+  },
+  "BIH": {
+    "name": "Bosnia-Herzegovina", "fifa_rank": 40, "elo_rating": 1620, "confederation": "UEFA",
+    "market_value_eur": 100000000, "tournament_exp": 2, "top5_league_starters": 3,
+    "recent_10": {"w": 4, "d": 2, "l": 4, "gf": 13, "ga": 14, "opponent_avg_rank": 30},
+    "recent_5": {"w": 2, "d": 1, "l": 2, "gf": 7, "ga": 7, "opponent_avg_rank": 28},
+    "key_players": {
+      "striker": {"name": "Edin Dzeko", "recent_goal_rate": 0.50, "season_avg": 0.55},
+      "midfielder": {"name": "Miralem Pjanic", "recent_key_pass": 2.0, "season_avg": 2.2},
+      "goalkeeper": {"name": "Ibrahim Sehic", "recent_save_pct": 0.70, "season_avg": 0.69}
+    },
+    "odds": {"outright": 30000, "group_winner": 400, "to_advance": 120},
+    "odds_history": {"7d_ago": 30000, "30d_ago": 30000},
+    "group": "B"
+  },
+  "SCO": {
+    "name": "Scotland", "fifa_rank": 28, "elo_rating": 1700, "confederation": "UEFA",
+    "market_value_eur": 180000000, "tournament_exp": 2, "top5_league_starters": 5,
+    "recent_10": {"w": 5, "d": 2, "l": 3, "gf": 14, "ga": 12, "opponent_avg_rank": 25},
+    "recent_5": {"w": 3, "d": 1, "l": 1, "gf": 7, "ga": 5, "opponent_avg_rank": 28},
+    "key_players": {
+      "striker": {"name": "Scott McTominay", "recent_goal_rate": 0.55, "season_avg": 0.45},
+      "midfielder": {"name": "John McGinn", "recent_key_pass": 1.8, "season_avg": 1.6},
+      "goalkeeper": {"name": "Angus Gunn", "recent_save_pct": 0.70, "season_avg": 0.68}
+    },
+    "odds": {"outright": 20000, "group_winner": 500, "to_advance": 100},
+    "odds_history": {"7d_ago": 20000, "30d_ago": 25000},
+    "group": "C"
+  },
+  "HAI": {
+    "name": "Haiti", "fifa_rank": 80, "elo_rating": 1450, "confederation": "CONCACAF",
+    "market_value_eur": 15000000, "tournament_exp": 2, "top5_league_starters": 1,
+    "recent_10": {"w": 3, "d": 2, "l": 5, "gf": 10, "ga": 18, "opponent_avg_rank": 40},
+    "recent_5": {"w": 1, "d": 1, "l": 3, "gf": 4, "ga": 10, "opponent_avg_rank": 38},
+    "key_players": {
+      "striker": {"name": "Derrick Etienne Jr", "recent_goal_rate": 0.30, "season_avg": 0.35},
+      "midfielder": {"name": "Carl Fred Sainté", "recent_key_pass": 0.8, "season_avg": 0.7},
+      "goalkeeper": {"name": "Johny Placide", "recent_save_pct": 0.62, "season_avg": 0.63}
+    },
+    "odds": {"outright": 400000, "group_winner": 10000, "to_advance": 2000},
+    "odds_history": {"7d_ago": 400000, "30d_ago": 400000},
+    "group": "C"
+  },
+  "AUS": {
+    "name": "Australia", "fifa_rank": 25, "elo_rating": 1747, "confederation": "AFC",
+    "market_value_eur": 120000000, "tournament_exp": 4, "top5_league_starters": 3,
+    "recent_10": {"w": 6, "d": 1, "l": 3, "gf": 16, "ga": 10, "opponent_avg_rank": 30},
+    "recent_5": {"w": 4, "d": 0, "l": 1, "gf": 10, "ga": 4, "opponent_avg_rank": 32},
+    "key_players": {
+      "striker": {"name": "Nestory Irankunda", "recent_goal_rate": 0.80, "season_avg": 0.50},
+      "midfielder": {"name": "Jackson Irvine", "recent_key_pass": 1.5, "season_avg": 1.3},
+      "goalkeeper": {"name": "Patrick Beach", "recent_save_pct": 0.78, "season_avg": 0.70}
+    },
+    "odds": {"outright": 8000, "group_winner": 330, "to_advance": -700},
+    "odds_history": {"7d_ago": 60000, "30d_ago": 60000, "post_match_shift": "2-0土耳其后小组赢盘赔率从长赔→+330第二热门, Fox确认市场重估"},
+    "group": "D"
+  },
+  "TUR": {
+    "name": "Türkiye", "fifa_rank": 32, "elo_rating": 1771, "confederation": "UEFA",
+    "market_value_eur": 300000000, "tournament_exp": 2, "top5_league_starters": 5,
+    "recent_10": {"w": 5, "d": 2, "l": 3, "gf": 17, "ga": 12, "opponent_avg_rank": 25},
+    "recent_5": {"w": 2, "d": 1, "l": 2, "gf": 7, "ga": 8, "opponent_avg_rank": 22},
+    "key_players": {
+      "striker": {"name": "Kenan Yildiz", "recent_goal_rate": 0.50, "season_avg": 0.55},
+      "midfielder": {"name": "Arda Guler", "recent_key_pass": 2.5, "season_avg": 2.3},
+      "goalkeeper": {"name": "Ugurcan Cakir", "recent_save_pct": 0.71, "season_avg": 0.70}
+    },
+    "odds": {"outright": 15000, "group_winner": 350, "to_advance": 120},
+    "odds_history": {"7d_ago": 12500, "30d_ago": 12500},
+    "group": "D"
+  },
+  "PAR": {
+    "name": "Paraguay", "fifa_rank": 50, "elo_rating": 1706, "confederation": "CONMEBOL",
+    "market_value_eur": 120000000, "tournament_exp": 4, "top5_league_starters": 3,
+    "recent_10": {"w": 3, "d": 3, "l": 4, "gf": 9, "ga": 13, "opponent_avg_rank": 22},
+    "recent_5": {"w": 1, "d": 1, "l": 3, "gf": 4, "ga": 9, "opponent_avg_rank": 18},
+    "key_players": {
+      "striker": {"name": "Miguel Almiron", "recent_goal_rate": 0.35, "season_avg": 0.45},
+      "midfielder": {"name": "Mathias Villasanti", "recent_key_pass": 1.2, "season_avg": 1.0},
+      "goalkeeper": {"name": "Antony Silva", "recent_save_pct": 0.68, "season_avg": 0.69}
+    },
+    "odds": {"outright": 40000, "group_winner": 1200, "to_advance": 250},
+    "odds_history": {"7d_ago": 40000, "30d_ago": 40000},
+    "group": "D"
+  },
+  "CIV": {
+    "name": "Ivory Coast", "fifa_rank": 38, "elo_rating": 1618, "confederation": "CAF",
+    "market_value_eur": 250000000, "tournament_exp": 2, "top5_league_starters": 5,
+    "recent_10": {"w": 5, "d": 2, "l": 3, "gf": 14, "ga": 10, "opponent_avg_rank": 30},
+    "recent_5": {"w": 3, "d": 1, "l": 1, "gf": 7, "ga": 4, "opponent_avg_rank": 28},
+    "key_players": {
+      "striker": {"name": "Amad Diallo", "recent_goal_rate": 0.70, "season_avg": 0.50},
+      "midfielder": {"name": "Wilfried Zaha", "recent_key_pass": 2.0, "season_avg": 1.8},
+      "goalkeeper": {"name": "Yahia Fofana", "recent_save_pct": 0.71, "season_avg": 0.70}
+    },
+    "odds": {"outright": 30000, "group_winner": 600, "to_advance": 150},
+    "odds_history": {"7d_ago": 30000, "30d_ago": 30000},
+    "group": "E"
+  },
+  "ECU": {
+    "name": "Ecuador", "fifa_rank": 24, "elo_rating": 1793, "confederation": "CONMEBOL",
+    "market_value_eur": 220000000, "tournament_exp": 4, "top5_league_starters": 4,
+    "recent_10": {"w": 5, "d": 3, "l": 2, "gf": 12, "ga": 7, "opponent_avg_rank": 22},
+    "recent_5": {"w": 2, "d": 2, "l": 1, "gf": 5, "ga": 4, "opponent_avg_rank": 20},
+    "key_players": {
+      "striker": {"name": "Enner Valencia", "recent_goal_rate": 0.45, "season_avg": 0.55},
+      "midfielder": {"name": "Moises Caicedo", "recent_key_pass": 2.0, "season_avg": 1.8},
+      "goalkeeper": {"name": "Hernan Galindez", "recent_save_pct": 0.72, "season_avg": 0.70}
+    },
+    "odds": {"outright": 10000, "group_winner": 500, "to_advance": 120},
+    "odds_history": {"7d_ago": 8000, "30d_ago": 10000},
+    "group": "E"
+  },
+  "CUW": {
+    "name": "Curaçao", "fifa_rank": 70, "elo_rating": 1520, "confederation": "CONCACAF",
+    "market_value_eur": 20000000, "tournament_exp": 0, "top5_league_starters": 1,
+    "recent_10": {"w": 3, "d": 2, "l": 5, "gf": 12, "ga": 20, "opponent_avg_rank": 40},
+    "recent_5": {"w": 1, "d": 1, "l": 3, "gf": 6, "ga": 14, "opponent_avg_rank": 38},
+    "key_players": {
+      "striker": {"name": "Livanp Comenencia", "recent_goal_rate": 0.40, "season_avg": 0.35},
+      "midfielder": {"name": "Leandro Bacuna", "recent_key_pass": 1.2, "season_avg": 1.0},
+      "goalkeeper": {"name": "Eloy Room", "recent_save_pct": 0.62, "season_avg": 0.64}
+    },
+    "odds": {"outright": 350000, "group_winner": 10000, "to_advance": 2500},
+    "odds_history": {"7d_ago": 350000, "30d_ago": 350000},
+    "group": "E"
+  },
+  "SWE": {
+    "name": "Sweden", "fifa_rank": 27, "elo_rating": 1750, "confederation": "UEFA",
+    "market_value_eur": 280000000, "tournament_exp": 6, "top5_league_starters": 5,
+    "recent_10": {"w": 5, "d": 2, "l": 3, "gf": 20, "ga": 12, "opponent_avg_rank": 25},
+    "recent_5": {"w": 4, "d": 0, "l": 1, "gf": 15, "ga": 4, "opponent_avg_rank": 28},
+    "key_players": {
+      "striker": {"name": "Viktor Gyokeres", "recent_goal_rate": 0.90, "season_avg": 0.80},
+      "midfielder": {"name": "Yasin Ayari", "recent_key_pass": 2.0, "season_avg": 1.5},
+      "goalkeeper": {"name": "Robin Olsen", "recent_save_pct": 0.72, "season_avg": 0.71}
+    },
+    "odds": {"outright": 12500, "group_winner": 350, "to_advance": 120},
+    "odds_history": {"7d_ago": 17500, "30d_ago": 17500},
+    "group": "F"
+  },
+  "TUN": {
+    "name": "Tunisia", "fifa_rank": 35, "elo_rating": 1630, "confederation": "CAF",
+    "market_value_eur": 80000000, "tournament_exp": 4, "top5_league_starters": 2,
+    "recent_10": {"w": 4, "d": 3, "l": 3, "gf": 11, "ga": 13, "opponent_avg_rank": 30},
+    "recent_5": {"w": 1, "d": 2, "l": 2, "gf": 4, "ga": 12, "opponent_avg_rank": 28},
+    "key_players": {
+      "striker": {"name": "Ellyes Skhiri", "recent_goal_rate": 0.35, "season_avg": 0.40},
+      "midfielder": {"name": "Hannibal Mejbri", "recent_key_pass": 1.5, "season_avg": 1.3},
+      "goalkeeper": {"name": "Aymen Dahmen", "recent_save_pct": 0.67, "season_avg": 0.68}
+    },
+    "odds": {"outright": 50000, "group_winner": 800, "to_advance": 200},
+    "odds_history": {"7d_ago": 50000, "30d_ago": 50000},
+    "group": "F"
+  },
+  "EGY": {
+    "name": "Egypt", "fifa_rank": 32, "elo_rating": 1670, "confederation": "CAF",
+    "market_value_eur": 200000000, "tournament_exp": 2, "top5_league_starters": 4,
+    "recent_10": {"w": 5, "d": 3, "l": 2, "gf": 14, "ga": 8, "opponent_avg_rank": 28},
+    "recent_5": {"w": 3, "d": 2, "l": 0, "gf": 8, "ga": 3, "opponent_avg_rank": 30},
+    "key_players": {
+      "striker": {"name": "Mohamed Salah", "recent_goal_rate": 0.75, "season_avg": 0.70},
+      "midfielder": {"name": "Emam Ashour", "recent_key_pass": 1.8, "season_avg": 1.5},
+      "goalkeeper": {"name": "Mohamed El Shenawy", "recent_save_pct": 0.73, "season_avg": 0.72}
+    },
+    "odds": {"outright": 30000, "group_winner": 250, "to_advance": -110},
+    "odds_history": {"7d_ago": 35000, "30d_ago": 35000},
+    "group": "G"
+  },
+  "IRN": {
+    "name": "Iran", "fifa_rank": 20, "elo_rating": 1700, "confederation": "AFC",
+    "market_value_eur": 80000000, "tournament_exp": 4, "top5_league_starters": 2,
+    "recent_10": {"w": 7, "d": 1, "l": 2, "gf": 20, "ga": 8, "opponent_avg_rank": 35},
+    "recent_5": {"w": 3, "d": 1, "l": 1, "gf": 8, "ga": 5, "opponent_avg_rank": 32},
+    "key_players": {
+      "striker": {"name": "Mehdi Taremi", "recent_goal_rate": 0.60, "season_avg": 0.65},
+      "midfielder": {"name": "Alireza Jahanbakhsh", "recent_key_pass": 1.8, "season_avg": 1.6},
+      "goalkeeper": {"name": "Alireza Beiranvand", "recent_save_pct": 0.72, "season_avg": 0.71}
+    },
+    "odds": {"outright": 50000, "group_winner": 600, "to_advance": 150},
+    "odds_history": {"7d_ago": 75000, "30d_ago": 75000},
+    "group": "G"
+  },
+  "NZL": {
+    "name": "New Zealand", "fifa_rank": 95, "elo_rating": 1480, "confederation": "OFC",
+    "market_value_eur": 20000000, "tournament_exp": 2, "top5_league_starters": 2,
+    "recent_10": {"w": 4, "d": 2, "l": 4, "gf": 12, "ga": 15, "opponent_avg_rank": 50},
+    "recent_5": {"w": 2, "d": 1, "l": 2, "gf": 6, "ga": 8, "opponent_avg_rank": 48},
+    "key_players": {
+      "striker": {"name": "Chris Wood", "recent_goal_rate": 0.55, "season_avg": 0.60},
+      "midfielder": {"name": "Callum McCowatt", "recent_key_pass": 1.0, "season_avg": 0.9},
+      "goalkeeper": {"name": "Max Crocombe", "recent_save_pct": 0.64, "season_avg": 0.65}
+    },
+    "odds": {"outright": 250000, "group_winner": 3000, "to_advance": 500},
+    "odds_history": {"7d_ago": 250000, "30d_ago": 250000},
+    "group": "G"
+  },
+  "KSA": {
+    "name": "Saudi Arabia", "fifa_rank": 50, "elo_rating": 1616, "confederation": "AFC",
+    "market_value_eur": 40000000, "tournament_exp": 4, "top5_league_starters": 1,
+    "recent_10": {"w": 3, "d": 3, "l": 4, "gf": 10, "ga": 14, "opponent_avg_rank": 35},
+    "recent_5": {"w": 1, "d": 2, "l": 2, "gf": 5, "ga": 8, "opponent_avg_rank": 30},
+    "key_players": {
+      "striker": {"name": "Salem Al-Dawsari", "recent_goal_rate": 0.50, "season_avg": 0.55},
+      "midfielder": {"name": "Mohamed Kanno", "recent_key_pass": 1.2, "season_avg": 1.0},
+      "goalkeeper": {"name": "Mohammed Al-Owais", "recent_save_pct": 0.70, "season_avg": 0.68}
+    },
+    "odds": {"outright": 100000, "group_winner": 2500, "to_advance": 400},
+    "odds_history": {"7d_ago": 100000, "30d_ago": 100000},
+    "group": "H"
+  },
+  "CPV": {
+    "name": "Cape Verde", "fifa_rank": 67, "elo_rating": 1489, "confederation": "CAF",
+    "market_value_eur": 25000000, "tournament_exp": 0, "top5_league_starters": 1,
+    "recent_10": {"w": 4, "d": 3, "l": 3, "gf": 10, "ga": 10, "opponent_avg_rank": 40},
+    "recent_5": {"w": 2, "d": 2, "l": 1, "gf": 4, "ga": 3, "opponent_avg_rank": 38},
+    "key_players": {
+      "striker": {"name": "Ryan Mendes", "recent_goal_rate": 0.40, "season_avg": 0.38},
+      "midfielder": {"name": "Diney Borges", "recent_key_pass": 1.0, "season_avg": 0.8},
+      "goalkeeper": {"name": "Vozinha", "recent_save_pct": 0.88, "season_avg": 0.75}
+    },
+    "odds": {"outright": 200000, "group_winner": 3000, "to_advance": 500},
+    "odds_history": {"7d_ago": 200000, "30d_ago": 200000},
+    "group": "H"
+  },
+  "IRQ": {
+    "name": "Iraq", "fifa_rank": 55, "elo_rating": 1550, "confederation": "AFC",
+    "market_value_eur": 30000000, "tournament_exp": 2, "top5_league_starters": 1,
+    "recent_10": {"w": 4, "d": 2, "l": 4, "gf": 12, "ga": 14, "opponent_avg_rank": 38},
+    "recent_5": {"w": 2, "d": 1, "l": 2, "gf": 5, "ga": 7, "opponent_avg_rank": 35},
+    "key_players": {
+      "striker": {"name": "Ayman Hussein", "recent_goal_rate": 0.50, "season_avg": 0.55},
+      "midfielder": {"name": "Zidane Iqbal", "recent_key_pass": 1.3, "season_avg": 1.2},
+      "goalkeeper": {"name": "Jalal Hassan", "recent_save_pct": 0.64, "season_avg": 0.65}
+    },
+    "odds": {"outright": 150000, "group_winner": 5000, "to_advance": 800},
+    "odds_history": {"7d_ago": 150000, "30d_ago": 150000},
+    "group": "I"
+  },
+  "ALG": {
+    "name": "Algeria", "fifa_rank": 30, "elo_rating": 1680, "confederation": "CAF",
+    "market_value_eur": 150000000, "tournament_exp": 4, "top5_league_starters": 4,
+    "recent_10": {"w": 6, "d": 2, "l": 2, "gf": 16, "ga": 9, "opponent_avg_rank": 30},
+    "recent_5": {"w": 3, "d": 1, "l": 1, "gf": 8, "ga": 5, "opponent_avg_rank": 28},
+    "key_players": {
+      "striker": {"name": "Riyad Mahrez", "recent_goal_rate": 0.55, "season_avg": 0.60},
+      "midfielder": {"name": "Houssem Aouar", "recent_key_pass": 2.2, "season_avg": 2.0},
+      "goalkeeper": {"name": "Anthony Mandrea", "recent_save_pct": 0.69, "season_avg": 0.68}
+    },
+    "odds": {"outright": 35000, "group_winner": 700, "to_advance": 180},
+    "odds_history": {"7d_ago": 40000, "30d_ago": 40000},
+    "group": "J"
+  },
+  "JOR": {
+    "name": "Jordan", "fifa_rank": 65, "elo_rating": 1520, "confederation": "AFC",
+    "market_value_eur": 15000000, "tournament_exp": 0, "top5_league_starters": 0,
+    "recent_10": {"w": 3, "d": 2, "l": 5, "gf": 10, "ga": 18, "opponent_avg_rank": 40},
+    "recent_5": {"w": 1, "d": 1, "l": 3, "gf": 5, "ga": 10, "opponent_avg_rank": 38},
+    "key_players": {
+      "striker": {"name": "Musa Al-Taamari", "recent_goal_rate": 0.45, "season_avg": 0.50},
+      "midfielder": {"name": "Yazan Al-Naimat", "recent_key_pass": 1.0, "season_avg": 0.9},
+      "goalkeeper": {"name": "Yazeed Abulaila", "recent_save_pct": 0.62, "season_avg": 0.63}
+    },
+    "odds": {"outright": 250000, "group_winner": 5000, "to_advance": 1000},
+    "odds_history": {"7d_ago": 250000, "30d_ago": 250000},
+    "group": "J"
+  },
+  "UZB": {
+    "name": "Uzbekistan", "fifa_rank": 60, "elo_rating": 1550, "confederation": "AFC",
+    "market_value_eur": 30000000, "tournament_exp": 0, "top5_league_starters": 1,
+    "recent_10": {"w": 4, "d": 3, "l": 3, "gf": 12, "ga": 12, "opponent_avg_rank": 38},
+    "recent_5": {"w": 2, "d": 2, "l": 1, "gf": 6, "ga": 5, "opponent_avg_rank": 35},
+    "key_players": {
+      "striker": {"name": "Eldor Shomurodov", "recent_goal_rate": 0.50, "season_avg": 0.55},
+      "midfielder": {"name": "Farrukh Sayfiev", "recent_key_pass": 1.0, "season_avg": 0.9},
+      "goalkeeper": {"name": "Utkir Yusupov", "recent_save_pct": 0.66, "season_avg": 0.65}
+    },
+    "odds": {"outright": 150000, "group_winner": 4000, "to_advance": 600},
+    "odds_history": {"7d_ago": 150000, "30d_ago": 150000},
+    "group": "K"
+  },
+  "COD": {
+    "name": "DR Congo", "fifa_rank": 58, "elo_rating": 1560, "confederation": "CAF",
+    "market_value_eur": 80000000, "tournament_exp": 2, "top5_league_starters": 3,
+    "recent_10": {"w": 4, "d": 3, "l": 3, "gf": 12, "ga": 11, "opponent_avg_rank": 35},
+    "recent_5": {"w": 2, "d": 2, "l": 1, "gf": 6, "ga": 5, "opponent_avg_rank": 32},
+    "key_players": {
+      "striker": {"name": "Cedric Bakambu", "recent_goal_rate": 0.55, "season_avg": 0.50},
+      "midfielder": {"name": "Gael Kakuta", "recent_key_pass": 1.5, "season_avg": 1.3},
+      "goalkeeper": {"name": "Lionel Mpasi", "recent_save_pct": 0.67, "season_avg": 0.66}
+    },
+    "odds": {"outright": 75000, "group_winner": 2500, "to_advance": 400},
+    "odds_history": {"7d_ago": 75000, "30d_ago": 75000},
+    "group": "K"
+  },
+  "CRO": {
+    "name": "Croatia", "fifa_rank": 12, "elo_rating": 1821, "confederation": "UEFA",
+    "market_value_eur": 350000000, "tournament_exp": 12, "top5_league_starters": 7,
+    "recent_10": {"w": 6, "d": 2, "l": 2, "gf": 15, "ga": 8, "opponent_avg_rank": 22},
+    "recent_5": {"w": 3, "d": 1, "l": 1, "gf": 7, "ga": 4, "opponent_avg_rank": 20},
+    "key_players": {
+      "striker": {"name": "Andrej Kramaric", "recent_goal_rate": 0.50, "season_avg": 0.55},
+      "midfielder": {"name": "Luka Modric", "recent_key_pass": 3.0, "season_avg": 2.8},
+      "goalkeeper": {"name": "Dominik Livakovic", "recent_save_pct": 0.77, "season_avg": 0.76}
+    },
+    "odds": {"outright": 8000, "group_winner": 200, "to_advance": -200},
+    "odds_history": {"7d_ago": 7500, "30d_ago": 7500},
+    "group": "L"
+  },
+  "GHA": {
+    "name": "Ghana", "fifa_rank": 48, "elo_rating": 1478, "confederation": "CAF",
+    "market_value_eur": 150000000, "tournament_exp": 6, "top5_league_starters": 4,
+    "recent_10": {"w": 3, "d": 3, "l": 4, "gf": 10, "ga": 12, "opponent_avg_rank": 30},
+    "recent_5": {"w": 1, "d": 2, "l": 2, "gf": 4, "ga": 7, "opponent_avg_rank": 28},
+    "key_players": {
+      "striker": {"name": "Antoine Semenyo", "recent_goal_rate": 0.45, "season_avg": 0.50},
+      "midfielder": {"name": "Thomas Partey", "recent_key_pass": 1.8, "season_avg": 1.6},
+      "goalkeeper": {"name": "Lawrence Ati-Zigi", "recent_save_pct": 0.68, "season_avg": 0.67}
+    },
+    "odds": {"outright": 40000, "group_winner": 1000, "to_advance": 250},
+    "odds_history": {"7d_ago": 40000, "30d_ago": 40000},
+    "group": "L"
+  },
+  "PAN": {
+    "name": "Panama", "fifa_rank": 55, "elo_rating": 1699, "confederation": "CONCACAF",
+    "market_value_eur": 30000000, "tournament_exp": 2, "top5_league_starters": 1,
+    "recent_10": {"w": 3, "d": 2, "l": 5, "gf": 10, "ga": 17, "opponent_avg_rank": 38},
+    "recent_5": {"w": 1, "d": 1, "l": 3, "gf": 5, "ga": 10, "opponent_avg_rank": 35},
+    "key_players": {
+      "striker": {"name": "Adalberto Carrasquilla", "recent_goal_rate": 0.35, "season_avg": 0.38},
+      "midfielder": {"name": "Cecilio Waterman", "recent_key_pass": 1.0, "season_avg": 0.8},
+      "goalkeeper": {"name": "Luis Mejia", "recent_save_pct": 0.65, "season_avg": 0.64}
+    },
+    "odds": {"outright": 150000, "group_winner": 4000, "to_advance": 800},
+    "odds_history": {"7d_ago": 150000, "30d_ago": 150000},
+    "group": "L"
+  }
+}

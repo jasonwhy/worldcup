@@ -1,0 +1,169 @@
+{
+  "updated": "2026-06-18T00:10:48",
+  "total_played": 20,
+  "direction_correct": 15,
+  "direction_total": 20,
+  "direction_rate": 75.0,
+  "matches": [
+    {
+      "date": "6/11",
+      "home": "MEX",
+      "away": "RSA",
+      "score": "2-0",
+      "prediction_correct": "✅",
+      "note": "3红牌创纪录"
+    },
+    {
+      "date": "6/11",
+      "home": "KOR",
+      "away": "CZE",
+      "score": "2-1",
+      "prediction_correct": "✅",
+      "note": "Hwang 1球1助"
+    },
+    {
+      "date": "6/12",
+      "home": "CAN",
+      "away": "BIH",
+      "score": "1-1",
+      "prediction_correct": "✅",
+      "note": "Davies伤缺"
+    },
+    {
+      "date": "6/12",
+      "home": "USA",
+      "away": "PAR",
+      "score": "4-1",
+      "prediction_correct": "✅",
+      "note": "Balogun双响"
+    },
+    {
+      "date": "6/13",
+      "home": "HAI",
+      "away": "SCO",
+      "score": "0-1",
+      "prediction_correct": "✅",
+      "note": "Scotland 1998后首胜"
+    },
+    {
+      "date": "6/13",
+      "home": "AUS",
+      "away": "TUR",
+      "score": "2-0",
+      "prediction_correct": "✅",
+      "note": "Irankunda致敬Cahill"
+    },
+    {
+      "date": "6/13",
+      "home": "BRA",
+      "away": "MAR",
+      "score": "1-1",
+      "prediction_correct": "✅",
+      "note": "Neymar缺阵"
+    },
+    {
+      "date": "6/13",
+      "home": "QAT",
+      "away": "SUI",
+      "score": "1-1",
+      "prediction_correct": "❌",
+      "note": "VAR争议"
+    },
+    {
+      "date": "6/14",
+      "home": "GER",
+      "away": "CUW",
+      "score": "7-1",
+      "prediction_correct": "✅",
+      "note": "Curaçao先拔头筹"
+    },
+    {
+      "date": "6/14",
+      "home": "NED",
+      "away": "JPN",
+      "score": "2-2",
+      "prediction_correct": "✅",
+      "note": "Japan 88分绝平"
+    },
+    {
+      "date": "6/14",
+      "home": "CIV",
+      "away": "ECU",
+      "score": "1-0",
+      "prediction_correct": "❌",
+      "note": "Amad绝杀"
+    },
+    {
+      "date": "6/14",
+      "home": "SWE",
+      "away": "TUN",
+      "score": "5-1",
+      "prediction_correct": "✅",
+      "note": "Ayari双响"
+    },
+    {
+      "date": "6/15",
+      "home": "ESP",
+      "away": "CPV",
+      "score": "0-0",
+      "prediction_correct": "❌",
+      "note": "40岁Vozinha神扑"
+    },
+    {
+      "date": "6/15",
+      "home": "BEL",
+      "away": "EGY",
+      "score": "1-1",
+      "prediction_correct": "✅",
+      "note": ""
+    },
+    {
+      "date": "6/15",
+      "home": "KSA",
+      "away": "URU",
+      "score": "1-1",
+      "prediction_correct": "❌",
+      "note": "Araujo 80分救主"
+    },
+    {
+      "date": "6/15",
+      "home": "IRN",
+      "away": "NZL",
+      "score": "2-2",
+      "prediction_correct": "✅",
+      "note": "政治干扰下两度扳平"
+    },
+    {
+      "date": "6/16",
+      "home": "FRA",
+      "away": "SEN",
+      "score": "3-1",
+      "prediction_correct": "❌",
+      "note": "Mbappe双响+世界波"
+    },
+    {
+      "date": "6/16",
+      "home": "IRQ",
+      "away": "NOR",
+      "score": "1-4",
+      "prediction_correct": "✅",
+      "note": "Haaland首轮双响"
+    },
+    {
+      "date": "6/16",
+      "home": "ARG",
+      "away": "ALG",
+      "score": "3-0",
+      "prediction_correct": "✅",
+      "note": "Messi帽子戏法, 争议红牌未判"
+    },
+    {
+      "date": "6/17",
+      "home": "AUT",
+      "away": "JOR",
+      "score": "3-1",
+      "prediction_correct": "✅",
+      "note": "Schmid+Arnautovic点球"
+    }
+  ]
+}
