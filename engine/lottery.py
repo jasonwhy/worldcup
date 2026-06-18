@@ -75,11 +75,12 @@ MATCH_SCHEDULE = {
 }
 
 THRESHOLD = {
-    "conservative_min_delta": 15,
-    "conservative_max_cold_rank": 1,
-    "conservative_min_prob": 45,
-    "banker_min_delta": 25,        # 稳胆最小分差
-    "banker_min_prob": 50,         # 稳胆最小胜率
+    "conservative_min_delta": 10,
+    "conservative_max_cold_rank": 2,
+    "conservative_min_prob": 42,     # 从45降到42，避免仅差1%被排除
+    "conservative_min_draw_prob": 45,  # 平局方向需更高概率才纳入稳健池
+    "banker_min_delta": 25,
+    "banker_min_prob": 50,
     "exclude_confidence_text": "低",
     "exclude_min_cold_rank": 3,
 }
@@ -214,12 +215,13 @@ def classify_match(match_id: str, p: dict) -> dict:
 
     cr = cold_rank(r["cold_alert"])
 
+    draw_prob_ok = (direction == "draw" and dir_prob >= THRESHOLD.get("conservative_min_draw_prob", 45))
+    win_ok = (direction != "draw" and dir_prob >= THRESHOLD["conservative_min_prob"])
     is_conservative = (
         delta >= THRESHOLD["conservative_min_delta"]
         and cr <= THRESHOLD["conservative_max_cold_rank"]
-        and dir_prob >= THRESHOLD["conservative_min_prob"]
         and THRESHOLD["exclude_confidence_text"] not in r["confidence"]
-        and direction != "draw"
+        and (win_ok or draw_prob_ok)
     )
 
     is_banker = (
