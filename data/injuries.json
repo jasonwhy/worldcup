@@ -159,11 +159,11 @@
       "player": "Ruben Dias",
       "position": "defender",
       "role": "defense_leader",
-      "status": "out",
+      "status": "doubtful",
       "return_date": "2026-06-23",
       "irreplaceability": 1.5,
-      "reason": "训练受伤未达100%状态, Martinez确认'不冒险', 缺战刚果金首战, 目标6/23回归",
-      "date": "2026-06-17"
+      "reason": "训练中不适未达100%, 缺战刚果金, Martinez: '恢复中,不久可出场', 目标对乌兹别克复出",
+      "date": "2026-06-18"
     }
   ],
   "GHA": [
@@ -228,8 +228,18 @@
       "status": "out",
       "return_date": null,
       "irreplaceability": 0.5,
-      "reason": "训练中小腿受伤, 已由Chalobah替换; Trent Alexander-Arnold再次被无视引发争议(Maguire: '避免不必要的媒体关注')",
-      "date": "2026-06-17"
+      "reason": "小腿受伤退出, Chalobah顶替; Saka同时管理阿基里斯腱, 对克罗地亚未首发",
+      "date": "2026-06-18"
+    },
+    {
+      "player": "Bukayo Saka",
+      "position": "forward",
+      "role": "regular_starter",
+      "status": "doubtful",
+      "return_date": "2026-06-23",
+      "irreplaceability": 1.5,
+      "reason": "阿基里斯腱反复发作, 4月缺席6场, 对克罗地亚替补出场, day-to-day管理",
+      "date": "2026-06-18"
     }
   ],
   "USA": [
@@ -240,8 +250,8 @@
       "status": "doubtful",
       "return_date": "2026-06-19",
       "irreplaceability": 2.0,
-      "date": "2026-06-17",
-      "reason": "对巴拉圭半场小腿被撞换下, Pochettino称'预防性换人', Adams说'他会好的', 单独训练day-to-day"
+      "date": "2026-06-18",
+      "reason": "小腿被撞半场换下, Pochettino'预防性', 单独训练day-to-day, 预计对澳洲可出战"
     },
     {
       "player": "Patrick Agyemang",
@@ -267,11 +277,11 @@
       "player": "Alphonso Davies",
       "position": "defender",
       "role": "core_creator",
-      "status": "active",
-      "return_date": "2026-06-18",
+      "status": "doubtful",
+      "return_date": "2026-06-19",
       "irreplaceability": 2.0,
-      "date": "2026-06-17",
-      "reason": "左腿筋伤(5月初欧冠半决赛), 缺战波黑, CBC预测'几乎确定'缺战卡塔尔, 训练受限"
+      "date": "2026-06-18",
+      "reason": "左腿筋伤, 球队PR拒绝透露细节:'鉴于利害关系我不那么透明', 几乎确定缺战卡塔尔"
     },
     {
       "player": "Marcelo Flores",
@@ -281,6 +291,50 @@
       "return_date": null,
       "irreplaceability": 0.5,
       "date": "2026-06-17"
+    }
+  ],
+  "UZB": [
+    {
+      "player": "Jaloliddin Masharipov",
+      "position": "midfielder",
+      "role": "core_creator",
+      "status": "out",
+      "return_date": null,
+      "irreplaceability": 1.5,
+      "reason": "背伤退出大名单, Ruslanbek Jiyanov顶替",
+      "date": "2026-06-18"
+    },
+    {
+      "player": "Husniddin Aliqulov",
+      "position": "defender",
+      "role": "regular_starter",
+      "status": "out",
+      "return_date": null,
+      "irreplaceability": 1.0,
+      "reason": "1月ACL手术, 完全缺席本届世界杯",
+      "date": "2026-06-18"
+    },
+    {
+      "player": "Khojiakbar Alijonov",
+      "position": "defender",
+      "role": "rotation",
+      "status": "active",
+      "return_date": "2026-06-18",
+      "irreplaceability": 0.5,
+      "reason": "小腿伤势, Cannavaro将评估是否出战哥伦比亚",
+      "date": "2026-06-18"
+    }
+  ],
+  "CRO": [
+    {
+      "player": "Luka Modric",
+      "position": "midfielder",
+      "role": "core_creator",
+      "status": "active",
+      "return_date": "2026-06-17",
+      "irreplaceability": 0,
+      "reason": "颧骨骨折已愈, 对英格兰首发出战58分钟",
+      "date": "2026-06-18"
     }
   ]
 }

@@ -37,10 +37,10 @@
   },
   "POR": {
     "locker_room": {
-      "score": -3.8,
-      "reason": "Ronaldo首发争议升级: IBTimes分析称41岁CR7已成'负担', 不压迫不冲刺, 沙特联赛水平遭质疑; Braga主席攻击Martinez(5/24); 足协与CR7商业合作嫌疑",
-      "date": "2026-06-17",
-      "original_score": -4
+      "score": -5,
+      "reason": "1-1平后危机: Martinez拒绝换CR7('换最佳射手无意义'), Sutton称'尴尬', CR7仅25触球全队最少, B费明显沮丧, 10场大赛0进球",
+      "date": "2026-06-18",
+      "original_score": -5
     },
     "political": {
       "level": 0,
@@ -50,8 +50,8 @@
     },
     "player_off_field": {
       "score": -3,
-      "reason": "Ronaldo热身赛空门不进→信心危机; 但Bruno Fernandes力挺'我们都看他踢球长大'; 全员Diogo Jota腕带→团结度+2",
-      "positive_signal": "Martinez:C罗训练强度如首次参赛",
+      "reason": "CR7发X:'远未结束', 球迷两极分化; 名宿Clichy:队友潜意识受影响, Rooney:需要传中支援",
+      "date": "2026-06-18",
       "original_score": -3
     }
   },
@@ -148,9 +148,9 @@
   },
   "BRA": {
     "locker_room": {
-      "score": -3.8,
-      "reason": "Neymar小组赛全缺→球迷怒斥'身体已废''为钱入选', Ancelotti辩护'经验价值', 巴西更衣室压力巨大",
-      "date": "2026-06-17",
+      "score": -4,
+      "reason": "Neymar仅限健身训练未触球, 小组赛全缺确认, MRI有进展但'即使复出也难达100%', 球迷抗议持续",
+      "date": "2026-06-18",
       "original_score": -4
     },
     "political": {
@@ -185,9 +185,9 @@
   },
   "GHA": {
     "locker_room": {
-      "score": -0.9,
-      "reason": "Thomas Partey被拒绝进入加拿大→缺席首战vs Panama(Yahoo Sports独家)",
-      "date": "2026-06-15",
+      "score": 0,
+      "reason": "Partey签证上诉被加拿大法院驳回, 但Yirenkyi补时绝杀→士气逆转, L组出线有希望",
+      "date": "2026-06-18",
       "original_score": -1
     },
     "political": {
@@ -259,9 +259,9 @@
   },
   "ENG": {
     "locker_room": {
-      "score": -1.9,
-      "reason": "Trent Alexander-Arnold被排除名单→Carragher称Tuchel'优先和谐>实力', Maguire透露'避免媒体干扰'; Chalobah顶替Livramento入选引发争议",
-      "date": "2026-06-17",
+      "score": -3,
+      "reason": "Saka阿基里斯腱反复发作+被盗装备+龙卷风; Tuchel中场逆转; 贝林/Rashford替补救主",
+      "date": "2026-06-18",
       "original_score": -2
     },
     "political": {
@@ -278,9 +278,9 @@
   },
   "CRO": {
     "locker_room": {
-      "score": -1,
-      "reason": "Modric第5届世界杯, 核心老化问题突出; 对英格兰开幕战被普遍看低",
-      "date": "2026-06-17",
+      "score": -2,
+      "reason": "2-4负英格兰暴露老化, Modric 58分被换, Dalic:'无犯错空间', 黄金一代末路",
+      "date": "2026-06-18",
       "original_score": -1
     },
     "political": {
@@ -329,6 +329,30 @@
       "score": 1,
       "reason": "Mbappe金靴并列领跑, 状态火热",
       "original_score": 1
+    }
+  },
+  "COD": {
+    "locker_room": {
+      "score": 3,
+      "reason": "52年归来即创历史: 首球+首分+首平, 逼平葡萄牙震惊世界, 球队士气爆棚",
+      "date": "2026-06-18",
+      "original_score": 3
+    },
+    "political": {
+      "level": 0,
+      "score": 0,
+      "reason": ""
+    },
+    "player_off_field": {
+      "score": 2,
+      "reason": "Wissa成为国家英雄, Instagram暴涨, 52年等待终有回报"
+    }
+  },
+  "UEA": {
+    "political": {
+      "level": 2,
+      "score": -2,
+      "reason": "UEFA主席切费林称48队赛制'多场完全无趣', 13国联合抗议, 足球政治矛盾激化"
     }
   }
 }
