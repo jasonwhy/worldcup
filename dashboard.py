@@ -808,12 +808,15 @@ function showPanel(id){{
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   event.target.classList.add('active');
+  localStorage.setItem('activeTab', id);
+  localStorage.setItem('activeSubTab', '');
 }}
 function showSub(id,btn){{
   document.querySelectorAll('.sub-panel').forEach(p=>p.style.display='none');
   document.querySelectorAll('.sub-tab').forEach(b=>b.classList.remove('active'));
   document.getElementById(id).style.display='block';
   btn.classList.add('active');
+  localStorage.setItem('activeSubTab', id);
 }}
 function showBetDate(id,btn){{
   document.querySelectorAll('.bet-date-panel').forEach(p=>p.style.display='none');
@@ -821,7 +824,28 @@ function showBetDate(id,btn){{
   document.getElementById(id).style.display='block';
   btn.classList.add('active');
 }}
-// 智能刷新: 有进行中比赛时30秒, 否则60秒
+// 恢复上次Tab
+(function(){{
+  var savedTab = localStorage.getItem('activeTab');
+  if (savedTab && document.getElementById(savedTab)) {{
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById(savedTab).classList.add('active');
+    var btns = document.querySelectorAll('.tab-btn');
+    for (var i=0; i<btns.length; i++) {{
+      if (btns[i].getAttribute('onclick') && btns[i].getAttribute('onclick').indexOf(savedTab)>=0) {{
+        btns[i].classList.add('active');
+      }}
+    }}
+  }}
+  var savedSub = localStorage.getItem('activeSubTab');
+  if (savedSub && document.getElementById(savedSub)) {{
+    document.querySelectorAll('.sub-panel').forEach(p=>p.style.display='none');
+    document.querySelectorAll('.sub-tab').forEach(b=>b.classList.remove('active'));
+    document.getElementById(savedSub).style.display='block';
+  }}
+}})();
+// 智能刷新
 var hasLive = document.querySelectorAll('.live-now').length > 0;
 var interval = hasLive ? 30000 : 60000;
 setTimeout(function(){{location.reload()}}, interval);
