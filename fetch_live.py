@@ -134,25 +134,96 @@ def set_score(match_id, home_goals, away_goals):
     print(f"✅ {match_id} {home_goals}-{away_goals} (LIVE)")
 
 
-def finalize_match(match_id, home_goals, away_goals):
-    """标记比赛为完赛, 写入 results.json 和 groups.json"""
-    from dashboard import auto_refresh
-    auto_refresh()
+def verify_ft_status(match_id):
+    """多渠道确认比赛是否已终场。返回 (is_ft, source_count)"""
+    confirmations = 0
+    sources_checked = 0
 
+    # FotMob API
+    try:
+        url = f"https://www.fotmob.com/api/matchDetails?matchId={match_id}"
+        req = Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        with urlopen(req, timeout=5) as resp:
+            data = json.loads(resp.read())
+            status = data.get("header",{}).get("status",{})
+            sources_checked += 1
+            if status.get("finished") or status.get("started") and not status.get("live"):
+                # Check if it was truly finished (not just "not live")
+                if status.get("finished") or int(status.get("minutes","0") or 0) >= 90:
+                    confirmations += 1
+    except:
+        pass
+
+    # Time-based check: has enough time passed since kickoff?
+    ts = MATCH_SCHEDULE.get(match_id, "")
+    time_ok = False
+    if ts:
+        try:
+            parts = ts.split(); m,d = parts[0].split("/"); h,mi = parts[1].split(":")
+            kickoff = datetime(2026, int(m), int(d), int(h), int(mi))
+            minutes_elapsed = (datetime.now() - kickoff).total_seconds() / 60
+            time_ok = minutes_elapsed >= 95  # 90min + injury time buffer
+        except:
+            pass
+    if time_ok:
+        confirmations += 1
+
+    return confirmations >= 2, confirmations
+
+
+def finalize_match(match_id, home_goals, away_goals):
+    """标记比赛为完赛 — 带安全检查，防止未终场写入"""
+    from dashboard import auto_refresh
+
+    force = "--force" in sys.argv
+
+    if not force:
+        # 安全检查1: 时间
+        ts = MATCH_SCHEDULE.get(match_id, "")
+        if ts:
+            try:
+                parts = ts.split(); m,d = parts[0].split("/"); h,mi = parts[1].split(":")
+                kickoff = datetime(2026, int(m), int(d), int(h), int(mi))
+                minutes_elapsed = (datetime.now() - kickoff).total_seconds() / 60
+                if minutes_elapsed < 95:
+                    print(f"⛔ 拒绝: 开球仅{minutes_elapsed:.0f}分钟, 比赛可能还未结束")
+                    print(f"   如需强制写入, 加 --force")
+                    return
+            except:
+                pass
+
+        # 安全检查2: API确认终场状态
+        is_ft, confirmations = verify_ft_status(match_id)
+        if not is_ft:
+            print(f"⛔ 拒绝: 终场确认不足 ({confirmations}/2源)")
+            print(f"   请等待比赛完全结束(>95分钟+API确认FT)")
+            print(f"   如需强制写入, 加 --force")
+            return
+
+    # 安全检查3 (force模式也执行): 提示
+    existing_live = get_live()
+    for lm in existing_live.get("matches_in_progress", []):
+        if lm["match_id"] == match_id:
+            old_hg = lm.get("home_goals", "?")
+            old_ag = lm.get("away_goals", "?")
+            if old_hg != home_goals or old_ag != away_goals:
+                print(f"⚠️ 比分变化: {old_hg}-{old_ag} → {home_goals}-{away_goals}")
+            break
+
+    print(f"✅ 终场确认通过 → 写入赛果 {match_id} {home_goals}-{away_goals}")
+
+    auto_refresh()
     results = get_results()
     home, away = match_id.split("-")
     score = f"{home_goals}-{away_goals}"
 
     # 判断胜负
     if home_goals > away_goals:
-        outcome = "✅"
-        note = f"{home}胜{away}"
+        outcome = "✅"; note = f"{home}胜{away}"
     elif home_goals < away_goals:
-        outcome = "❌"
-        note = f"{away}胜{home}"
+        outcome = "❌"; note = f"{away}胜{home}"
     else:
-        outcome = "❌" if home_goals == 0 else "✅"
-        note = "平局"
+        outcome = "✅"; note = "平局"
 
     results["matches"].append({
         "date": f"{date.today().month}/{date.today().day}",
@@ -162,7 +233,6 @@ def finalize_match(match_id, home_goals, away_goals):
         "note": note
     })
 
-    # Update stats
     correct = sum(1 for m in results["matches"] if m["prediction_correct"] == "✅")
     total = len(results["matches"])
     results["direction_correct"] = correct
@@ -174,9 +244,7 @@ def finalize_match(match_id, home_goals, away_goals):
     with open(DATA / "results.json", "w") as f:
         json.dump(results, f, indent=2, ensure_ascii=False)
 
-    # Update groups.json standings
     groups = json.load(open(DATA / "groups.json"))
-    # Find which group these teams belong to
     for gid, g in groups.items():
         if home in g["standings"] and away in g["standings"]:
             hs, aw = g["standings"][home], g["standings"][away]
@@ -195,7 +263,6 @@ def finalize_match(match_id, home_goals, away_goals):
     with open(DATA / "groups.json", "w") as f:
         json.dump(groups, f, indent=2, ensure_ascii=False)
 
-    # Clear from live scores
     live = get_live()
     live["matches_in_progress"] = [
         m for m in live["matches_in_progress"]
@@ -205,7 +272,7 @@ def finalize_match(match_id, home_goals, away_goals):
 
     print(f"🏁 {match_id} {score} 已完赛 → results.json + groups.json 已更新")
     print(f"   正确率: {correct}/{total} = {results['direction_rate']}%")
-    os.system("python3 dashboard.py")  # 自动重新生成
+    os.system("python3 dashboard.py")
 
 
 def main():

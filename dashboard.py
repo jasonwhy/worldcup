@@ -921,11 +921,13 @@ if WATCH_MODE:
             except: pass
 
     def _is_match_expired(match_id):
+        """比赛结束超过30分钟 → 清理live条目(但不自动写results.json)"""
         ts = MATCH_SCHEDULE.get(match_id, "")
         try:
             parts = ts.split(); m,d = parts[0].split("/"); h,mi = parts[1].split(":")
             kickoff = datetime(2026,int(m),int(d),int(h),int(mi))
-            return datetime.now() > kickoff.replace(hour=kickoff.hour+4)
+            # 开球后4.5小时(270分钟) → 肯定结束了, 从live中清除
+            return datetime.now() > kickoff.replace(hour=kickoff.hour+4, minute=kickoff.minute+30)
         except: return True
 
     if SERVE_MODE:
