@@ -225,13 +225,32 @@ def finalize_match(match_id, home_goals, away_goals):
     else:
         outcome = "✅"; note = "平局"
 
-    results["matches"].append({
+    # 检查是否已存在（更新而非新增）
+    existing_idx = None
+    for i, m in enumerate(results["matches"]):
+        if m["home"] == home and m["away"] == away:
+            existing_idx = i
+            break
+
+    now_ts = datetime.now().strftime("%Y-%m-%d %H:%M")
+    entry = {
         "date": f"{date.today().month}/{date.today().day}",
         "home": home, "away": away,
         "score": score,
         "prediction_correct": outcome,
         "note": note
-    })
+    }
+
+    if existing_idx is not None:
+        old = results["matches"][existing_idx]
+        change_note = f"[{now_ts} 更新] 原: {old['score']}, 旧判: {old.get('prediction_correct','?')}"
+        entry["note"] = f"{note} {change_note}"
+        entry["changed_at"] = now_ts
+        entry["original_score"] = old["score"]
+        results["matches"][existing_idx] = entry
+        print(f"⚠️ 覆盖已有赛果: {match_id} {old['score']} → {score}")
+    else:
+        results["matches"].append(entry)
 
     correct = sum(1 for m in results["matches"] if m["prediction_correct"] == "✅")
     total = len(results["matches"])

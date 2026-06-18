@@ -534,9 +534,11 @@ def format_lottery(plan: dict) -> str:
         return msg
 
     L = []
+    now_ts = datetime.now().strftime("%Y-%m-%d %H:%M")
     L.append("=" * 70)
     L.append("  竞彩足球 2026世界杯 自动投注方案 v3.1")
-    L.append(f"  引擎: {plan['generated_by']}  |  预算: {plan['total_budget']}元")
+    L.append(f"  生成时间: {now_ts}  |  预算: {plan['total_budget']}元")
+    L.append(f"  引擎: {plan['generated_by']}")
     L.append("=" * 70)
 
     # Deadline skipped info
@@ -633,5 +635,5 @@ def format_lottery(plan: dict) -> str:
         L.append(f"\n⚠️ 风险提示:")
         for n in plan["risk_notes"]: L.append(f"  • {n}")
 
-    L.append(f"\n📐 模型自动输出 v3.1 | 截止检查+动态SP+不推荐 | 竞彩90分钟赛果为准")
+    L.append(f"\n📐 模型自动输出 v3.1 ({now_ts}) | 截止检查+动态SP+不推荐 | 竞彩90分钟赛果为准")
     return "\n".join(L)
