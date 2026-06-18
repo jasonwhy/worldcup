@@ -259,8 +259,8 @@
   },
   "ENG": {
     "locker_room": {
-      "score": -3,
-      "reason": "Saka阿基里斯腱反复发作+被盗装备+龙卷风; Tuchel中场逆转; 贝林/Rashford替补救主",
+      "score": 1,
+      "reason": "Kane追平Lineker纪录+Tuchel中场逆转+贝林Rashford替补建功, 英格兰士气高涨",
       "date": "2026-06-18",
       "original_score": -2
     },
@@ -353,6 +353,57 @@
       "level": 2,
       "score": -2,
       "reason": "UEFA主席切费林称48队赛制'多场完全无趣', 13国联合抗议, 足球政治矛盾激化"
+    }
+  },
+  "JPN": {
+    "locker_room": {
+      "score": -3,
+      "reason": "伤病潮爆发: Mitoma+Minamino+Endo已退+久保最新倒下, 对突尼斯几乎无人可用, 森保一压力巨大",
+      "date": "2026-06-18",
+      "original_score": -3
+    },
+    "political": {
+      "level": 0,
+      "score": 0,
+      "reason": ""
+    },
+    "player_off_field": {
+      "score": 0,
+      "reason": ""
+    }
+  },
+  "COL": {
+    "locker_room": {
+      "score": 2,
+      "reason": "3-1强势开门红, Diaz传射成MVP, Campaz替补建功, 更衣室氛围极佳, 目标小组第一",
+      "date": "2026-06-18",
+      "original_score": 2
+    },
+    "political": {
+      "level": 0,
+      "score": 0,
+      "reason": ""
+    },
+    "player_off_field": {
+      "score": 1,
+      "reason": "Diaz回应金球奖呼声:'专注世界杯', 全队高海拔Azteca适应良好"
+    }
+  },
+  "UZB": {
+    "locker_room": {
+      "score": 0,
+      "reason": "虽1-3负哥伦比亚但Fayzullaev历史首球是巨大里程碑, Cannavaro: '我们证明了自己属于这里'",
+      "date": "2026-06-18",
+      "original_score": 0
+    },
+    "political": {
+      "level": 0,
+      "score": 0,
+      "reason": ""
+    },
+    "player_off_field": {
+      "score": 1,
+      "reason": "Fayzullaev成为国家英雄, 乌兹别克社交媒体爆发, 历史性亮相获全球尊重"
     }
   }
 }

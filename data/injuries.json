@@ -112,6 +112,16 @@
       "return_date": null,
       "irreplaceability": 1.0,
       "date": "2026-06-17"
+    },
+    {
+      "player": "Takefusa Kubo",
+      "position": "forward",
+      "role": "core_creator",
+      "status": "out",
+      "return_date": "2026-06-28",
+      "irreplaceability": 2.0,
+      "reason": "左膝受伤MRI确认, 对荷兰后坐轮椅离场, 几乎确定缺席对突尼斯, 最坏缺3周",
+      "date": "2026-06-18"
     }
   ],
   "GER": [
@@ -186,6 +196,16 @@
       "irreplaceability": 2.0,
       "date": "2026-06-17",
       "reason": "股四头肌伤缺阵整个世界杯, Ghana进攻创造力大减"
+    },
+    {
+      "player": "Lawrence Ati-Zigi",
+      "position": "goalkeeper",
+      "role": "regular_starter",
+      "status": "doubtful",
+      "return_date": "2026-06-23",
+      "irreplaceability": 1.0,
+      "reason": "对巴拿马上半场两次碰撞后换下, Queiroz将评估, 状态待定",
+      "date": "2026-06-18"
     }
   ],
   "SCO": [
@@ -334,6 +354,18 @@
       "return_date": "2026-06-17",
       "irreplaceability": 0,
       "reason": "颧骨骨折已愈, 对英格兰首发出战58分钟",
+      "date": "2026-06-18"
+    }
+  ],
+  "ARG": [
+    {
+      "player": "Leonardo Balerdi",
+      "position": "defender",
+      "role": "regular_starter",
+      "status": "out",
+      "return_date": null,
+      "irreplaceability": 1.0,
+      "reason": "伤退,Marcos Senesi紧急入替",
       "date": "2026-06-18"
     }
   ]
