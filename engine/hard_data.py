@@ -134,6 +134,58 @@ def injury_penalty(team_id: str) -> float:
     return min(10, penalty)
 
 
+def tournament_momentum(team_id: str) -> float:
+    """2.4 赛事动量 — 首轮正赛表现相对预期的偏差 (-5~+5)"""
+    results = load_json("results.json")
+    teams = load_json("teams.json")
+
+    # Find this team's R1 result
+    gf = ga = 0
+    found = False
+    for m in results["matches"]:
+        if m["home"] == team_id:
+            gf, ga = map(int, m["score"].split("-"))
+            found = True; break
+        elif m["away"] == team_id:
+            ga, gf = map(int, m["score"].split("-"))
+            found = True; break
+
+    if not found:
+        return 0.0  # 还没踢首轮
+
+    gd = gf - ga
+    team = teams.get(team_id, {})
+    fifa_rank = team.get("fifa_rank", 48)
+
+    # 评分逻辑: 综合净胜球 + 进球数 + 对手强度
+    bonus = 0.0
+
+    # 大胜 (>2球差) 说明状态远超预期 → +3到+5
+    if gd >= 3:
+        bonus = min(5, 3 + (gd - 3) * 0.5)
+    # 净胜1-2球 → +1到+3
+    elif gd >= 1:
+        bonus = 1 + gd * 0.5
+    # 平局: 强队平弱队→扣分, 弱队平强队→加分
+    elif gd == 0:
+        bonus = -1.5 if fifa_rank <= 15 else (1.5 if fifa_rank >= 40 else 0)
+    # 小负 (≤1球) → 轻微扣分
+    elif gd >= -1:
+        bonus = -1
+    # 大败 → -3到-5
+    else:
+        bonus = max(-5, -3 + (gd + 3) * 0.5)
+
+    # 进球效率额外加成: 进3+球 → +0.5
+    if gf >= 3:
+        bonus += 0.5
+    # 零封 → +0.5
+    if ga == 0:
+        bonus += 0.5
+
+    return round(min(5, max(-5, bonus)), 1)
+
+
 def hard_data_score(team_id: str, opponent_id: str = None) -> dict:
     """硬数据层总分 (0-100), opponent_id传入时计算对位加成"""
     teams = load_json("teams.json")
@@ -144,6 +196,7 @@ def hard_data_score(team_id: str, opponent_id: str = None) -> dict:
     base = base_strength(team)
     form = recent_form(team)
     injury = injury_penalty(team_id)
+    momentum = tournament_momentum(team_id)  # R1正赛动量
 
     # 球员+战术对位修正
     matchup_bonus = 0
@@ -155,12 +208,13 @@ def hard_data_score(team_id: str, opponent_id: str = None) -> dict:
         except Exception:
             pass
 
-    # 归一化每项到0-100, 加权: 基础40% + 状态40% + 伤病20%
-    # 伤病转化为扣分后的分数: 满分100 - injury*10
+    # 归一化: 基础+状态+伤病+赛事动量+对位
     injury_score = max(0, 100 - injury * 10)
+    momentum_score = 50 + momentum * 10  # 动量-5~+5 → 0~100
 
-    # 基础:40% 状态:35% 伤病:15% 对位:10%
-    final = base * 0.40 + form * 0.35 + injury_score * 0.15 + (50 + matchup_bonus * 5) * 0.10
+    # 基础:40% 状态:35% 伤病:12% 动量:5% 对位:8%
+    final = (base * 0.40 + form * 0.35 + injury_score * 0.12 +
+            momentum_score * 0.05 + (50 + matchup_bonus * 5) * 0.08)
     return {
         "score": round(final, 1),
         "detail": {
@@ -168,6 +222,7 @@ def hard_data_score(team_id: str, opponent_id: str = None) -> dict:
             "recent_form": round(form, 1),
             "injury_penalty": round(injury, 1),
             "injury_score": round(injury_score, 1),
+            "tournament_momentum": momentum,
             "matchup_bonus": round(matchup_bonus, 1)
         }
     }
