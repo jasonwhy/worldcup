@@ -1,152 +1,777 @@
 {
-  "FRA": {"top_players":[
-    {"name":"Kylian Mbappe","pos":"FW","rating":94,"xg90":0.95,"key_attr":"pace,finishing","note":"12场14球, ESPN"},
-    {"name":"Ousmane Dembele","pos":"FW","rating":89,"xg90":0.55,"key_attr":"dribbling,creativity","note":"金球奖得主"},
-    {"name":"William Saliba","pos":"DF","rating":88,"key_attr":"aerial,tackling","note":"防线核心, 背伤疑虑, Independent"}
-  ]},
-  "ARG": {"top_players":[
-    {"name":"Lionel Messi","pos":"FW","rating":93,"xg90":0.70,"key_attr":"playmaking,finishing","note":"第6届200场, FIFA"},
-    {"name":"Julian Alvarez","pos":"FW","rating":87,"xg90":0.65,"key_attr":"movement,pressing","note":"2022冠军核心"},
-    {"name":"Emiliano Martinez","pos":"GK","rating":86,"key_attr":"penalty_save","note":"点球专家"}
-  ]},
-  "ENG": {"top_players":[
-    {"name":"Harry Kane","pos":"FW","rating":91,"xg90":0.90,"key_attr":"finishing,aerial","note":"51场61球, BBC"},
-    {"name":"Jude Bellingham","pos":"MF","rating":90,"key_attr":"box_to_box,creativity","note":"皇马核心, ESPN"},
-    {"name":"Bukayo Saka","pos":"FW","rating":88,"xg90":0.45,"key_attr":"dribbling,pace","note":"跟腱疑虑, Independent"}
-  ]},
-  "BRA": {"top_players":[
-    {"name":"Vinicius Jr","pos":"FW","rating":90,"xg90":0.60,"key_attr":"dribbling,pace","note":"核心, ESPN"},
-    {"name":"Neymar","pos":"FW","rating":87,"xg90":0.55,"key_attr":"playmaking","note":"23年后未出场, 小腿伤, BBC"},
-    {"name":"Alisson","pos":"GK","rating":87,"key_attr":"shot_stopping","note":"定海神针"}
-  ]},
-  "POR": {"top_players":[
-    {"name":"Cristiano Ronaldo","pos":"FW","rating":85,"xg90":0.60,"key_attr":"finishing,aerial,leadership","note":"41岁第6届, FIFA"},
-    {"name":"Bruno Fernandes","pos":"MF","rating":89,"key_attr":"creativity,long_shot","note":"状态火热"},
-    {"name":"Ruben Dias","pos":"DF","rating":88,"key_attr":"tackling,positioning","note":"首轮伤缺, Ge.Globo 6/16"}
-  ]},
-  "GER": {"top_players":[
-    {"name":"Jamal Musiala","pos":"MF","rating":89,"key_attr":"dribbling,creativity","note":"进攻引擎, ESPN"},
-    {"name":"Kai Havertz","pos":"FW","rating":85,"xg90":0.50,"key_attr":"movement,finishing","note":"首轮2球, Fox金靴"},
-    {"name":"Joshua Kimmich","pos":"MF","rating":87,"key_attr":"passing,leadership"}
-  ]},
-  "ESP": {"top_players":[
-    {"name":"Pedri","pos":"MF","rating":89,"key_attr":"passing,vision","note":"控制核心, ESPN"},
-    {"name":"Lamine Yamal","pos":"FW","rating":90,"xg90":0.50,"key_attr":"dribbling,creativity","note":"18岁hamstring疑虑, Independent"},
-    {"name":"Unai Simon","pos":"GK","rating":85,"key_attr":"shot_stopping","note":"Euro2024冠军"}
-  ]},
-  "NED": {"top_players":[
-    {"name":"Virgil van Dijk","pos":"DF","rating":89,"key_attr":"aerial,tackling,leadership","note":"批评补水暂停, ESPN"},
-    {"name":"Cody Gakpo","pos":"FW","rating":85,"xg90":0.50,"key_attr":"movement,finishing"},
-    {"name":"Frenkie de Jong","pos":"MF","rating":87,"key_attr":"passing,ball_carry"}
-  ]},
-  "NOR": {"top_players":[
-    {"name":"Erling Haaland","pos":"FW","rating":93,"xg90":1.10,"key_attr":"finishing,strength","note":"55球/50场, 首轮双响, FIFA"},
-    {"name":"Martin Odegaard","pos":"MF","rating":89,"key_attr":"creativity,passing","note":"3.8关键传球/场, ESPN"}
-  ]},
-  "BEL": {"top_players":[
-    {"name":"Kevin De Bruyne","pos":"MF","rating":90,"key_attr":"passing,vision,long_shot","note":"赛季3.5关键传球/场, Fox"},
-    {"name":"Romelu Lukaku","pos":"FW","rating":85,"xg90":0.70,"key_attr":"strength,finishing"}
-  ]},
-  "MAR": {"top_players":[
-    {"name":"Achraf Hakimi","pos":"DF","rating":87,"key_attr":"pace,crossing","note":"2022四强, ESPN"},
-    {"name":"Yassine Bounou","pos":"GK","rating":86,"key_attr":"shot_stopping,reflexes"}
-  ]},
-  "CRO": {"top_players":[
-    {"name":"Luka Modric","pos":"MF","rating":88,"key_attr":"passing,vision,experience","note":"第5届, FIFA"},
-    {"name":"Josko Gvardiol","pos":"DF","rating":86,"key_attr":"tackling,ball_carry"}
-  ]},
-  "URU": {"top_players":[
-    {"name":"Federico Valverde","pos":"MF","rating":88,"key_attr":"box_to_box,long_shot","note":"皇马核心, ESPN"},
-    {"name":"Darwin Nunez","pos":"FW","rating":83,"xg90":0.50,"key_attr":"strength,chaos"},
-    {"name":"Ronald Araujo","pos":"DF","rating":86,"key_attr":"tackling,aerial","note":"伤缺, ActionNetwork"}
-  ]},
-  "USA": {"top_players":[
-    {"name":"Christian Pulisic","pos":"FW","rating":86,"xg90":0.45,"key_attr":"dribbling,pace","note":"小腿伤, Independent"},
-    {"name":"Folarin Balogun","pos":"FW","rating":84,"xg90":0.65,"key_attr":"finishing,movement","note":"首轮双响, Fox金靴"}
-  ]},
-  "JPN": {"top_players":[
-    {"name":"Takefusa Kubo","pos":"MF","rating":84,"key_attr":"dribbling,creativity","note":"技术核心, ESPN"},
-    {"name":"Koki Ogawa","pos":"FW","rating":80,"xg90":0.45,"key_attr":"finishing,aerial","note":"88分钟绝平荷兰, ESPN"}
-  ]},
-  "COL": {"top_players":[
-    {"name":"Luis Diaz","pos":"FW","rating":88,"xg90":0.55,"key_attr":"dribbling,pace","note":"利物浦核心, Fox"},
-    {"name":"James Rodriguez","pos":"MF","rating":82,"key_attr":"playmaking,long_shot","note":"无俱乐部但仍是核心, Fox"}
-  ]},
-  "MEX": {"top_players":[
-    {"name":"Raul Jimenez","pos":"FW","rating":82,"xg90":0.50,"key_attr":"finishing,aerial","note":"首轮进球, FIFA"},
-    {"name":"Edson Alvarez","pos":"MF","rating":84,"key_attr":"tackling,passing","note":"中场屏障, Independent"}
-  ]},
-  "SEN": {"top_players":[
-    {"name":"Sadio Mane","pos":"FW","rating":86,"xg90":0.50,"key_attr":"pace,dribbling","note":"非洲冠军, FIFA"},
-    {"name":"Kalidou Koulibaly","pos":"DF","rating":85,"key_attr":"tackling,aerial","note":"防线领袖, FIFA"}
-  ]},
-  "KOR": {"top_players":[
-    {"name":"Son Heung-min","pos":"FW","rating":87,"xg90":0.55,"key_attr":"finishing,pace","note":"亚洲头号, ESPN"},
-    {"name":"Hwang In-beom","pos":"MF","rating":82,"key_attr":"creativity","note":"首轮1球1助, FIFA"}
-  ]},
-  "EGY": {"top_players":[
-    {"name":"Mohamed Salah","pos":"FW","rating":91,"xg90":0.75,"key_attr":"finishing,dribbling,pace","note":"利物浦传奇, ESPN"}
-  ]},
-  "AUS": {"top_players":[
-    {"name":"Nestory Irankunda","pos":"FW","rating":80,"xg90":0.45,"key_attr":"pace,power","note":"20岁首球致敬Cahill, SportingNews"},
-    {"name":"Jackson Irvine","pos":"MF","rating":78,"key_attr":"work_rate,aerial","note":"St Pauli队长, ESPN"},
-    {"name":"Patrick Beach","pos":"GK","rating":76,"key_attr":"shot_stopping","note":"首轮8次扑救, SportingNews"}
-  ]},
-  "SWE": {"top_players":[
-    {"name":"Viktor Gyokeres","pos":"FW","rating":88,"xg90":0.80,"key_attr":"finishing,strength","note":"Arsenal, Fanorate"},
-    {"name":"Alexander Isak","pos":"FW","rating":87,"xg90":0.60,"key_attr":"pace,dribbling","note":"Liverpool, FIFA"},
-    {"name":"Victor Lindelof","pos":"DF","rating":82,"key_attr":"leadership,aerial","note":"队长75+cap, Fanorate"}
-  ]},
-  "CAN": {"top_players":[
-    {"name":"Alphonso Davies","pos":"DF","rating":88,"key_attr":"pace,crossing","note":"队长hamstring伤疑, BBC"},
-    {"name":"Jonathan David","pos":"FW","rating":85,"xg90":0.55,"key_attr":"finishing,movement","note":"Juventus, BBC"},
-    {"name":"Tajon Buchanan","pos":"MF","rating":81,"key_attr":"dribbling,pace","note":"Villarreal, BBC"}
-  ]},
-  "SUI": {"top_players":[
-    {"name":"Granit Xhaka","pos":"MF","rating":86,"key_attr":"passing,leadership","note":"第4届, FIFA"},
-    {"name":"Manuel Akanji","pos":"DF","rating":85,"key_attr":"tackling,aerial","note":"FIFA"},
-    {"name":"Gregor Kobel","pos":"GK","rating":85,"key_attr":"shot_stopping","note":"FIFA"}
-  ]},
-  "TUR": {"top_players":[
-    {"name":"Arda Guler","pos":"MF","rating":86,"key_attr":"creativity,technique","note":"Real Madrid 21岁, FIFA"},
-    {"name":"Kenan Yildiz","pos":"FW","rating":84,"xg90":0.45,"key_attr":"dribbling,pace","note":"Juventus, FIFA"}
-  ]},
-  "GHA": {"top_players":[
-    {"name":"Thomas Partey","pos":"MF","rating":84,"key_attr":"physicality,passing","note":"被拒入加拿大, Yahoo/FIFA"},
-    {"name":"Antoine Semenyo","pos":"FW","rating":82,"xg90":0.40,"key_attr":"pace,strength","note":"Manchester City, Sportstar"},
-    {"name":"Inaki Williams","pos":"FW","rating":81,"key_attr":"pace,work_rate","note":"Sportstar"}
-  ]},
-  "KSA": {"top_players":[
-    {"name":"Salem Al-Dawsari","pos":"MF","rating":80,"key_attr":"creativity,finishing","note":"2022爆冷英雄, WorldSoccerTalk"},
-    {"name":"Mohammed Al-Owais","pos":"GK","rating":76,"key_attr":"reflexes","note":"对乌拉圭多次扑救, WorldSoccerTalk"}
-  ]},
-  "CZE": {"top_players":[
-    {"name":"Tomas Soucek","pos":"MF","rating":84,"key_attr":"aerial,work_rate","note":"West Ham队长, FIFA"},
-    {"name":"Adam Hlozek","pos":"FW","rating":80,"xg90":0.40,"key_attr":"finishing,technique","note":"Hoffenheim伤愈, FIFA"}
-  ]},
-  "SCO": {"top_players":[
-    {"name":"Scott McTominay","pos":"MF","rating":82,"key_attr":"box_to_box,aerial","note":"Napoli, ESPN"},
-    {"name":"John McGinn","pos":"MF","rating":81,"key_attr":"creativity,work_rate","note":"首轮制胜球, ESPN"},
-    {"name":"Craig Gordon","pos":"GK","rating":78,"key_attr":"experience","note":"43岁, 1月后未登场, FIFA"}
-  ]},
-  "PAR": {"top_players":[
-    {"name":"Miguel Almiron","pos":"MF","rating":81,"key_attr":"pace,dribbling","note":"Atlanta United, BBC"},
-    {"name":"Diego Gomez","pos":"MF","rating":78,"key_attr":"tackling,energy","note":"MLS, BBC"}
-  ]},
-  "ECU": {"top_players":[
-    {"name":"Moises Caicedo","pos":"MF","rating":86,"key_attr":"tackling,ball_carry","note":"Chelsea, ESPN"},
-    {"name":"Piero Hincapie","pos":"DF","rating":84,"key_attr":"tackling,pace","note":"ESPN"}
-  ]},
-  "CIV": {"top_players":[
-    {"name":"Amad Diallo","pos":"FW","rating":83,"xg90":0.45,"key_attr":"dribbling,finishing","note":"首轮绝杀, ESPN"},
-    {"name":"Wilfried Zaha","pos":"FW","rating":82,"key_attr":"dribbling,pace","note":"Charlotte FC, BBC"}
-  ]},
-  "ALG": {"top_players":[
-    {"name":"Riyad Mahrez","pos":"FW","rating":84,"xg90":0.45,"key_attr":"dribbling,creativity","note":"队长, BBC"},
-    {"name":"Luca Zidane","pos":"GK","rating":76,"key_attr":"shot_stopping","note":"Zidane之子, BBC"}
-  ]},
-  "CPV": {"top_players":[
-    {"name":"Vozinha","pos":"GK","rating":78,"key_attr":"shot_stopping,reflexes","note":"40岁对西班牙神扑, ESPN"},
-    {"name":"Ryan Mendes","pos":"FW","rating":74,"key_attr":"pace","note":"队长, FIFA"}
-  ]}
+  "FRA": {
+    "top_players": [
+      {
+        "name": "Kylian Mbappe",
+        "pos": "FW",
+        "rating": 94,
+        "xg90": 0.95,
+        "key_attr": "pace,finishing",
+        "note": "12场14球, ESPN"
+      },
+      {
+        "name": "Ousmane Dembele",
+        "pos": "FW",
+        "rating": 89,
+        "xg90": 0.55,
+        "key_attr": "dribbling,creativity",
+        "note": "金球奖得主"
+      },
+      {
+        "name": "William Saliba",
+        "pos": "DF",
+        "rating": 88,
+        "key_attr": "aerial,tackling",
+        "note": "防线核心, 背伤疑虑, Independent"
+      }
+    ]
+  },
+  "ARG": {
+    "top_players": [
+      {
+        "name": "Lionel Messi",
+        "pos": "FW",
+        "rating": 93,
+        "xg90": 0.7,
+        "key_attr": "playmaking,finishing",
+        "note": "第6届200场, FIFA"
+      },
+      {
+        "name": "Julian Alvarez",
+        "pos": "FW",
+        "rating": 87,
+        "xg90": 0.65,
+        "key_attr": "movement,pressing",
+        "note": "2022冠军核心"
+      },
+      {
+        "name": "Emiliano Martinez",
+        "pos": "GK",
+        "rating": 86,
+        "key_attr": "penalty_save",
+        "note": "点球专家"
+      }
+    ]
+  },
+  "ENG": {
+    "top_players": [
+      {
+        "name": "Harry Kane",
+        "pos": "FW",
+        "rating": 91,
+        "xg90": 0.9,
+        "key_attr": "finishing,aerial",
+        "note": "51场61球, BBC"
+      },
+      {
+        "name": "Jude Bellingham",
+        "pos": "MF",
+        "rating": 90,
+        "key_attr": "box_to_box,creativity",
+        "note": "皇马核心, ESPN"
+      },
+      {
+        "name": "Bukayo Saka",
+        "pos": "FW",
+        "rating": 88,
+        "xg90": 0.45,
+        "key_attr": "dribbling,pace",
+        "note": "跟腱疑虑, Independent"
+      }
+    ]
+  },
+  "BRA": {
+    "top_players": [
+      {
+        "name": "Vinicius Jr",
+        "pos": "FW",
+        "rating": 90,
+        "xg90": 0.6,
+        "key_attr": "dribbling,pace",
+        "note": "核心, ESPN"
+      },
+      {
+        "name": "Neymar",
+        "pos": "FW",
+        "rating": 87,
+        "xg90": 0.55,
+        "key_attr": "playmaking",
+        "note": "23年后未出场, 小腿伤, BBC"
+      },
+      {
+        "name": "Alisson",
+        "pos": "GK",
+        "rating": 87,
+        "key_attr": "shot_stopping",
+        "note": "定海神针"
+      }
+    ]
+  },
+  "POR": {
+    "top_players": [
+      {
+        "name": "Cristiano Ronaldo",
+        "pos": "FW",
+        "rating": 85,
+        "xg90": 0.6,
+        "key_attr": "finishing,aerial,leadership",
+        "note": "41岁第6届, FIFA"
+      },
+      {
+        "name": "Bruno Fernandes",
+        "pos": "MF",
+        "rating": 89,
+        "key_attr": "creativity,long_shot",
+        "note": "状态火热"
+      },
+      {
+        "name": "Ruben Dias",
+        "pos": "DF",
+        "rating": 88,
+        "key_attr": "tackling,positioning",
+        "note": "首轮伤缺, Ge.Globo 6/16"
+      }
+    ]
+  },
+  "GER": {
+    "top_players": [
+      {
+        "name": "Jamal Musiala",
+        "pos": "MF",
+        "rating": 89,
+        "key_attr": "dribbling,creativity",
+        "note": "进攻引擎, ESPN"
+      },
+      {
+        "name": "Kai Havertz",
+        "pos": "FW",
+        "rating": 85,
+        "xg90": 0.5,
+        "key_attr": "movement,finishing",
+        "note": "首轮2球, Fox金靴"
+      },
+      {
+        "name": "Joshua Kimmich",
+        "pos": "MF",
+        "rating": 87,
+        "key_attr": "passing,leadership"
+      }
+    ]
+  },
+  "ESP": {
+    "top_players": [
+      {
+        "name": "Pedri",
+        "pos": "MF",
+        "rating": 89,
+        "key_attr": "passing,vision",
+        "note": "控制核心, ESPN"
+      },
+      {
+        "name": "Lamine Yamal",
+        "pos": "FW",
+        "rating": 90,
+        "xg90": 0.5,
+        "key_attr": "dribbling,creativity",
+        "note": "18岁hamstring疑虑, Independent"
+      },
+      {
+        "name": "Unai Simon",
+        "pos": "GK",
+        "rating": 85,
+        "key_attr": "shot_stopping",
+        "note": "Euro2024冠军"
+      }
+    ]
+  },
+  "NED": {
+    "top_players": [
+      {
+        "name": "Virgil van Dijk",
+        "pos": "DF",
+        "rating": 89,
+        "key_attr": "aerial,tackling,leadership",
+        "note": "批评补水暂停, ESPN"
+      },
+      {
+        "name": "Cody Gakpo",
+        "pos": "FW",
+        "rating": 85,
+        "xg90": 0.5,
+        "key_attr": "movement,finishing"
+      },
+      {
+        "name": "Frenkie de Jong",
+        "pos": "MF",
+        "rating": 87,
+        "key_attr": "passing,ball_carry"
+      }
+    ]
+  },
+  "NOR": {
+    "top_players": [
+      {
+        "name": "Erling Haaland",
+        "pos": "FW",
+        "rating": 93,
+        "xg90": 1.1,
+        "key_attr": "finishing,strength",
+        "note": "55球/50场, 首轮双响, FIFA"
+      },
+      {
+        "name": "Martin Odegaard",
+        "pos": "MF",
+        "rating": 89,
+        "key_attr": "creativity,passing",
+        "note": "3.8关键传球/场, ESPN"
+      }
+    ]
+  },
+  "BEL": {
+    "top_players": [
+      {
+        "name": "Kevin De Bruyne",
+        "pos": "MF",
+        "rating": 90,
+        "key_attr": "passing,vision,long_shot",
+        "note": "赛季3.5关键传球/场, Fox"
+      },
+      {
+        "name": "Romelu Lukaku",
+        "pos": "FW",
+        "rating": 85,
+        "xg90": 0.7,
+        "key_attr": "strength,finishing"
+      }
+    ]
+  },
+  "MAR": {
+    "top_players": [
+      {
+        "name": "Achraf Hakimi",
+        "pos": "DF",
+        "rating": 87,
+        "key_attr": "pace,crossing",
+        "note": "2022四强, ESPN"
+      },
+      {
+        "name": "Yassine Bounou",
+        "pos": "GK",
+        "rating": 86,
+        "key_attr": "shot_stopping,reflexes"
+      }
+    ]
+  },
+  "CRO": {
+    "top_players": [
+      {
+        "name": "Luka Modric",
+        "pos": "MF",
+        "rating": 88,
+        "key_attr": "passing,vision,experience",
+        "note": "第5届, FIFA"
+      },
+      {
+        "name": "Josko Gvardiol",
+        "pos": "DF",
+        "rating": 86,
+        "key_attr": "tackling,ball_carry"
+      }
+    ]
+  },
+  "URU": {
+    "top_players": [
+      {
+        "name": "Federico Valverde",
+        "pos": "MF",
+        "rating": 88,
+        "key_attr": "box_to_box,long_shot",
+        "note": "皇马核心, ESPN"
+      },
+      {
+        "name": "Darwin Nunez",
+        "pos": "FW",
+        "rating": 83,
+        "xg90": 0.5,
+        "key_attr": "strength,chaos"
+      },
+      {
+        "name": "Ronald Araujo",
+        "pos": "DF",
+        "rating": 86,
+        "key_attr": "tackling,aerial",
+        "note": "伤缺, ActionNetwork"
+      }
+    ]
+  },
+  "USA": {
+    "top_players": [
+      {
+        "name": "Christian Pulisic",
+        "pos": "FW",
+        "rating": 86,
+        "xg90": 0.45,
+        "key_attr": "dribbling,pace",
+        "note": "小腿伤, Independent"
+      },
+      {
+        "name": "Folarin Balogun",
+        "pos": "FW",
+        "rating": 84,
+        "xg90": 0.65,
+        "key_attr": "finishing,movement",
+        "note": "首轮双响, Fox金靴"
+      }
+    ]
+  },
+  "JPN": {
+    "top_players": [
+      {
+        "name": "Takefusa Kubo",
+        "pos": "MF",
+        "rating": 84,
+        "key_attr": "dribbling,creativity",
+        "note": "技术核心, ESPN"
+      },
+      {
+        "name": "Koki Ogawa",
+        "pos": "FW",
+        "rating": 80,
+        "xg90": 0.45,
+        "key_attr": "finishing,aerial",
+        "note": "88分钟绝平荷兰, ESPN"
+      }
+    ]
+  },
+  "COL": {
+    "top_players": [
+      {
+        "name": "Luis Diaz",
+        "pos": "FW",
+        "rating": 88,
+        "xg90": 0.55,
+        "key_attr": "dribbling,pace",
+        "note": "利物浦核心, Fox"
+      },
+      {
+        "name": "James Rodriguez",
+        "pos": "MF",
+        "rating": 82,
+        "key_attr": "playmaking,long_shot",
+        "note": "无俱乐部但仍是核心, Fox"
+      },
+      {
+        "name": "Daniel Munoz",
+        "pos": "RB",
+        "rating": 78,
+        "xg90": 0.12,
+        "key_attr": "overlap,crossing",
+        "note": "R1 acrobatic volley goal"
+      }
+    ]
+  },
+  "MEX": {
+    "top_players": [
+      {
+        "name": "Raul Jimenez",
+        "pos": "FW",
+        "rating": 82,
+        "xg90": 0.5,
+        "key_attr": "finishing,aerial",
+        "note": "首轮进球, FIFA"
+      },
+      {
+        "name": "Edson Alvarez",
+        "pos": "MF",
+        "rating": 84,
+        "key_attr": "tackling,passing",
+        "note": "中场屏障, Independent"
+      }
+    ]
+  },
+  "SEN": {
+    "top_players": [
+      {
+        "name": "Sadio Mane",
+        "pos": "FW",
+        "rating": 86,
+        "xg90": 0.5,
+        "key_attr": "pace,dribbling",
+        "note": "非洲冠军, FIFA"
+      },
+      {
+        "name": "Kalidou Koulibaly",
+        "pos": "DF",
+        "rating": 85,
+        "key_attr": "tackling,aerial",
+        "note": "防线领袖, FIFA"
+      }
+    ]
+  },
+  "KOR": {
+    "top_players": [
+      {
+        "name": "Son Heung-min",
+        "pos": "FW",
+        "rating": 87,
+        "xg90": 0.55,
+        "key_attr": "finishing,pace",
+        "note": "亚洲头号, ESPN"
+      },
+      {
+        "name": "Hwang In-beom",
+        "pos": "MF",
+        "rating": 82,
+        "key_attr": "creativity",
+        "note": "首轮1球1助, FIFA"
+      }
+    ]
+  },
+  "EGY": {
+    "top_players": [
+      {
+        "name": "Mohamed Salah",
+        "pos": "FW",
+        "rating": 91,
+        "xg90": 0.75,
+        "key_attr": "finishing,dribbling,pace",
+        "note": "利物浦传奇, ESPN"
+      }
+    ]
+  },
+  "AUS": {
+    "top_players": [
+      {
+        "name": "Nestory Irankunda",
+        "pos": "FW",
+        "rating": 80,
+        "xg90": 0.45,
+        "key_attr": "pace,power",
+        "note": "20岁首球致敬Cahill, SportingNews"
+      },
+      {
+        "name": "Jackson Irvine",
+        "pos": "MF",
+        "rating": 78,
+        "key_attr": "work_rate,aerial",
+        "note": "St Pauli队长, ESPN"
+      },
+      {
+        "name": "Patrick Beach",
+        "pos": "GK",
+        "rating": 76,
+        "key_attr": "shot_stopping",
+        "note": "首轮8次扑救, SportingNews"
+      }
+    ]
+  },
+  "SWE": {
+    "top_players": [
+      {
+        "name": "Viktor Gyokeres",
+        "pos": "FW",
+        "rating": 88,
+        "xg90": 0.8,
+        "key_attr": "finishing,strength",
+        "note": "Arsenal, Fanorate"
+      },
+      {
+        "name": "Alexander Isak",
+        "pos": "FW",
+        "rating": 87,
+        "xg90": 0.6,
+        "key_attr": "pace,dribbling",
+        "note": "Liverpool, FIFA"
+      },
+      {
+        "name": "Victor Lindelof",
+        "pos": "DF",
+        "rating": 82,
+        "key_attr": "leadership,aerial",
+        "note": "队长75+cap, Fanorate"
+      }
+    ]
+  },
+  "CAN": {
+    "top_players": [
+      {
+        "name": "Alphonso Davies",
+        "pos": "DF",
+        "rating": 88,
+        "key_attr": "pace,crossing",
+        "note": "队长hamstring伤疑, BBC"
+      },
+      {
+        "name": "Jonathan David",
+        "pos": "FW",
+        "rating": 85,
+        "xg90": 0.55,
+        "key_attr": "finishing,movement",
+        "note": "Juventus, BBC"
+      },
+      {
+        "name": "Tajon Buchanan",
+        "pos": "MF",
+        "rating": 81,
+        "key_attr": "dribbling,pace",
+        "note": "Villarreal, BBC"
+      }
+    ]
+  },
+  "SUI": {
+    "top_players": [
+      {
+        "name": "Granit Xhaka",
+        "pos": "MF",
+        "rating": 86,
+        "key_attr": "passing,leadership",
+        "note": "第4届, FIFA"
+      },
+      {
+        "name": "Manuel Akanji",
+        "pos": "DF",
+        "rating": 85,
+        "key_attr": "tackling,aerial",
+        "note": "FIFA"
+      },
+      {
+        "name": "Gregor Kobel",
+        "pos": "GK",
+        "rating": 85,
+        "key_attr": "shot_stopping",
+        "note": "FIFA"
+      }
+    ]
+  },
+  "TUR": {
+    "top_players": [
+      {
+        "name": "Arda Guler",
+        "pos": "MF",
+        "rating": 86,
+        "key_attr": "creativity,technique",
+        "note": "Real Madrid 21岁, FIFA"
+      },
+      {
+        "name": "Kenan Yildiz",
+        "pos": "FW",
+        "rating": 84,
+        "xg90": 0.45,
+        "key_attr": "dribbling,pace",
+        "note": "Juventus, FIFA"
+      }
+    ]
+  },
+  "GHA": {
+    "top_players": [
+      {
+        "name": "Thomas Partey",
+        "pos": "MF",
+        "rating": 84,
+        "key_attr": "physicality,passing",
+        "note": "被拒入加拿大, Yahoo/FIFA"
+      },
+      {
+        "name": "Antoine Semenyo",
+        "pos": "FW",
+        "rating": 82,
+        "xg90": 0.4,
+        "key_attr": "pace,strength",
+        "note": "Manchester City, Sportstar"
+      },
+      {
+        "name": "Inaki Williams",
+        "pos": "FW",
+        "rating": 81,
+        "key_attr": "pace,work_rate",
+        "note": "Sportstar"
+      },
+      {
+        "name": "Caleb Yirenkyi",
+        "pos": "ST",
+        "rating": 72,
+        "xg90": 0.3,
+        "key_attr": "positioning,finishing",
+        "note": "R1 90+5 winner vs Panama"
+      }
+    ]
+  },
+  "KSA": {
+    "top_players": [
+      {
+        "name": "Salem Al-Dawsari",
+        "pos": "MF",
+        "rating": 80,
+        "key_attr": "creativity,finishing",
+        "note": "2022爆冷英雄, WorldSoccerTalk"
+      },
+      {
+        "name": "Mohammed Al-Owais",
+        "pos": "GK",
+        "rating": 76,
+        "key_attr": "reflexes",
+        "note": "对乌拉圭多次扑救, WorldSoccerTalk"
+      }
+    ]
+  },
+  "CZE": {
+    "top_players": [
+      {
+        "name": "Tomas Soucek",
+        "pos": "MF",
+        "rating": 84,
+        "key_attr": "aerial,work_rate",
+        "note": "West Ham队长, FIFA"
+      },
+      {
+        "name": "Adam Hlozek",
+        "pos": "FW",
+        "rating": 80,
+        "xg90": 0.4,
+        "key_attr": "finishing,technique",
+        "note": "Hoffenheim伤愈, FIFA"
+      }
+    ]
+  },
+  "SCO": {
+    "top_players": [
+      {
+        "name": "Scott McTominay",
+        "pos": "MF",
+        "rating": 82,
+        "key_attr": "box_to_box,aerial",
+        "note": "Napoli, ESPN"
+      },
+      {
+        "name": "John McGinn",
+        "pos": "MF",
+        "rating": 81,
+        "key_attr": "creativity,work_rate",
+        "note": "首轮制胜球, ESPN"
+      },
+      {
+        "name": "Craig Gordon",
+        "pos": "GK",
+        "rating": 78,
+        "key_attr": "experience",
+        "note": "43岁, 1月后未登场, FIFA"
+      }
+    ]
+  },
+  "PAR": {
+    "top_players": [
+      {
+        "name": "Miguel Almiron",
+        "pos": "MF",
+        "rating": 81,
+        "key_attr": "pace,dribbling",
+        "note": "Atlanta United, BBC"
+      },
+      {
+        "name": "Diego Gomez",
+        "pos": "MF",
+        "rating": 78,
+        "key_attr": "tackling,energy",
+        "note": "MLS, BBC"
+      }
+    ]
+  },
+  "ECU": {
+    "top_players": [
+      {
+        "name": "Moises Caicedo",
+        "pos": "MF",
+        "rating": 86,
+        "key_attr": "tackling,ball_carry",
+        "note": "Chelsea, ESPN"
+      },
+      {
+        "name": "Piero Hincapie",
+        "pos": "DF",
+        "rating": 84,
+        "key_attr": "tackling,pace",
+        "note": "ESPN"
+      }
+    ]
+  },
+  "CIV": {
+    "top_players": [
+      {
+        "name": "Amad Diallo",
+        "pos": "FW",
+        "rating": 83,
+        "xg90": 0.45,
+        "key_attr": "dribbling,finishing",
+        "note": "首轮绝杀, ESPN"
+      },
+      {
+        "name": "Wilfried Zaha",
+        "pos": "FW",
+        "rating": 82,
+        "key_attr": "dribbling,pace",
+        "note": "Charlotte FC, BBC"
+      }
+    ]
+  },
+  "ALG": {
+    "top_players": [
+      {
+        "name": "Riyad Mahrez",
+        "pos": "FW",
+        "rating": 84,
+        "xg90": 0.45,
+        "key_attr": "dribbling,creativity",
+        "note": "队长, BBC"
+      },
+      {
+        "name": "Luca Zidane",
+        "pos": "GK",
+        "rating": 76,
+        "key_attr": "shot_stopping",
+        "note": "Zidane之子, BBC"
+      }
+    ]
+  },
+  "CPV": {
+    "top_players": [
+      {
+        "name": "Vozinha",
+        "pos": "GK",
+        "rating": 78,
+        "key_attr": "shot_stopping,reflexes",
+        "note": "40岁对西班牙神扑, ESPN"
+      },
+      {
+        "name": "Ryan Mendes",
+        "pos": "FW",
+        "rating": 74,
+        "key_attr": "pace",
+        "note": "队长, FIFA"
+      }
+    ]
+  },
+  "COD": {
+    "top_players": [
+      {
+        "name": "Yoane Wissa",
+        "pos": "ST",
+        "rating": 80,
+        "xg90": 0.4,
+        "key_attr": "heading,pace",
+        "note": "R1 historic first WC goal for DR Congo"
+      }
+    ]
+  },
+  "UZB": {
+    "top_players": [
+      {
+        "name": "Abbosbek Fayzullaev",
+        "pos": "RW",
+        "rating": 76,
+        "xg90": 0.35,
+        "key_attr": "pace,heading",
+        "note": "R1 first ever Uzbekistan WC goal"
+      }
+    ]
+  }
 }
