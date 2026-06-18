@@ -604,7 +604,15 @@ def format_lottery(plan: dict) -> str:
             L.append(f"  {time:<10} {b['match']:<36} → {b['pick']:<14}{extra} 估赔{b['est_odds']}{ht_str}")
         if detail:
             L.append(f"  结构: {detail['structure']} | 每单位{detail.get('per_unit_cost','')} × {detail.get('units','')}倍 = {detail.get('actual_bet','')}元")
-            L.append(f"  2串1赔率: {detail.get('pair_odds','')}")
+            pairs = detail.get("pairs", [])
+            pair_odds = detail.get("pair_odds", "")
+            if pairs:
+                L.append(f"  📋 投注明细 (3串4):")
+                L.append(f"    注① 2串1: {pairs[0] if len(pairs)>0 else '?'}")
+                L.append(f"    注② 2串1: {pairs[1] if len(pairs)>1 else '?'}")
+                L.append(f"    注③ 2串1: {pairs[2] if len(pairs)>2 else '?'}")
+                L.append(f"    注④ 3串1: {' + '.join([b['pick'] for b in plan_dict.get('bets',[])[:3]]) if len(plan_dict.get('bets',[]))>=3 else '?'}")
+            L.append(f"  2串1赔率: {pair_odds}")
             L.append(f"  3串1赔率: {detail.get('triple_odds','')}")
             if plan_dict.get("one_miss_return"):
                 L.append(f"  🛡️ 容错: 错1场仍中1注2串1 ≈{plan_dict['one_miss_return']}元")
