@@ -7,6 +7,24 @@ from pathlib import Path
 from datetime import datetime
 from .predictor import predict
 
+# 中文名映射
+CN_NAME = {
+    "France":"法国","Spain":"西班牙","Argentina":"阿根廷","England":"英格兰",
+    "Brazil":"巴西","Portugal":"葡萄牙","Germany":"德国","Netherlands":"荷兰",
+    "Belgium":"比利时","Norway":"挪威","Morocco":"摩洛哥","Colombia":"哥伦比亚",
+    "Mexico":"墨西哥","South Korea":"韩国","United States":"美国","Uruguay":"乌拉圭",
+    "Croatia":"克罗地亚","Japan":"日本","Senegal":"塞内加尔","Switzerland":"瑞士",
+    "Austria":"奥地利","Sweden":"瑞典","Canada":"加拿大","Australia":"澳大利亚",
+    "Ecuador":"厄瓜多尔","Türkiye":"土耳其","Scotland":"苏格兰","Czechia":"捷克",
+    "Egypt":"埃及","Iran":"伊朗","Ghana":"加纳","Algeria":"阿尔及利亚",
+    "Tunisia":"突尼斯","South Africa":"南非","Cape Verde":"佛得角",
+    "Saudi Arabia":"沙特","Qatar":"卡塔尔","Iraq":"伊拉克","Jordan":"约旦",
+    "Uzbekistan":"乌兹别克","New Zealand":"新西兰","Panama":"巴拿马",
+    "Haiti":"海地","Curaçao":"库拉索","DR Congo":"刚果(金)","Congo DR":"刚果(金)",
+    "Bosnia-Herzegovina":"波黑","Bosnia":"波黑","Paraguay":"巴拉圭",
+    "Ivory Coast":"科特迪瓦","Cote dIvoire":"科特迪瓦",
+}
+
 # 国旗映射
 FLAG = {
     "France": "🇫🇷", "Spain": "🇪🇸", "Argentina": "🇦🇷", "England": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
@@ -204,11 +222,13 @@ def classify_match(match_id: str, p: dict) -> dict:
     w, d, l = r["win_pct"], r["draw_pct"], r["lose_pct"]
 
     if w > d and w > l:
-        direction, dir_prob, dir_name = "home", w, fn(h["name"] + "胜")
-        handicap_pick = f"{flag(h['name'])} {h['name']}{est_handicap(p['delta'])}胜"
+        cn_name = CN_NAME.get(h["name"], h["name"])
+        direction, dir_prob, dir_name = "home", w, f"{flag(h['name'])} {cn_name}胜"
+        handicap_pick = f"{flag(h['name'])} {cn_name}{est_handicap(p['delta'])}胜"
     elif l > w and l > d:
-        direction, dir_prob, dir_name = "away", l, fn(a["name"] + "胜")
-        handicap_pick = f"{flag(a['name'])} {a['name']}{est_handicap(-p['delta'])}胜"
+        cn_name = CN_NAME.get(a["name"], a["name"])
+        direction, dir_prob, dir_name = "away", l, f"{flag(a['name'])} {cn_name}胜"
+        handicap_pick = f"{flag(a['name'])} {cn_name}{est_handicap(-p['delta'])}胜"
     else:
         direction, dir_prob, dir_name = "draw", d, "平局"
         handicap_pick = "平局"
@@ -251,9 +271,14 @@ def classify_match(match_id: str, p: dict) -> dict:
             "reason": f"Δ={delta:.0f}, 让球盘可提升赔率至1.80+"
         }
 
-    # 构建带国旗的比赛名称 + 开赛时间
+    # 构建中文名 + 国旗的比赛名称 + 开赛时间
     parts = p["match"].split(" vs ")
-    flagged_match = f"{fn(parts[0])} vs {fn(parts[1])}" if len(parts) == 2 else p["match"]
+    if len(parts) == 2:
+        cn_h = CN_NAME.get(parts[0], parts[0])
+        cn_a = CN_NAME.get(parts[1], parts[1])
+        flagged_match = f"{flag(parts[0])} {cn_h} vs {flag(parts[1])} {cn_a}"
+    else:
+        flagged_match = p["match"]
     kickoff = MATCH_SCHEDULE.get(match_id, "")
 
     return {
@@ -591,15 +616,15 @@ def format_lottery(plan: dict) -> str:
             ht = b.get("handicap_tip", "")
             ht_str = ""
             if ht:
-                ht_str = f"  💡让球:{ht['line']} {ht['pick']}"
+                ht_str = f"  💡让球: {ht['pick']}"
             else:
-                # 模型估算让球盘
                 mid = b.get("match_id","")
                 hsp = _match_handicap_sp(mid)
                 if hsp:
-                    line = hsp.get("line",0)
-                    line_str = f"({line:+d})" if line else "(平手)"
-                    ht_str = f"  💡让球:{line_str}"
+                    line = hsp.get("line", 0)
+                    if line > 0: ht_str = f"  💡让球: 受让{line}球"
+                    elif line < 0: ht_str = f"  💡让球: 让{abs(line)}球"
+                    else: ht_str = f"  💡让球: 平手"
             time = MATCH_SCHEDULE.get(b.get("match_id",""), "")
             L.append(f"  {time:<10} {b['match']:<36} → {b['pick']:<14}{extra} 估赔{b['est_odds']}{ht_str}")
         if detail:
