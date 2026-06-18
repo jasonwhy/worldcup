@@ -1,14 +1,14 @@
 {
-  "updated": "2026-06-18T11:21:34",
+  "updated": "2026-06-18T11:22:09",
   "matches_in_progress": [
     {
       "match_id": "COL-UZB",
-      "home_goals": 0,
+      "home_goals": 1,
       "away_goals": 0,
-      "minute": "81",
-      "source": "auto",
-      "updated": "11:21",
-      "note": "比赛刚开始, Cannavaro首秀, James+Diaz领衔哥伦比亚"
+      "minute": "82",
+      "source": "ABC News/FIFA",
+      "updated": "11:22",
+      "note": "Colombia领先1-0, 下半场尾声"
     }
   ],
   "live_sources": [
