@@ -1,9 +1,9 @@
 {
-  "updated": "2026-06-18T00:10:48",
-  "total_played": 20,
-  "direction_correct": 15,
-  "direction_total": 20,
-  "direction_rate": 75.0,
+  "updated": "2026-06-18T09:15:00",
+  "total_played": 23,
+  "direction_correct": 17,
+  "direction_total": 23,
+  "direction_rate": 73.9,
   "matches": [
     {
       "date": "6/11",
@@ -164,6 +164,30 @@
       "score": "3-1",
       "prediction_correct": "✅",
       "note": "Schmid+Arnautovic点球"
+    },
+    {
+      "date": "6/17",
+      "home": "POR",
+      "away": "COD",
+      "score": "1-1",
+      "prediction_correct": "❌",
+      "note": "Neves(6')+Wissa(45+5'), 刚果金历史首球首分, CR7哑火"
+    },
+    {
+      "date": "6/17",
+      "home": "ENG",
+      "away": "CRO",
+      "score": "4-2",
+      "prediction_correct": "✅",
+      "note": "Kane双响(12'p+42')+Bellingham(47')+Rashford(85'), Baturina+Musa扳平"
+    },
+    {
+      "date": "6/17",
+      "home": "GHA",
+      "away": "PAN",
+      "score": "1-0",
+      "prediction_correct": "✅",
+      "note": "Yirenkyi绝杀, Thomas-Asante助攻, 伤停补时破门"
     }
   ]
 }

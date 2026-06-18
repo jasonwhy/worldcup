@@ -1,7 +1,49 @@
 {
-  "updated": "2026-06-17T23:50:00",
-  "sources_checked": 15,
+  "updated": "2026-06-18T09:15:00",
+  "sources_checked": 16,
   "items": [
+    {
+      "badge": "🟡",
+      "date": "2026-06-18",
+      "title": "Kane:我们展现了最佳水平",
+      "detail": "\"下半场20分钟本可进3-4球\", 点球研究Livakovic→改技术成功, Tuchel:防守需改善",
+      "source": "BBC"
+    },
+    {
+      "badge": "🔴",
+      "date": "2026-06-18",
+      "title": "加纳1-0巴拿马绝杀",
+      "detail": "Yirenkyi伤停补时绝杀, Thomas-Asante助攻, 巴拿马心碎, L组出线形势初定",
+      "source": "ABC/Yahoo"
+    },
+    {
+      "badge": "🔴",
+      "date": "2026-06-18",
+      "title": "英格兰4-2克罗地亚开门红",
+      "detail": "Kane点射+头球双响, Bellingham 47分闪电破门, Rashford替补锁定, 半场2-2→终场4-2",
+      "source": "BBC/EnglandFootball"
+    },
+    {
+      "badge": "🟡",
+      "date": "2026-06-17",
+      "title": "Ronaldo六届世界杯未破门",
+      "detail": "41岁CR7打满全场两度射偏, 未能成首个6届世界杯均进球球员, 葡萄牙中场控制80%但进攻乏力",
+      "source": "ESPN"
+    },
+    {
+      "badge": "🔴",
+      "date": "2026-06-17",
+      "title": "刚果金52年首球创造历史",
+      "detail": "Yoane Wissa头球破门→刚果金自1974年来首个世界杯进球, 1-1逼平葡萄牙震惊世界",
+      "source": "BBC/FIFA"
+    },
+    {
+      "badge": "🔴",
+      "date": "2026-06-17",
+      "title": "葡萄牙1-1刚果金爆冷",
+      "detail": "Neves 6分头球先拔头筹, Wissa 45+5历史首球扳平, 刚果金52年来世界杯第1分, CR7哑火",
+      "source": "FIFA/ESPN/BBC"
+    },
     {
       "badge": "🟢",
       "date": "2026-06-17",
