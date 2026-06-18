@@ -841,13 +841,14 @@ if WATCH_MODE:
     print(f"👀 文件监听 + 实时比分: {data_dir}/")
 
     def auto_check_live():
-        """自动检测进行中比赛, 尝试获取实时比分"""
+        """自动检测进行中比赛 + 更新分钟数 + 自动推送GitHub"""
         now = datetime.now()
         results_data = json.load(open(DATA/"results.json"))
         played = {f"{m['home']}-{m['away']}" for m in results_data["matches"]}
         live_data = json.load(open(DATA/"live_scores.json")) if (DATA/"live_scores.json").exists() else {"matches_in_progress":[]}
 
         changed = False
+        # 1. 检测新开球的比赛
         for match_id, time_str in MATCH_SCHEDULE.items():
             if match_id in played: continue
             parts = time_str.split()
@@ -855,14 +856,10 @@ if WATCH_MODE:
                 m, d = parts[0].split("/")
                 h, mi = parts[1].split(":")
                 kickoff = datetime(2026, int(m), int(d), int(h), int(mi))
-                # 开赛后3小时内视为进行中
-                if kickoff <= now <= kickoff.replace(hour=kickoff.hour+3):
-                    # Already in live_scores? Skip
+                if kickoff <= now <= kickoff.replace(hour=kickoff.hour+3, minute=kickoff.minute+30):
                     if any(lm["match_id"] == match_id for lm in live_data["matches_in_progress"]):
                         continue
-                    # Try FotMob API
-                    home, away = match_id.split("-")
-                    score = None
+                    # Try public API
                     try:
                         import urllib.request
                         url = f"https://www.fotmob.com/api/matchDetails?matchId={match_id}"
@@ -870,26 +867,66 @@ if WATCH_MODE:
                         with urllib.request.urlopen(req, timeout=5) as resp:
                             data = json.loads(resp.read())
                             status = data.get("header",{}).get("status",{})
-                            if status.get("live"):
-                                score = {"hg": status["homeScore"], "ag": status["awayScore"], "min": status.get("minutes","?")}
+                            if status.get("live") or status.get("started"):
+                                score = {"hg": status.get("homeScore",0), "ag": status.get("awayScore",0), "min": status.get("minutes","?")}
+                                live_data["matches_in_progress"].append({
+                                    "match_id": match_id, "home_goals": score["hg"], "away_goals": score["ag"],
+                                    "minute": str(score["min"]), "source": "fotmob", "updated": now.strftime("%H:%M")
+                                })
+                                changed = True
+                                print(f"  ⚽ LIVE {match_id} {score['hg']}-{score['ag']} ({score['min']}')")
                     except: pass
 
-                    if score:
+                    if not any(lm["match_id"] == match_id for lm in live_data["matches_in_progress"]):
+                        minutes = int((now - kickoff).total_seconds() / 60)
                         live_data["matches_in_progress"].append({
-                            "match_id": match_id,
-                            "home_goals": score["hg"],
-                            "away_goals": score["ag"],
-                            "minute": str(score["min"]),
-                            "source": "fotmob",
-                            "updated": now.strftime("%H:%M")
+                            "match_id": match_id, "home_goals": 0, "away_goals": 0,
+                            "minute": str(minutes), "source": "auto", "updated": now.strftime("%H:%M")
                         })
                         changed = True
-                        print(f"  🔴 LIVE {match_id} {score['hg']}-{score['ag']} ({score['min']}')")
+                        print(f"  🔴 {match_id} 0-0 ({minutes}') — 等待数据")
             except: pass
+
+        # 2. 更新现有条目的分钟数
+        for lm in live_data.get("matches_in_progress", []):
+            ts = MATCH_SCHEDULE.get(lm["match_id"], "")
+            if not ts: continue
+            try:
+                parts = ts.split(); m,d = parts[0].split("/"); h,mi = parts[1].split(":")
+                kickoff = datetime(2026,int(m),int(d),int(h),int(mi))
+                minutes = int((now - kickoff).total_seconds() / 60)
+                if 0 <= minutes <= 120 and str(minutes) != str(lm.get("minute","")):
+                    lm["minute"] = str(minutes); lm["updated"] = now.strftime("%H:%M")
+                    changed = True
+            except: pass
+
+        # 3. 清理已超时的条目
+        live_data["matches_in_progress"] = [lm for lm in live_data.get("matches_in_progress", [])
+            if not _is_match_expired(lm["match_id"])]
 
         if changed:
             live_data["updated"] = now.strftime("%Y-%m-%dT%H:%M:%S")
             json.dump(live_data, open(DATA/"live_scores.json","w"), indent=2, ensure_ascii=False)
+            # 自动推送到 GitHub
+            import subprocess
+            try:
+                subprocess.run(["git","add","data/live_scores.json"], cwd=str(Path(__file__).parent),
+                              capture_output=True, timeout=10)
+                r = subprocess.run(["git","commit","-m",f"Live: auto-refresh ({now.strftime('%H:%M')})"],
+                                  cwd=str(Path(__file__).parent), capture_output=True, timeout=10)
+                if b"nothing to commit" not in r.stdout:
+                    subprocess.run(["git","push"], cwd=str(Path(__file__).parent),
+                                  capture_output=True, timeout=30)
+                    print(f"  📤 已推送 GitHub")
+            except: pass
+
+    def _is_match_expired(match_id):
+        ts = MATCH_SCHEDULE.get(match_id, "")
+        try:
+            parts = ts.split(); m,d = parts[0].split("/"); h,mi = parts[1].split(":")
+            kickoff = datetime(2026,int(m),int(d),int(h),int(mi))
+            return datetime.now() > kickoff.replace(hour=kickoff.hour+4)
+        except: return True
 
     if SERVE_MODE:
         import threading, http.server, socketserver, webbrowser
