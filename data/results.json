@@ -1,9 +1,9 @@
 {
-  "updated": "2026-06-18T09:15:00",
-  "total_played": 23,
-  "direction_correct": 18,
-  "direction_total": 23,
-  "direction_rate": 78.3,
+  "updated": "2026-06-18T12:05:23",
+  "total_played": 24,
+  "direction_correct": 19,
+  "direction_total": 24,
+  "direction_rate": 79.2,
   "matches": [
     {
       "date": "6/11",
@@ -188,6 +188,14 @@
       "score": "1-0",
       "prediction_correct": "✅",
       "note": "Yirenkyi绝杀, Thomas-Asante助攻, 伤停补时破门"
+    },
+    {
+      "date": "6/18",
+      "home": "COL",
+      "away": "UZB",
+      "score": "2-1",
+      "prediction_correct": "✅",
+      "note": "Munoz破门+Fayzullaev历史首球扳平+哥伦比亚2-1, 乌兹别克首秀收获首球"
     }
   ]
 }

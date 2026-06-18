@@ -1,16 +1,6 @@
 {
-  "updated": "2026-06-18T12:00:21",
-  "matches_in_progress": [
-    {
-      "match_id": "COL-UZB",
-      "home_goals": 1,
-      "away_goals": 0,
-      "minute": "120",
-      "source": "ABC News/FIFA",
-      "updated": "12:00",
-      "note": "Colombia领先1-0, 下半场尾声"
-    }
-  ],
+  "updated": "2026-06-18T12:05:23",
+  "matches_in_progress": [],
   "live_sources": [
     "fotmob",
     "sofascore",
