@@ -135,53 +135,91 @@ def injury_penalty(team_id: str) -> float:
 
 
 def tournament_momentum(team_id: str) -> float:
-    """2.4 赛事动量 — 首轮正赛表现相对预期的偏差 (-5~+5)"""
+    """2.4 赛事动量 — R1正赛表现(含对手强度+球员状态) (-5~+5)"""
     results = load_json("results.json")
     teams = load_json("teams.json")
 
-    # Find this team's R1 result
-    gf = ga = 0
+    gf = ga = opp_id = None
     found = False
     for m in results["matches"]:
         if m["home"] == team_id:
             gf, ga = map(int, m["score"].split("-"))
-            found = True; break
+            opp_id = m["away"]; found = True; break
         elif m["away"] == team_id:
             ga, gf = map(int, m["score"].split("-"))
-            found = True; break
+            opp_id = m["home"]; found = True; break
 
     if not found:
-        return 0.0  # 还没踢首轮
+        return 0.0
 
     gd = gf - ga
     team = teams.get(team_id, {})
     fifa_rank = team.get("fifa_rank", 48)
+    opp = teams.get(opp_id, {})
+    opp_rank = opp.get("fifa_rank", 48)
 
-    # 评分逻辑: 综合净胜球 + 进球数 + 对手强度
-    bonus = 0.0
+    # === 对手强度系数 ===
+    # 强敌(rank<=15): 1.5x, 中游(16-35): 1.0x, 弱队(36-48): 0.5x
+    opp_quality = 1.5 if opp_rank <= 15 else (1.0 if opp_rank <= 35 else 0.5)
 
-    # 大胜 (>2球差) 说明状态远超预期 → +3到+5
+    # === 基础动量（对手强度加权） ===
     if gd >= 3:
-        bonus = min(5, 3 + (gd - 3) * 0.5)
-    # 净胜1-2球 → +1到+3
+        bonus = (3 + (gd - 3) * 0.5) * opp_quality
     elif gd >= 1:
-        bonus = 1 + gd * 0.5
-    # 平局: 强队平弱队→扣分, 弱队平强队→加分
+        bonus = (1 + gd * 0.5) * opp_quality
     elif gd == 0:
-        bonus = -1.5 if fifa_rank <= 15 else (1.5 if fifa_rank >= 40 else 0)
-    # 小负 (≤1球) → 轻微扣分
+        # 强队平弱队→扣分, 弱队平强队→加分
+        if fifa_rank <= 15 and opp_rank >= 30:
+            bonus = -1.5
+        elif fifa_rank >= 35 and opp_rank <= 15:
+            bonus = 3.0  # 超级爆冷
+        elif fifa_rank >= 40:
+            bonus = 1.5
+        elif fifa_rank <= 20:
+            bonus = -1.0
+        else:
+            bonus = 0
     elif gd >= -1:
-        bonus = -1
-    # 大败 → -3到-5
+        bonus = -1.5 if opp_rank >= 35 else -1.0
     else:
-        bonus = max(-5, -3 + (gd + 3) * 0.5)
+        bonus = max(-5, (-3 + (gd + 3) * 0.5) * opp_quality)
 
-    # 进球效率额外加成: 进3+球 → +0.5
+    # 进球/零封加成
     if gf >= 3:
         bonus += 0.5
-    # 零封 → +0.5
     if ga == 0:
         bonus += 0.5
+
+    # === 关键球员状态修正 ===
+    kp = team.get("key_players", {})
+    player_boost = 0.0
+
+    # 前锋状态: recent_goal_rate vs season_avg
+    striker = kp.get("striker", {})
+    if striker:
+        recent = striker.get("recent_goal_rate", 0)
+        season = striker.get("season_avg", 0.5)
+        if season > 0 and recent > 0:
+            ratio = recent / season
+            if ratio >= 2.0:
+                player_boost += 1.5  # 爆发 (Messi帽子/Mbappe双响)
+            elif ratio >= 1.5:
+                player_boost += 0.8  # 状态佳
+            elif ratio <= 0.2:
+                player_boost -= 1.0  # 低迷 (CR7 0射正)
+
+    # 门将状态: recent vs season save rate
+    gk = kp.get("goalkeeper", {})
+    if gk:
+        recent_sv = gk.get("recent_save_pct", 0)
+        season_sv = gk.get("season_avg", 0.7)
+        if season_sv > 0 and recent_sv > 0:
+            if recent_sv >= 0.95:
+                player_boost += 1.0  # 神扑型
+            elif recent_sv <= 0.5:
+                player_boost -= 0.5  # 漏勺
+
+    bonus += player_boost
 
     return round(min(5, max(-5, bonus)), 1)
 
