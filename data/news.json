@@ -1,7 +1,105 @@
 {
-  "updated": "2026-06-18T09:15:00",
-  "sources_checked": 16,
+  "updated": "2026-06-18T10:00:00",
+  "sources_checked": 17,
   "items": [
+    {
+      "badge": "🟢",
+      "date": "2026-06-18",
+      "title": "6/19预告: 第二轮开战",
+      "detail": "CZE-RSA(00:00)|SUI-BIH(03:00)|CAN-QAT(06:00)|MEX-KOR(09:00) 第二轮A+B组, 出线关键战",
+      "source": "FIFA"
+    },
+    {
+      "badge": "🟡",
+      "date": "2026-06-18",
+      "title": "英格兰装备被盗+龙卷风袭击",
+      "detail": "大量训练装备被盗(只剩1个足球), 训练基地遭龙卷风, 但图赫尔:'不影响比赛'",
+      "source": "网易/163.com"
+    },
+    {
+      "badge": "🟢",
+      "date": "2026-06-18",
+      "title": "最佳射手榜: Messi 3球领跑",
+      "detail": "Messi 3, Kane/Havertz/Mbappe/Haaland/Balogun/Ayari/Just各2, Kane追至11球超Lineker",
+      "source": "FIFA/ESPN"
+    },
+    {
+      "badge": "🔴",
+      "date": "2026-06-18",
+      "title": "首轮总结: 平局率惊人40%",
+      "detail": "24场首轮24场打完, 冷门迭爆: 佛得角0-0西班牙, 刚果1-1葡萄牙, 沙特1-1乌拉圭",
+      "source": "NBC/FIFA"
+    },
+    {
+      "badge": "🟢",
+      "date": "2026-06-18",
+      "title": "James Rodriguez最后一舞",
+      "detail": "34岁J罗队长领衔, Diaz+Suarez锋线, 哥伦比亚目标突破小组赛, 赔率-267大热",
+      "source": "SI/Goal.com"
+    },
+    {
+      "badge": "🟢",
+      "date": "2026-06-18",
+      "title": "乌兹别克斯坦首秀挑战哥伦比亚",
+      "detail": "Cannavaro带队迎世界杯首秀, Khusanov防Diaz, Azteca高海拔考验, 预测COL 2-0 UZB",
+      "source": "CBS/Sports Mole"
+    },
+    {
+      "badge": "🟡",
+      "date": "2026-06-18",
+      "title": "加纳1-0巴拿马补时绝杀",
+      "detail": "Yirenkyi补时破门+Thomas-Asante助攻, 巴拿马心碎, Partey签证上诉被加拿大法院驳回",
+      "source": "ABC/Yahoo"
+    },
+    {
+      "badge": "🟡",
+      "date": "2026-06-18",
+      "title": "Dalic: 克罗地亚已无犯错空间",
+      "detail": "0-2后说'我们必须赢下剩下两场', 莫德里奇58分钟被换下, 黄金一代谢幕在即",
+      "source": "Al Jazeera"
+    },
+    {
+      "badge": "🟡",
+      "date": "2026-06-18",
+      "title": "Livakovic 11次神扑难救主",
+      "detail": "克罗地亚门将多次化解英格兰必进球, 但Bellingham 47分+Rashford 85分锁定胜局",
+      "source": "FIFA"
+    },
+    {
+      "badge": "🟡",
+      "date": "2026-06-18",
+      "title": "Tuchel中场谈话改变比赛",
+      "detail": "Kane: '图赫尔叫我们上强度, 人盯人, 那就是最好的我们'; 下半场20分钟本可进3-4球",
+      "source": "BBC/FIFA"
+    },
+    {
+      "badge": "🔴",
+      "date": "2026-06-18",
+      "title": "Kane超越Lineker独享英格兰射手王",
+      "detail": "11球成英格兰世界杯历史第一射手, 5次点球命中创世界杯纪录, 半场2-2→终场4-2",
+      "source": "FIFA/BBC"
+    },
+    {
+      "badge": "🔴",
+      "date": "2026-06-18",
+      "title": "刚果金52年归来即创历史",
+      "detail": "首球+首分+首平, 世界杯0进球0积分仅剩中国和印尼, 非洲球队连爆冷门(佛得角+刚果金)",
+      "source": "FIFA/路透社/网易"
+    },
+    {
+      "badge": "🔴",
+      "date": "2026-06-18",
+      "title": "葡萄牙xG 0.07震惊足坛",
+      "detail": "控球80%但预期进球仅0.07 vs 刚果0.49, 仅1次射正, Martinez承认'压力太大'",
+      "source": "NBC News/FIFA"
+    },
+    {
+      "badge": "🔴",
+      "date": "2026-06-18",
+      "title": "Ronaldo连续10场大赛零进球",
+      "detail": "3射0正, 25触球0过人, 葡萄牙1-1刚果金, BBC: CR7未能追上梅西步伐",
+      "source": "BBC/Sporting News"
+    },
     {
       "badge": "🟡",
       "date": "2026-06-18",
