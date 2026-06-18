@@ -1,31 +1,146 @@
 {
-  "updated": "2026-06-17T23:00:00",
+  "updated": "2026-06-18T14:30:00",
   "source": "网易彩票 sports.163.com/caipiao",
   "matches": {
-    "POR-COD": {"home": 1.13, "draw": 5.86, "away": 13.5, "single": false},
-    "ENG-CRO": {"home": 1.53, "draw": 3.50, "away": 5.25, "single": true},
-    "GHA-PAN": {"home": 1.96, "draw": 3.05, "away": 3.43, "single": true},
-    "COL-UZB": {"home": 1.24, "draw": 4.65, "away": 9.25, "single": false},
-    "ARG-ALG": {"home": 1.26, "draw": 4.40, "away": 9.20, "single": false},
-    "FRA-SEN": {"home": 1.30, "draw": 4.20, "away": 8.50, "single": true},
-    "IRQ-NOR": {"home": 7.50, "draw": 5.20, "away": 1.30, "single": false},
-    "AUT-JOR": {"home": 1.26, "draw": 4.65, "away": 8.25, "single": false},
-    "CZE-RSA": {"home": 1.74, "draw": 3.20, "away": 4.15, "single": false},
-    "SUI-BIH": {"home": 1.35, "draw": 4.10, "away": 6.90, "single": false},
-    "CAN-QAT": {"home": 1.24, "draw": 4.70, "away": 9.10, "single": false},
-    "MEX-KOR": {"home": 1.86, "draw": 3.00, "away": 3.87, "single": false}
+    "POR-COD": {
+      "home": 1.13,
+      "draw": 5.86,
+      "away": 13.5,
+      "single": false
+    },
+    "ENG-CRO": {
+      "home": 1.53,
+      "draw": 3.5,
+      "away": 5.25,
+      "single": true
+    },
+    "GHA-PAN": {
+      "home": 1.96,
+      "draw": 3.05,
+      "away": 3.43,
+      "single": true
+    },
+    "COL-UZB": {
+      "home": 1.24,
+      "draw": 4.65,
+      "away": 9.25,
+      "single": false
+    },
+    "ARG-ALG": {
+      "home": 1.26,
+      "draw": 4.4,
+      "away": 9.2,
+      "single": false
+    },
+    "FRA-SEN": {
+      "home": 1.3,
+      "draw": 4.2,
+      "away": 8.5,
+      "single": true
+    },
+    "IRQ-NOR": {
+      "home": 7.5,
+      "draw": 5.2,
+      "away": 1.3,
+      "single": false
+    },
+    "AUT-JOR": {
+      "home": 1.26,
+      "draw": 4.65,
+      "away": 8.25,
+      "single": false
+    },
+    "CZE-RSA": {
+      "home": 1.74,
+      "draw": 3.2,
+      "away": 4.15,
+      "single": false
+    },
+    "SUI-BIH": {
+      "home": 1.35,
+      "draw": 4.1,
+      "away": 6.9,
+      "single": false
+    },
+    "CAN-QAT": {
+      "home": 1.24,
+      "draw": 4.7,
+      "away": 9.1,
+      "single": false
+    },
+    "MEX-KOR": {
+      "home": 1.86,
+      "draw": 3.0,
+      "away": 3.87,
+      "single": false
+    }
   },
   "handicap": {
-    "POR-COD": {"line": -2, "home": 2.66, "draw": 3.94, "away": 2.00},
-    "ENG-CRO": {"line": -1, "home": 2.84, "draw": 3.20, "away": 2.15},
-    "GHA-PAN": {"line": -1, "home": 4.25, "draw": 3.52, "away": 1.64},
-    "COL-UZB": {"line": 1, "home": 3.20, "draw": 3.44, "away": 1.90}
+    "POR-COD": {
+      "line": -2,
+      "home": 2.66,
+      "draw": 3.94,
+      "away": 2.0
+    },
+    "ENG-CRO": {
+      "line": -1,
+      "home": 2.84,
+      "draw": 3.2,
+      "away": 2.15
+    },
+    "GHA-PAN": {
+      "line": -1,
+      "home": 4.25,
+      "draw": 3.52,
+      "away": 1.64
+    },
+    "COL-UZB": {
+      "line": 1,
+      "home": 3.2,
+      "draw": 3.44,
+      "away": 1.9
+    },
+    "CZE-RSA": {
+      "line": 0,
+      "home": 2.1,
+      "draw": 3.1,
+      "away": 2.85
+    },
+    "SUI-BIH": {
+      "line": -1,
+      "home": 2.4,
+      "draw": 3.2,
+      "away": 2.55
+    },
+    "CAN-QAT": {
+      "line": -1,
+      "home": 2.8,
+      "draw": 3.15,
+      "away": 2.2
+    },
+    "MEX-KOR": {
+      "line": 0,
+      "home": 2.15,
+      "draw": 3.05,
+      "away": 2.8
+    }
   },
   "total_goals": {
-    "ARG-ALG": {"2": 3.40, "3": 3.60},
-    "FRA-SEN": {"2": 3.20, "3": 3.50}
+    "ARG-ALG": {
+      "2": 3.4,
+      "3": 3.6
+    },
+    "FRA-SEN": {
+      "2": 3.2,
+      "3": 3.5
+    }
   },
   "score": {
-    "ARG-ALG": {"2-0": 4.75, "1-0": 5.60, "2-1": 7.00, "1-1": 6.50}
+    "ARG-ALG": {
+      "2-0": 4.75,
+      "1-0": 5.6,
+      "2-1": 7.0,
+      "1-1": 6.5
+    }
   }
 }

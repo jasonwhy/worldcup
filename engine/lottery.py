@@ -587,7 +587,17 @@ def format_lottery(plan: dict) -> str:
             if "model_signal" in b: extra = f" ({b['model_signal']})"
             elif "model_prob" in b: extra = f" 概率{b['model_prob']}%"
             ht = b.get("handicap_tip", "")
-            ht_str = f"  💡让球:{ht['line']}{ht['pick']}" if ht else ""
+            ht_str = ""
+            if ht:
+                ht_str = f"  💡让球:{ht['line']} {ht['pick']}"
+            else:
+                # 模型估算让球盘
+                mid = b.get("match_id","")
+                hsp = _match_handicap_sp(mid)
+                if hsp:
+                    line = hsp.get("line",0)
+                    line_str = f"({line:+d})" if line else "(平手)"
+                    ht_str = f"  💡让球:{line_str}"
             time = MATCH_SCHEDULE.get(b.get("match_id",""), "")
             L.append(f"  {time:<10} {b['match']:<36} → {b['pick']:<14}{extra} 估赔{b['est_odds']}{ht_str}")
         if detail:
