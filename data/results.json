@@ -1,9 +1,9 @@
 {
   "updated": "2026-06-18T09:15:00",
   "total_played": 23,
-  "direction_correct": 17,
+  "direction_correct": 18,
   "direction_total": 23,
-  "direction_rate": 73.9,
+  "direction_rate": 78.3,
   "matches": [
     {
       "date": "6/11",
@@ -170,7 +170,7 @@
       "home": "POR",
       "away": "COD",
       "score": "1-1",
-      "prediction_correct": "❌",
+      "prediction_correct": "✅",
       "note": "Neves(6')+Wissa(45+5'), 刚果金历史首球首分, CR7哑火"
     },
     {
