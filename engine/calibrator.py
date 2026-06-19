@@ -115,17 +115,17 @@ def calibrate(verbose=True):
             "reason": f"平局率偏高{actual_draw_rate:.0%} vs 预测{pred_draw_rate:.0%}"
         })
 
-    # 3. 方向偏差: 持续跌破70%→降低保守阈值
+    # 3. 方向偏差: 持续跌破70%→降低保守阈值 (仅当方向样本>=20)
     dir_acc = direction_correct / max(1, direction_total)
-    if dir_acc < 0.70 and direction_total >= 15:
+    if dir_acc < 0.70 and direction_total >= 20:
         from .lottery import THRESHOLD
         old_t = THRESHOLD["conservative_min_delta"]
-        THRESHOLD["conservative_min_delta"] = max(5, old_t - 2)
+        THRESHOLD["conservative_min_delta"] = max(8, old_t - 1)
         adjustments.append({
             "param": "conservative_min_delta",
             "old": old_t,
             "new": THRESHOLD["conservative_min_delta"],
-            "reason": f"方向准确率{dir_acc:.0%}偏低, 放宽保守门槛"
+            "reason": f"方向准确率{dir_acc:.0%}偏低, 微调门槛"
         })
 
     # 输出报告

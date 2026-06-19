@@ -104,7 +104,7 @@ MATCH_SCHEDULE = {
 THRESHOLD = {
     "conservative_min_delta": 10,
     "conservative_max_cold_rank": 2,
-    "conservative_min_prob": 42,     # 从45降到42，避免仅差1%被排除
+    "conservative_min_prob": 40,     # 精准阈值, 避免边界排除
     "conservative_min_draw_prob": 45,  # 平局方向需更高概率才纳入稳健池
     "banker_min_delta": 25,
     "banker_min_prob": 50,
@@ -305,6 +305,49 @@ def classify_match(match_id: str, p: dict) -> dict:
     }
 
 
+def compute_value(match_id: str, direction: str, model_prob: float) -> dict:
+    """正EV计算: 模型概率 vs 市场隐含概率"""
+    sp = _match_sp(match_id)
+    if not sp: return {"ev": 0, "edge": 0, "is_value": False}
+
+    if direction == "home":
+        odds = sp.get("home", 0)
+    elif direction == "away":
+        odds = sp.get("away", 0)
+    else:
+        odds = sp.get("draw", 0)
+
+    if odds <= 1.0: return {"ev": 0, "edge": 0, "is_value": False}
+
+    market_implied = 1.0 / odds * 100  # 市场隐含概率
+    model_pct = model_prob / 100 if model_prob > 1 else model_prob
+    edge = model_prob - market_implied  # 模型优势
+    ev = (model_prob / 100) * odds - 1.0  # 期望值
+
+    return {
+        "ev": round(ev, 3),
+        "edge": round(edge, 1),
+        "is_value": ev > 0.005,  # 至少0.5%正期望(SP为估算值, 门槛从宽)
+        "model_prob": model_prob,
+        "market_prob": round(market_implied, 1),
+        "odds": odds,
+    }
+
+
+def filter_value_bets(classified: list) -> list:
+    """正EV筛选: 只保留价值投注, 按EV排序"""
+    for c in classified:
+        val = compute_value(c["match_id"], c["direction"], c["dir_prob"])
+        c["value"] = val
+        c["is_value"] = val["is_value"]
+        c["ev_score"] = val["ev"]
+
+    # 按EV排序, 高价值优先
+    value_bets = [c for c in classified if c.get("is_value")]
+    value_bets.sort(key=lambda x: x.get("ev_score", 0), reverse=True)
+    return value_bets
+
+
 def generate_plan(matches: list) -> dict:
     # P0: 截止时间检查 — 跳过已开球或不足15分钟的场次
     skipped_deadline = []
@@ -334,10 +377,33 @@ def generate_plan(matches: list) -> dict:
     dyn_singles.update(RULE.get("single_matches", []))
 
     classified = list(results.values())
-    conservative_pool = [c for c in classified if c["is_conservative"]]
-    banker_pool = [c for c in classified if c["is_banker"]]
-    usable_pool = [c for c in classified if c["is_usable"] and not c["is_excluded"]]
-    excluded_pool = [c for c in classified if c["is_excluded"]]
+
+    # v4.0: 正EV筛选
+    # 检测SP是真实数据还是模型估算(真实SP的概率和≠估算值)
+    real_sp_count = sum(1 for c in classified if _match_sp(c["match_id"]))
+    using_real_sp = real_sp_count >= len(classified) * 0.5
+
+    if using_real_sp:
+        classified_ev = filter_value_bets(classified)
+        # 需至少3场非排除场次才能形成有效方案
+        usable_ev = [c for c in classified_ev if not c.get("is_excluded")]
+        if len(usable_ev) >= 3:
+            classified = classified_ev
+        else:
+            # EV过滤后可用场次不足, 回退全量+标注EV
+            for c in classified:
+                val = compute_value(c["match_id"], c["direction"], c["dir_prob"])
+                c["value"] = val; c["is_value"] = val["is_value"]; c["ev_score"] = val["ev"]
+    else:
+        # SP为估算值, EV不可靠, 直接按分类
+        for c in classified:
+            c["value"] = {"ev": 0, "edge": 0, "is_value": True, "note": "SP估算"}
+            c["is_value"] = True; c["ev_score"] = 0
+
+    conservative_pool = [c for c in classified if c.get("is_conservative")]
+    banker_pool = [c for c in classified if c.get("is_banker")]
+    usable_pool = [c for c in classified if c.get("is_usable") and not c.get("is_excluded")]
+    excluded_pool = [c for c in classified if c.get("is_excluded")]
     draw_pool = [c for c in classified if c["direction"] == "draw" and c["dir_prob"] >= 40]
 
     # 稳胆: 最优单场
@@ -471,9 +537,17 @@ def generate_plan(matches: list) -> dict:
         else:
             return f"⚠️ {label}赔率{odds}偏高(>2.5), 准确率可能不足50%"
 
+    # EV统计
+    all_evs = [c.get("ev_score", 0) for c in classified if c.get("ev_score", 0) > 0]
+    ev_stats = {
+        "total": len(all_evs),
+        "avg_edge": round(sum(c.get("value", {}).get("edge", 0) for c in classified if c.get("value", {}).get("is_value")) / max(1, len(all_evs)), 1) if all_evs else 0
+    }
+
     plan = {
-        "generated_by": "模型自动输出 v3.1 (截止检查+动态SP+不推荐机制)",
+        "generated_by": "模型自动输出 v4.0 (正EV+选择性投注)",
         "total_budget": RULE["budget"],
+        "value_stats": ev_stats,
         "skipped": skipped_deadline,
         "classified": {
             "banker_pool": [c["match_name"] for c in banker_pool],
@@ -489,6 +563,8 @@ def generate_plan(matches: list) -> dict:
                 "match": banker["match_name"], "pick": banker["dir_name"], "match_id": banker["match_id"],
                 "model_prob": banker["dir_prob"], "est_odds": est_odds(banker["dir_prob"], match_id=banker["match_id"], direction=banker["direction"]),
                 "delta": banker["delta"], "cold": banker["cold_alert"],
+                "ev": banker.get("ev_score", 0),
+                "ev_str": f" EV+{banker['ev_score']:.0%}" if banker.get("ev_score", 0) > 0.01 else "",
                 "banker_reason": f"Δ={banker['delta']:.0f}, 概率{banker['dir_prob']}%, 全场最强方向信号",
                 "handicap_tip": banker.get("handicap_advice"),
             } if banker else None,
@@ -502,6 +578,8 @@ def generate_plan(matches: list) -> dict:
                 "match": b["match_name"], "pick": b["dir_name"], "match_id": b["match_id"],
                 "model_prob": b["dir_prob"], "est_odds": est_odds(b["dir_prob"], match_id=b["match_id"], direction=b["direction"]),
                 "delta": b["delta"], "cold": b["cold_alert"],
+                "ev": b.get("ev_score", 0),
+                "ev_str": f" EV+{b['ev_score']:.0%}" if b.get("ev_score", 0) > 0.01 else "",
                 "handicap_tip": b.get("handicap_advice"),
             } for b in conservative_bet],
             "est_odds": cons_combined, "est_return": round(b_conservative * cons_combined if cons_combined else 0),
@@ -531,6 +609,8 @@ def generate_plan(matches: list) -> dict:
             "bets": [{
                 "match": b["match_name"], "pick": b["dir_name"], "match_id": b["match_id"],
                 "model_prob": b["dir_prob"], "est_odds": est_odds(b["dir_prob"], match_id=b["match_id"], direction=b["direction"]),
+                "ev": b.get("ev_score", 0),
+                "ev_str": f" EV+{b['ev_score']:.0%}" if b.get("ev_score", 0) > 0.01 else "",
             } for b in flexi_bet],
             "detail": flexi_detail,
             "all_hit_return": flexi_return,
@@ -570,9 +650,13 @@ def format_lottery(plan: dict) -> str:
     L = []
     now_ts = datetime.now().strftime("%Y-%m-%d %H:%M")
     L.append("=" * 70)
-    L.append("  竞彩足球 2026世界杯 自动投注方案 v3.1")
+    L.append("  竞彩足球 2026世界杯 自动投注方案 v4.0")
     L.append(f"  生成时间: {now_ts}  |  预算: {plan['total_budget']}元")
-    L.append(f"  引擎: {plan['generated_by']}")
+    L.append(f"  算法: 正EV筛选 + 高置信优先 | 引擎: {plan['generated_by']}")
+    # Value stats
+    val_count = plan.get("value_stats", {})
+    if val_count:
+        L.append(f"  📊 正EV场次: {val_count.get('total',0)}场 | 平均edge: {val_count.get('avg_edge',0):+.1f}%")
     L.append("=" * 70)
 
     # Deadline skipped info
@@ -620,8 +704,15 @@ def format_lottery(plan: dict) -> str:
         L.append(f"{'─'*70}")
         for b in plan_dict.get("bets", []):
             extra = ""
+            ev_str = ""
             if "model_signal" in b: extra = f" ({b['model_signal']})"
             elif "model_prob" in b: extra = f" 概率{b['model_prob']}%"
+            # Show EV if available
+            ev_val = b.get("ev", 0)
+            if ev_val > 0.01:
+                ev_str = f"  EV+{ev_val:.0%}"
+            elif ev_val < -0.01:
+                ev_str = f"  EV{ev_val:.0%}"
             ht = b.get("handicap_tip", "")
             ht_str = ""
             if ht:
@@ -635,7 +726,8 @@ def format_lottery(plan: dict) -> str:
                     elif line < 0: ht_str = f"  💡让球: 让{abs(line)}球"
                     else: ht_str = f"  💡让球: 平手"
             time = MATCH_SCHEDULE.get(b.get("match_id",""), "")
-            L.append(f"  {time:<10} {b['match']:<36} → {b['pick']:<14}{extra} 估赔{b['est_odds']}{ht_str}")
+            ev_part = b.get("ev_str", "")
+            L.append(f"  {time:<10} {b['match']:<36} → {b['pick']:<14}{extra} 估赔{b['est_odds']}{ht_str}{ev_part}")
         if detail:
             L.append(f"  结构: {detail['structure']} | 每单位{detail.get('per_unit_cost','')} × {detail.get('units','')}倍 = {detail.get('actual_bet','')}元")
             pairs = detail.get("pairs", [])
@@ -677,5 +769,5 @@ def format_lottery(plan: dict) -> str:
         L.append(f"\n⚠️ 风险提示:")
         for n in plan["risk_notes"]: L.append(f"  • {n}")
 
-    L.append(f"\n📐 模型自动输出 v3.1 ({now_ts}) | 截止检查+动态SP+不推荐 | 竞彩90分钟赛果为准")
+    L.append(f"\n📐 模型自动输出 v4.0 ({now_ts}) | 正EV筛选+高置信优先 | 竞彩90分钟赛果为准 | 仅作参考")
     return "\n".join(L)
