@@ -168,6 +168,20 @@ def build_prob_matrix(xg_a: float, xg_b: float, max_goals: int = 8,
     # 最可能比分 Top-5
     all_probs.sort(key=lambda x: x["probability"], reverse=True)
 
+    # [v2.3] 确保Top比分与预测方向一致 (避免"主胜但比分1-1"的悖论)
+    pred_direction = "home" if win_prob > draw_prob and win_prob > lose_prob else \
+                     ("draw" if draw_prob >= win_prob and draw_prob >= lose_prob else "away")
+    dir_scores = {"home": [], "draw": [], "away": []}
+    for s in all_probs:
+        h, a = map(int, s["score"].split("-"))
+        if h > a: dir_scores["home"].append(s)
+        elif h == a: dir_scores["draw"].append(s)
+        else: dir_scores["away"].append(s)
+    # Top3: 优先预测方向, 其余按概率补充(共5个)
+    top_matching = dir_scores[pred_direction][:3]
+    other_scores = [s for s in all_probs if s not in top_matching]
+    top_scores_out = (top_matching + other_scores)[:5]
+
     return {
         "xg_home": round(xg_a, 2),
         "xg_away": round(xg_b, 2),
@@ -175,7 +189,7 @@ def build_prob_matrix(xg_a: float, xg_b: float, max_goals: int = 8,
         "win_pct": round(win_prob * 100, 1),
         "draw_pct": round(draw_prob * 100, 1),
         "lose_pct": round(lose_prob * 100, 1),
-        "top_scores": all_probs[:5]
+        "top_scores": top_scores_out
     }
 
 
