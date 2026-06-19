@@ -15,10 +15,10 @@ from typing import Tuple, List, Dict
 # 世界杯历史场均进球中位数
 BASELINE_XG = 1.35
 
-# P0: 平局加成系数
+# P0: 平局加成系数 (v2.2: 修复double-multiply后补偿)
 DRAW_BONUS = {
-    "group_1": 1.6,   # 首轮：保守试探+弱队摆大巴
-    "group_2": 1.3,   # 次轮：部分球队需要抢分
+    "group_1": 2.0,   # 首轮：保守试探+弱队摆大巴
+    "group_2": 1.6,   # 次轮：部分球队需要抢分
     "group_3": 1.0,   # 末轮：恢复正常
     "ko": 0.8,        # 淘汰赛：必须分胜负
 }
@@ -139,16 +139,17 @@ def build_prob_matrix(xg_a: float, xg_b: float, max_goals: int = 8,
         else:
             strength = 1.0   # 势均力敌, 完整加成
 
+        # [v2.2] 实力差感知: 差距越大平局越不可能, 降低加成避免概率压缩
+        if score_gap > 25:
+            strength *= 0.5
+        elif score_gap > 18:
+            strength *= 0.7
+        elif score_gap > 12:
+            strength *= 0.85
+
         effective_draw_bonus = 1.0 + (effective_draw_bonus - 1.0) * strength
     if effective_draw_bonus != 1.0:
         draw_prob *= effective_draw_bonus
-        # 从胜/负中各扣一半
-        excess = (draw_prob * effective_draw_bonus - draw_prob) / effective_draw_bonus
-        # 实际上重新归一化更干净
-        # 平局放大后归一化
-        win_prob = win_prob
-        draw_prob = draw_prob * effective_draw_bonus
-        lose_prob = lose_prob
         total2 = win_prob + draw_prob + lose_prob
         if total2 > 0:
             win_prob /= total2
@@ -158,8 +159,8 @@ def build_prob_matrix(xg_a: float, xg_b: float, max_goals: int = 8,
     # P0: 实力悬殊-平局悖论 (强队围攻无果模式)
     # 在调用层处理, 此处根据score_gap做微调
     if score_gap > 25:
-        # 大差距下平局概率微增（强队久攻不下）
-        draw_paradox_shift = min(0.03, draw_prob * 0.15)
+        # 大差距下平局微调 (v2.2: 降至1pp, 不与屠杀模式矛盾)
+        draw_paradox_shift = min(0.01, draw_prob * 0.05)
         win_prob -= draw_paradox_shift * 0.7
         draw_prob += draw_paradox_shift
         lose_prob -= draw_paradox_shift * 0.3
@@ -186,14 +187,14 @@ def apply_gossip_shift(result: Dict, home_gossip_deduction: float, away_gossip_d
     gap = abs(home_gossip_deduction - away_gossip_deduction)
 
     if gap >= 10:
-        upset_shift = 8
-        draw_shift = 2
+        upset_shift = 4
+        draw_shift = 1
     elif gap >= 5:
-        upset_shift = 5
-        draw_shift = 1
-    elif gap >= 2:
         upset_shift = 2
-        draw_shift = 1
+        draw_shift = 0
+    elif gap >= 2:
+        upset_shift = 1
+        draw_shift = 0
     else:
         return result
 
