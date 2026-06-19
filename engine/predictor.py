@@ -6,7 +6,10 @@
 """
 import json
 from pathlib import Path
-from .hard_data import hard_data_score, team_defense_score
+from .hard_data import (hard_data_score, team_defense_score,
+                          defensive_resilience, attacking_conversion,
+                          xg_proxy, match_style, style_matchup_bonus,
+                          player_availability_impact, fatigue_penalty)
 from .betting import betting_score
 from .gossip import gossip_score
 from .poisson import predict_match
@@ -122,7 +125,28 @@ def predict(head_to_head: str) -> dict:
     home_cpg = r5_h["ga"] / 5
     away_cpg = r5_a["ga"] / 5
 
-    # 泊松预测 [v2.1]
+    # [v2.3] 防守韧性 + 进攻转化率
+    home_dr = defensive_resilience(home_id)
+    away_dr = defensive_resilience(away_id)
+    home_ac = attacking_conversion(home_id)
+    away_ac = attacking_conversion(away_id)
+
+    # [v2.3 P1] xG代理 + 比赛风格
+    home_xg = xg_proxy(home_id)
+    away_xg = xg_proxy(away_id)
+    home_style = match_style(home_id)
+    away_style = match_style(away_id)
+    style_bonus = style_matchup_bonus(home_style, away_style)
+
+    # [v2.3 P2] 球员可用性 + 体能
+    from datetime import date
+    home_pp = player_availability_impact(home_id)
+    away_pp = player_availability_impact(away_id)
+    today_str = date.today().strftime("%m/%d").lstrip("0")
+    home_fat = fatigue_penalty(home_id, today_str)
+    away_fat = fatigue_penalty(away_id, today_str)
+
+    # 泊松预测 [v2.3]
     result = predict_match(
         home_score=home_final["total"],
         away_score=away_final["total"],
@@ -136,8 +160,36 @@ def predict(head_to_head: str) -> dict:
         home_goals_per_game=home_gpg,
         away_goals_per_game=away_gpg,
         home_conceded=home_cpg,
-        away_conceded=away_cpg
+        away_conceded=away_cpg,
+        home_def_resilience=home_dr,
+        away_def_resilience=away_dr,
+        home_att_conversion=home_ac,
+        away_att_conversion=away_ac,
+        home_xg_off=home_xg["offensive"],
+        away_xg_off=away_xg["offensive"],
+        home_xg_def=home_xg["defensive"],
+        away_xg_def=away_xg["defensive"],
+        style_bonus=style_bonus,
+        home_player_penalty=home_pp,
+        away_player_penalty=away_pp,
+        home_fatigue=home_fat,
+        away_fatigue=away_fat
     )
+
+    # [v2.3] SP市场先验融合 — 贝叶斯约束模型输出
+    sp = load_json("sp.json")
+    match_sp = sp.get("matches", {}).get(f"{home_id}-{away_id}", {})
+    if match_sp and match_sp.get("home", 0) > 0:
+        # 去边际化: 归一化隐含概率
+        inv_sum = 1/match_sp["home"] + 1/match_sp["draw"] + 1/match_sp["away"]
+        mkt_home = (1/match_sp["home"]) / inv_sum
+        mkt_draw = (1/match_sp["draw"]) / inv_sum
+        mkt_away = (1/match_sp["away"]) / inv_sum
+        # 贝叶斯融合: 模型85% + 市场15%
+        w = 0.15
+        result["win_pct"] = round(result["win_pct"] * (1-w) + mkt_home * 100 * w, 1)
+        result["draw_pct"] = round(result["draw_pct"] * (1-w) + mkt_draw * 100 * w, 1)
+        result["lose_pct"] = round(result["lose_pct"] * (1-w) + mkt_away * 100 * w, 1)
 
     delta = round(home_final["total"] - away_final["total"], 1)
 

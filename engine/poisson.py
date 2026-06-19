@@ -254,12 +254,20 @@ def predict_match(home_score: float, away_score: float,
                   market_total_goals: float = None,
                   match_round: str = "group_1", temperature: float = 25.0,
                   home_goals_per_game: float = 1.5, away_goals_per_game: float = 1.5,
-                  home_conceded: float = 1.5, away_conceded: float = 1.5) -> Dict:
+                  home_conceded: float = 1.5, away_conceded: float = 1.5,
+                  home_def_resilience: float = 50, away_def_resilience: float = 50,
+                  home_att_conversion: float = 50, away_att_conversion: float = 50,
+                  home_xg_off: float = 1.5, away_xg_off: float = 1.5,
+                  home_xg_def: float = 1.5, away_xg_def: float = 1.5,
+                  style_bonus: float = 0.0,
+                  home_player_penalty: float = 0.0, away_player_penalty: float = 0.0,
+                  home_fatigue: float = 0.0, away_fatigue: float = 0.0) -> Dict:
     """
-    完整比赛预测 [v2.1]
-    match_round: group_1/group_2/group_3/ko [P0]
-    temperature: 比赛温度(°C) [P0]
-    *_goals_per_game/conceded: 近5场攻防数据 [P1屠杀因子]
+    完整比赛预测 [v2.3]
+    *_xg_off/def: xG代理值 [P1]
+    style_bonus: 风格相克加成(±2) [P1]
+    *_player_penalty: 关键球员缺阵惩罚(0-10) [P2]
+    *_fatigue: 体能耗损(0-5) [P2]
     返回: {xg, win/draw/lose%, top_scores, cold_alert}
     """
     score_gap = abs(home_score - away_score)
@@ -284,8 +292,48 @@ def predict_match(home_score: float, away_score: float,
         elif gap > 30:
             away_slaughter = 1.3
 
+    # [v2.3] 防守韧性: 弱队摆大巴 → 降低强队xG
+    home_def_factor = 1.0
+    away_def_factor = 1.0
+    if home_score < away_score and home_def_resilience > 60:
+        # 主队是弱队但防守好 → 压制客队进攻
+        home_def_factor = 1.0 - (home_def_resilience - 60) / 200  # max -20%
+    if away_score < home_score and away_def_resilience > 60:
+        away_def_factor = 1.0 - (away_def_resilience - 60) / 200
+
+    # [v2.3] 进攻转化率: 把握机会能力强 → xG加成
+    home_att_factor = 1.0 + max(0, (home_att_conversion - 55)) / 200  # max +22%
+    away_att_factor = 1.0 + max(0, (away_att_conversion - 55)) / 200
+
     xg_home = score_to_xg(home_score, away_defense, home_slaughter)
     xg_away = score_to_xg(away_score, home_defense, away_slaughter)
+
+    # Apply factor modifiers
+    xg_home = xg_home * home_def_factor * home_att_factor
+    xg_away = xg_away * away_def_factor * away_att_factor
+
+    # [v2.3 P1] xG代理: 用近5场实际进球/失球微调(30%权重)
+    xg_home = xg_home * 0.70 + home_xg_off * 0.30
+    xg_away = xg_away * 0.70 + away_xg_off * 0.30
+
+    # [v2.3 P1] 风格相克: 正数利好主队
+    if style_bonus > 0:
+        xg_home *= 1.0 + style_bonus / 50  # +2 → +4%
+        xg_away *= 1.0 - style_bonus / 100
+    elif style_bonus < 0:
+        xg_away *= 1.0 - style_bonus / 50
+        xg_home *= 1.0 + style_bonus / 100
+
+    # [v2.3 P2] 关键球员缺阵: 直接降低xG
+    xg_home *= max(0.7, 1.0 - home_player_penalty / 30)  # 10分→-33%
+    xg_away *= max(0.7, 1.0 - away_player_penalty / 30)
+
+    # [v2.3 P2] 体能惩罚: 疲劳→降低xG
+    xg_home *= max(0.8, 1.0 - home_fatigue / 25)  # 5分→-20%
+    xg_away *= max(0.8, 1.0 - away_fatigue / 25)
+
+    xg_home = max(0.2, xg_home)
+    xg_away = max(0.2, xg_away)
 
     result = build_prob_matrix(xg_home, xg_away,
                                match_round=match_round,

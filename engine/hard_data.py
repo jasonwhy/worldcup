@@ -308,3 +308,152 @@ def team_defense_score(team_id: str) -> float:
                 defense_injury_penalty += 0.75
 
     return min(100, max(10, conceded_rate * 100 - defense_injury_penalty * 10))
+
+
+def defensive_resilience(team_id: str) -> float:
+    """防守韧性因子 (0-100): 弱队摆大巴能力 → 提升平局概率"""
+    teams = load_json("teams.json")
+    team = teams.get(team_id)
+    if not team:
+        return 50
+    r5 = team["recent_5"]
+    conceded = r5["ga"]
+    # 零封率: 完全没失球的场次比例
+    cs_rate = max(0, (5 - conceded) / 5) if conceded <= 5 else 0
+    # 场均失球越低, 韧性越高
+    conceded_per_game = conceded / 5
+    # 综合: 零封率60% + 失球少40%
+    score = cs_rate * 60 + max(0, (1 - conceded_per_game / 3) * 40)
+    return round(min(100, max(0, score)), 1)
+
+
+def attacking_conversion(team_id: str) -> float:
+    """进攻转化率因子 (0-100): 把握机会能力 → 降低被误判平局"""
+    teams = load_json("teams.json")
+    team = teams.get(team_id)
+    if not team:
+        return 50
+    r5 = team["recent_5"]
+    gf = r5["gf"]
+    ga = r5["ga"]
+    gpg = gf / 5  # 场均进球
+    net = (gf - ga) / 5  # 场均净胜
+    # 进球能力50% + 净胜球50%
+    score = min(2.0, gpg) / 2.0 * 50 + max(-1.0, min(3.0, net)) / 2.5 * 50 + 25
+    return round(min(100, max(0, score)), 1)
+
+
+# ============================================================
+# P1: xG代理 + 比赛风格 + 球员可用性 + 体能耗损
+# ============================================================
+
+def xg_proxy(team_id: str) -> dict:
+    """xG代理: 从近5场进球/失球估算进攻和防守xG"""
+    teams = load_json("teams.json")
+    team = teams.get(team_id)
+    if not team:
+        return {"offensive": 1.5, "defensive": 1.5, "net": 0.0}
+    r5 = team["recent_5"]
+    gf, ga = r5["gf"], r5["ga"]
+    off_xg = gf / 5  # 场均进球 = 进攻xG代理
+    def_xg = ga / 5  # 场均失球 = 防守xG代理
+    net = off_xg - def_xg
+    return {
+        "offensive": round(off_xg, 2),
+        "defensive": round(def_xg, 2),
+        "net": round(net, 2)
+    }
+
+
+def match_style(team_id: str) -> str:
+    """比赛风格分类: 基于近5场攻防数据"""
+    teams = load_json("teams.json")
+    team = teams.get(team_id)
+    if not team:
+        return "balanced"
+    r5 = team["recent_5"]
+    gpg = r5["gf"] / 5
+    cpg = r5["ga"] / 5
+    if gpg > 2.0 and cpg < 0.8:
+        return "dominant"     # 攻防俱佳
+    if gpg > 2.0:
+        return "attacking"     # 重攻轻守
+    if gpg < 1.5 and cpg < 0.8:
+        return "defensive"     # 摆大巴
+    if 1.0 <= gpg < 2.0 and cpg >= 0.8:
+        return "counter"       # 反击型
+    return "balanced"
+
+
+def style_matchup_bonus(home_style: str, away_style: str) -> float:
+    """风格相克加成 → 正数利好主队"""
+    matrix = {
+        ("counter", "dominant"): 2.0,     # 反击克控球
+        ("counter", "attacking"): 1.5,
+        ("defensive", "attacking"): 1.5,  # 大巴克制进攻
+        ("defensive", "dominant"): 1.0,
+        ("dominant", "defensive"): 1.5,   # 控球破大巴
+        ("attacking", "defensive"): 1.0,
+        ("attacking", "counter"): -1.0,   # 进攻被反击克制
+        ("dominant", "counter"): -1.5,
+    }
+    return matrix.get((home_style, away_style), 0.0)
+
+
+def player_availability_impact(team_id: str) -> float:
+    """关键球员缺阵影响 (0-10分惩罚)"""
+    injuries = load_json("injuries.json")
+    teams = load_json("teams.json")
+    team = teams.get(team_id)
+    if not team or team_id not in injuries:
+        return 0.0
+
+    penalty = 0.0
+    kp = team.get("key_players", {})
+    for inj in injuries[team_id]:
+        if inj["status"] not in ("out", "out_retired", "doubtful"):
+            continue
+        player_name = inj["player"]
+        irreplaceability = inj.get("irreplaceability", 0.5)
+        # 检查是否关键球员
+        is_key = False
+        for role, pinfo in kp.items():
+            if isinstance(pinfo, dict) and pinfo.get("name", "") == player_name:
+                is_key = True
+                break
+        weight = 2.0 if is_key else 0.5
+        mult = 1.0 if inj["status"] in ("out", "out_retired") else 0.3
+        penalty += irreplaceability * weight * mult
+    return round(min(10, penalty), 1)
+
+
+def fatigue_penalty(team_id: str, match_date: str = None) -> float:
+    """体能惩罚: 基于距上一场比赛天数 (0-5分)"""
+    if not match_date:
+        return 0.0
+    from datetime import date
+    results = load_json("results.json")
+    # 找到该队最近一场比赛
+    last_date = None
+    for m in sorted(results["matches"], key=lambda x: x["date"], reverse=True):
+        if m["home"] == team_id or m["away"] == team_id:
+            last_date = m["date"]
+            break
+    if not last_date:
+        return 0.0
+    try:
+        md_parts = match_date.split("/")
+        ld_parts = last_date.split("/")
+        md = date(2026, int(md_parts[0]), int(md_parts[1]))
+        ld = date(2026, int(ld_parts[0]), int(ld_parts[1]))
+        days = (md - ld).days
+        if days <= 2:
+            return 4.0  # 严重疲劳
+        elif days == 3:
+            return 2.0  # 中度疲劳
+        elif days == 4:
+            return 1.0  # 轻微疲劳
+        else:
+            return 0.0
+    except:
+        return 0.0
