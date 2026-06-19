@@ -334,18 +334,39 @@ for match_id, time_str in sorted(MATCH_SCHEDULE.items()):
     if d not in upcoming_dates: upcoming_dates[d] = []
     upcoming_dates[d].append((match_id, t))
 
-# Generate per-date betting content
+# Generate per-date betting content (sorted by date, default to nearest)
 bet_date_tabs = ""
 bet_date_panels = ""
-first_date = True
-
+# Score each date for recommendation (average confidence level)
+date_scores = {}
 for bdate, bmatches in upcoming_dates.items():
+    total_max_pct = 0
+    count = 0
+    for bmid, _ in bmatches:
+        try:
+            p = predict(bmid)
+            if "error" not in p:
+                wp, dp, lp = p["prediction"]["win_pct"], p["prediction"]["draw_pct"], p["prediction"]["lose_pct"]
+                total_max_pct += max(wp, dp, lp)
+                count += 1
+        except: pass
+    date_scores[bdate] = round(total_max_pct / max(1, count), 1)
+
+# Sort dates chronologically
+sorted_dates = sorted(upcoming_dates.keys(), key=lambda x: (int(x.split('/')[0]), int(x.split('/')[1])))
+hot_date = max(date_scores, key=date_scores.get) if date_scores else sorted_dates[0]
+
+first_panel = True
+for bdate in sorted_dates:
+    bmatches = upcoming_dates[bdate]
     match_ids = [m[0] for m in bmatches]
     date_label = f"{bdate} ({len(bmatches)}场)"
+    is_hot = (bdate == hot_date)
+    hot_tag = ' 🔥' if is_hot else ''
     bdate_safe = bdate.replace("/","-")
-    active_cls = "active" if first_date else ""
-    bet_date_tabs += f'<button class="bet-date-tab {active_cls}" onclick="showBetDate(\'bet-{bdate_safe}\',this)">{date_label}</button>'
-    first_date = False
+    active_cls = "active" if first_panel else ""
+    bet_date_tabs += f'<button class="bet-date-tab {active_cls}" onclick="showBetDate(\'bet-{bdate_safe}\',this)">{date_label}{hot_tag}</button>'
+    first_panel = False
 
     try:
         plan = generate_plan(match_ids)
@@ -390,7 +411,7 @@ for bdate, bmatches in upcoming_dates.items():
         except:
             match_cards += f"""<div class="bet-card"><div class="bet-teams">{flag(hn)} vs {flag(an)}</div></div>"""
 
-    active_panel = 'style="display:block"' if bdate == list(upcoming_dates.keys())[0] else 'style="display:none"'
+    active_panel = 'style="display:block"' if bdate == sorted_dates[0] else 'style="display:none"'
     bet_date_panels += f"""<div id="bet-{bdate_safe}" class="bet-date-panel" {active_panel}>
     <div class="bet-matches-grid">{match_cards}</div>
     <div class="bet-plan-section">
