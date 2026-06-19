@@ -839,6 +839,7 @@ function showBetDate(id,btn){{
   document.querySelectorAll('.bet-date-tab').forEach(b=>b.classList.remove('active'));
   document.getElementById(id).style.display='block';
   btn.classList.add('active');
+  localStorage.setItem('activeBetDate', id);
 }}
 // 恢复上次Tab
 (function(){{
@@ -859,6 +860,13 @@ function showBetDate(id,btn){{
     document.querySelectorAll('.sub-panel').forEach(p=>p.style.display='none');
     document.querySelectorAll('.sub-tab').forEach(b=>b.classList.remove('active'));
     document.getElementById(savedSub).style.display='block';
+  }}
+  // 恢复方案分日Tab
+  var savedBetDate = localStorage.getItem('activeBetDate');
+  if (savedBetDate && document.getElementById(savedBetDate)) {{
+    document.querySelectorAll('.bet-date-panel').forEach(p=>p.style.display='none');
+    document.querySelectorAll('.bet-date-tab').forEach(b=>b.classList.remove('active'));
+    document.getElementById(savedBetDate).style.display='block';
   }}
 }})();
 // 智能刷新
