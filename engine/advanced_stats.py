@@ -87,10 +87,59 @@ def offensive_pressure(team_id: str) -> float:
     return round(min(100, spm / 15 * 50 + acc * 0.5), 1)
 
 
+def fouls_per_match(team_id: str) -> float:
+    """场均犯规 — 侵略性/身体对抗强度"""
+    dq = load_dq()
+    t = dq["teams"].get(team_id, {})
+    fouls = t.get("fouls", 0)
+    groups = json.load(open(DATA_DIR / "groups.json"))
+    played = 1
+    for gid, gdata in groups.items():
+        if team_id in gdata["teams"]:
+            played = gdata["standings"][team_id]["p"]
+            break
+    return round(fouls / max(1, played), 1)
+
+
+def team_pass_accuracy(team_id: str) -> float:
+    """团队传球成功率"""
+    dq = load_dq()
+    t = dq["teams"].get(team_id, {})
+    return t.get("pass_accuracy", 75)
+
+
+def saves_per_match(team_id: str) -> float:
+    """场均扑救 — 高值=防线压力大"""
+    dq = load_dq()
+    t = dq["teams"].get(team_id, {})
+    saves = t.get("saves", 0)
+    groups = json.load(open(DATA_DIR / "groups.json"))
+    played = 1
+    for gid, gdata in groups.items():
+        if team_id in gdata["teams"]:
+            played = gdata["standings"][team_id]["p"]
+            break
+    return round(saves / max(1, played), 1)
+
+
+def offsides_per_match(team_id: str) -> float:
+    """场均越位 — 高值=激进进攻线"""
+    dq = load_dq()
+    t = dq["teams"].get(team_id, {})
+    offsides = t.get("offsides", 0)
+    groups = json.load(open(DATA_DIR / "groups.json"))
+    played = 1
+    for gid, gdata in groups.items():
+        if team_id in gdata["teams"]:
+            played = gdata["standings"][team_id]["p"]
+            break
+    return round(offsides / max(1, played), 1)
+
+
 def dongqiudi_bonus(home_id: str, away_id: str) -> dict:
     """
     懂球帝数据综合加成 → 正数利主队
-    返回: {home_bonus, away_bonus, reasons}
+    返回: {bonus, details, reasons}
     """
     home_sa = shot_accuracy(home_id)
     away_sa = shot_accuracy(away_id)
@@ -100,42 +149,61 @@ def dongqiudi_bonus(home_id: str, away_id: str) -> dict:
     away_df = defensive_fragility(away_id)
     home_gk = goalkeeper_quality(home_id)
     away_gk = goalkeeper_quality(away_id)
+    home_pass = team_pass_accuracy(home_id)
+    away_pass = team_pass_accuracy(away_id)
+    home_fouls = fouls_per_match(home_id)
+    away_fouls = fouls_per_match(away_id)
 
     reasons = []
     bonus = 0.0
 
-    # 射正率差异: 高效 vs 低效
+    # 射正率 (权重1)
     sa_diff = home_sa - away_sa
-    if abs(sa_diff) > 15:
-        b = 2.5 if sa_diff > 0 else -2.5
+    if abs(sa_diff) > 12:
+        b = 2.0 if sa_diff > 0 else -2.0
         bonus += b
-        reasons.append(f"射正率差{sa_diff:+.0f}%")
+        reasons.append(f"射正差{sa_diff:+.0f}%")
 
-    # 创造力差异
+    # 创造力 (权重1)
     cr_diff = home_cr - away_cr
     if abs(cr_diff) > 3:
         b = 1.5 if cr_diff > 0 else -1.5
         bonus += b
-        reasons.append(f"创造力差{cr_diff:+.1f}次/场")
+        reasons.append(f"创造力差{cr_diff:+.1f}次")
 
-    # 防守脆弱度
+    # 防守脆弱度 (权重1)
     df_diff = away_df - home_df
     if abs(df_diff) > 15:
         b = 1.5 if df_diff > 0 else -1.5
         bonus += b
         reasons.append(f"防守差{df_diff:+.0f}分")
 
-    # 门将差距
+    # 门将 (权重1)
     gk_diff = home_gk - away_gk
     if abs(gk_diff) > 25:
         b = 1.5 if gk_diff > 0 else -1.5
         bonus += b
         reasons.append(f"门将差{gk_diff:+.0f}分")
 
+    # 传球成功率 (权重0.5)
+    pass_diff = home_pass - away_pass
+    if abs(pass_diff) > 8:
+        b = 1.0 if pass_diff > 0 else -1.0
+        bonus += b
+        reasons.append(f"传球差{pass_diff:+.0f}%")
+
+    # 犯规/侵略性 (负相关: 太多犯规不利控球)
+    fouls_diff = away_fouls - home_fouls
+    if abs(fouls_diff) > 8:
+        b = 0.8 if fouls_diff > 0 else -0.8
+        bonus += b
+        reasons.append(f"犯规差{fouls_diff:+.0f}次")
+
     return {
-        "bonus": round(bonus, 1),
+        "bonus": round(min(5.0, max(-5.0, bonus)), 1),
         "home_sa": home_sa, "away_sa": away_sa,
         "home_cr": home_cr, "away_cr": away_cr,
         "home_gk": home_gk, "away_gk": away_gk,
+        "home_pass": home_pass, "away_pass": away_pass,
         "reasons": reasons
     }
