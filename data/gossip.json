@@ -425,11 +425,13 @@
     "political": {
       "level": 0,
       "score": 0,
-      "reason": ""
+      "reason": "",
+      "original_score": 0
     },
     "player_off_field": {
       "score": 0,
-      "reason": ""
+      "reason": "",
+      "original_score": 0
     }
   },
   "CAN": {
@@ -442,11 +444,13 @@
     "political": {
       "level": 0,
       "score": 0,
-      "reason": ""
+      "reason": "",
+      "original_score": 0
     },
     "player_off_field": {
       "score": 0,
-      "reason": ""
+      "reason": "",
+      "original_score": 0
     }
   },
   "QAT": {
@@ -459,11 +463,13 @@
     "political": {
       "level": 0,
       "score": 0,
-      "reason": ""
+      "reason": "",
+      "original_score": 0
     },
     "player_off_field": {
       "score": 0,
-      "reason": ""
+      "reason": "",
+      "original_score": 0
     }
   }
 }
