@@ -454,11 +454,17 @@ def generate_plan(matches: list) -> dict:
     b_aggressive = int(RULE["budget"] * RULE["aggressive_pct"])
     b_reserve = RULE["budget"] - b_banker - b_conservative - b_balanced - b_flexi - b_aggressive
 
-    # 回收跳过层级预算
+    # 回收跳过层级预算 → 优先补充稳健仓
     if not banker: b_reserve += b_banker; b_banker = 0
-    if len(conservative_bet) < 2: b_reserve += b_conservative; b_conservative = 0
     if not (balanced_wdl and balanced_tg): b_reserve += b_balanced; b_balanced = 0
     if len(aggressive_bet) < 3: b_reserve += b_aggressive; b_aggressive = 0
+    # 稳健2串1可用时 → 其他仓跳过的预算补充到稳健仓(最可靠)
+    if len(conservative_bet) >= 2:
+        extra = b_reserve * 0.5  # 保留金的一半给稳健仓
+        b_conservative += int(extra)
+        b_reserve -= int(extra)
+    elif len(conservative_bet) < 2:
+        b_reserve += b_conservative; b_conservative = 0
 
     # 单关推荐: 从动态单关列表中选方向明确的场次
     single_bets = []
