@@ -119,19 +119,31 @@ def recent_form(team: dict) -> float:
 
 
 def injury_penalty(team_id: str) -> float:
-    """2.3 伤病折损 (返回扣分值, 0=无伤病)"""
+    """2.3 伤病折损 (含连坐惩罚: 同位置≥2人缺阵 → ×1.5)"""
     injuries = load_json("injuries.json")
     if team_id not in injuries:
         return 0.0
 
     penalty = 0.0
+    pos_count = {}  # Track positions
     for inj in injuries[team_id]:
         if inj["status"] in ("out", "out_retired"):
             penalty += 1.0 * inj["irreplaceability"]
+            pos = inj.get("position", "unknown")
+            pos_count[pos] = pos_count.get(pos, 0) + 1
         elif inj["status"] == "doubtful":
             penalty += 0.5 * inj["irreplaceability"]
 
-    return min(10, penalty)
+    # 连坐: 同位置≥2人缺阵 → 协同效应
+    chain_penalty = 0.0
+    for pos, count in pos_count.items():
+        if count >= 3:
+            chain_penalty += 2.0  # 整条线瘫痪 (巴西锋线)
+        elif count >= 2:
+            chain_penalty += 1.0  # 双核缺阵 (日本中场)
+
+    penalty += chain_penalty
+    return min(12, penalty)
 
 
 def tournament_momentum(team_id: str) -> float:
@@ -236,6 +248,14 @@ def hard_data_score(team_id: str, opponent_id: str = None) -> dict:
     injury = injury_penalty(team_id)
     momentum = tournament_momentum(team_id)  # R1正赛动量
 
+    # 轮次态势修正 (v2.0)
+    round_bonus = 0
+    if opponent_id:
+        try:
+            from .round_factor import round_momentum_adjust
+            round_bonus = round_momentum_adjust(team_id, opponent_id)
+        except: pass
+
     # 球员+战术对位修正
     matchup_bonus = 0
     if opponent_id:
@@ -246,13 +266,14 @@ def hard_data_score(team_id: str, opponent_id: str = None) -> dict:
         except Exception:
             pass
 
-    # 归一化: 基础+状态+伤病+赛事动量+对位
+    # 归一化: 基础+状态+伤病+赛事动量+轮次+对位
     injury_score = max(0, 100 - injury * 10)
     momentum_score = 50 + momentum * 10  # 动量-5~+5 → 0~100
+    round_score = 50 + round_bonus * 3   # 轮次动力±3 → 0~100
 
-    # 基础:40% 状态:35% 伤病:12% 动量:5% 对位:8%
-    final = (base * 0.40 + form * 0.35 + injury_score * 0.12 +
-            momentum_score * 0.05 + (50 + matchup_bonus * 5) * 0.08)
+    # 基础:38% 状态:33% 伤病:10% 动量:5% 轮次:4% 对位:10%
+    final = (base * 0.38 + form * 0.33 + injury_score * 0.10 +
+            momentum_score * 0.05 + round_score * 0.04 + (50 + matchup_bonus * 5) * 0.10)
     return {
         "score": round(final, 1),
         "detail": {

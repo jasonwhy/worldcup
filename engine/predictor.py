@@ -32,7 +32,16 @@ def final_score(team_id: str, opponent_id: str = None) -> dict:
     betting = betting_score(team_id, opponent_id)
     gossip = gossip_score(team_id)
 
-    final = hard["score"] * 0.50 + betting["score"] * 0.30 + gossip["score"] * 0.20
+    # 政治因子精准加权: level>=3时gossip权重从20%升至25%
+    pol_level = gossip.get("detail", {}).get("political_level", 0)
+    if pol_level >= 4:
+        gw = 0.25; hw = 0.47; bw = 0.28
+    elif pol_level >= 2:
+        gw = 0.22; hw = 0.48; bw = 0.30
+    else:
+        gw = 0.20; hw = 0.50; bw = 0.30
+
+    final = hard["score"] * hw + betting["score"] * bw + gossip["score"] * gw
 
     return {
         "team_id": team_id,

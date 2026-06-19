@@ -40,8 +40,11 @@ def score_to_xg(total_score: float, defense_score: float = 50,
     defense_factor = 1 - (defense_score - 50) / 200
     xg = xg * defense_factor
 
-    # P1: 屠杀因子
-    xg = xg * slaughter_factor
+    # P3: 屠杀因子 (大差距时放大)
+    if slaughter_factor >= 1.4:
+        xg = xg * slaughter_factor * 1.2  # 屠杀加成额外20%
+    else:
+        xg = xg * slaughter_factor
 
     return max(0.2, xg)
 
@@ -63,25 +66,34 @@ def build_prob_matrix(xg_a: float, xg_b: float, max_goals: int = 8,
     score_gap: 两队总分差 [P1] 用于判断是否放宽大比分过滤
     返回: {probs, win%, draw%, lose%, top_scores}
     """
-    # 生成0-max_goals球的概率分布
-    prob_a = {k: poisson_prob(xg_a, k) for k in range(max_goals + 1)}
-    prob_b = {k: poisson_prob(xg_b, k) for k in range(max_goals + 1)}
+    # [P3屠杀模式] 大差距时扩展比分范围, 不压缩强队进球
+    slaughter_mode = score_gap > 25  # 屠杀阈值
+    if score_gap > 30:
+        actual_max = 10
+    elif score_gap > 25:
+        actual_max = 9
+    else:
+        actual_max = max_goals
 
-    # 全概率矩阵
+    prob_a = {k: poisson_prob(xg_a, k) for k in range(actual_max + 1)}
+    prob_b = {k: poisson_prob(xg_b, k) for k in range(actual_max + 1)}
+
     all_probs = []
     win_prob = 0
     draw_prob = 0
     lose_prob = 0
 
-    for a in range(max_goals + 1):
-        for b in range(max_goals + 1):
+    for a in range(actual_max + 1):
+        for b in range(actual_max + 1):
             p = prob_a[a] * prob_b[b]
 
-            # P1优化: 大比分过滤从0.5放宽到0.7, 且差距>30不应用
-            if score_gap > 30:
-                pass  # 屠杀可能, 不过滤
+            # P3: 屠杀模式不过滤, 常规模式大比分压制系数从0.7降到0.85
+            if slaughter_mode:
+                pass  # 屠杀不过滤
+            elif score_gap > 30:
+                pass  # 大差距不过滤
             elif (a >= 4 and b >= 4) or (a == 0 and b >= 6) or (b == 0 and a >= 6):
-                p *= 0.7
+                p *= 0.85  # P3: 从0.7放宽
 
             all_probs.append({
                 "score": f"{a}-{b}",
@@ -251,19 +263,25 @@ def predict_match(home_score: float, away_score: float,
     """
     score_gap = abs(home_score - away_score)
 
-    # P1: 屠杀因子 —— 强队攻击力远超弱队防守时放大xG
+    # P3: 屠杀因子 2.0 — 大差距+弱防守时大幅放大xG
     home_slaughter = 1.0
     away_slaughter = 1.0
     if home_score > away_score:
+        gap = home_score - away_score
         if home_goals_per_game > 2.5 and away_conceded > 2.0:
-            home_slaughter = 1.4
+            home_slaughter = 1.6 if gap > 30 else 1.4
         elif home_goals_per_game > 2.0 and away_conceded > 1.5:
-            home_slaughter = 1.2
+            home_slaughter = 1.4 if gap > 25 else 1.2
+        elif gap > 30:
+            home_slaughter = 1.3  # 纯实力碾压
     else:
+        gap = away_score - home_score
         if away_goals_per_game > 2.5 and home_conceded > 2.0:
-            away_slaughter = 1.4
+            away_slaughter = 1.6 if gap > 30 else 1.4
         elif away_goals_per_game > 2.0 and home_conceded > 1.5:
-            away_slaughter = 1.2
+            away_slaughter = 1.4 if gap > 25 else 1.2
+        elif gap > 30:
+            away_slaughter = 1.3
 
     xg_home = score_to_xg(home_score, away_defense, home_slaughter)
     xg_away = score_to_xg(away_score, home_defense, away_slaughter)
