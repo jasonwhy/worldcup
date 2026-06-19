@@ -10,6 +10,7 @@ from .hard_data import (hard_data_score, team_defense_score,
                           defensive_resilience, attacking_conversion,
                           xg_proxy, match_style, style_matchup_bonus,
                           player_availability_impact, fatigue_penalty)
+from .advanced_stats import dongqiudi_bonus  # 用于未来比赛预测
 from .betting import betting_score
 from .gossip import gossip_score
 from .poisson import predict_match
@@ -175,6 +176,7 @@ def predict(head_to_head: str) -> dict:
         home_fatigue=home_fat,
         away_fatigue=away_fat
     )
+    # 懂球帝高级数据 (仅未来比赛启用, 已赛不参与回测)
 
     # [v2.3] SP市场先验融合 — 贝叶斯约束模型输出
     sp = load_json("sp.json")

@@ -275,13 +275,15 @@ def predict_match(home_score: float, away_score: float,
                   home_xg_def: float = 1.5, away_xg_def: float = 1.5,
                   style_bonus: float = 0.0,
                   home_player_penalty: float = 0.0, away_player_penalty: float = 0.0,
-                  home_fatigue: float = 0.0, away_fatigue: float = 0.0) -> Dict:
+                  home_fatigue: float = 0.0, away_fatigue: float = 0.0,
+                  dq_bonus: float = 0.0) -> Dict:
     """
     完整比赛预测 [v2.3]
     *_xg_off/def: xG代理值 [P1]
     style_bonus: 风格相克加成(±2) [P1]
     *_player_penalty: 关键球员缺阵惩罚(0-10) [P2]
     *_fatigue: 体能耗损(0-5) [P2]
+    dq_bonus: 懂球帝高级数据综合加成(±5) [懂球帝]
     返回: {xg, win/draw/lose%, top_scores, cold_alert}
     """
     score_gap = abs(home_score - away_score)
@@ -345,6 +347,14 @@ def predict_match(home_score: float, away_score: float,
     # [v2.3 P2] 体能惩罚: 疲劳→降低xG
     xg_home *= max(0.8, 1.0 - home_fatigue / 25)  # 5分→-20%
     xg_away *= max(0.8, 1.0 - away_fatigue / 25)
+
+    # [v2.3] 懂球帝高级数据: 射正率+创造力+门将+防守综合 (±5分)
+    if dq_bonus > 0:
+        xg_home *= 1.0 + dq_bonus / 80
+        xg_away *= 1.0 - dq_bonus / 160
+    elif dq_bonus < 0:
+        xg_away *= 1.0 - dq_bonus / 80
+        xg_home *= 1.0 + dq_bonus / 160
 
     xg_home = max(0.2, xg_home)
     xg_away = max(0.2, xg_away)
