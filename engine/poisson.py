@@ -372,4 +372,30 @@ def predict_match(home_score: float, away_score: float,
         cold_alert = "无"
 
     result["cold_alert"] = cold_alert
+
+    # [v2.3] 最终对齐: 确保Top比分与最终方向一致 (覆盖gossip_shift等后处理)
+    result = align_scores_to_direction(result)
+    return result
+
+
+def align_scores_to_direction(result: Dict) -> Dict:
+    """确保TopN比分与最终W/D/L方向一致"""
+    wp, dp, lp = result["win_pct"], result["draw_pct"], result["lose_pct"]
+    if wp > dp and wp > lp:
+        pred_dir = "home"
+    elif dp >= wp and dp >= lp:
+        pred_dir = "draw"
+    else:
+        pred_dir = "away"
+
+    dir_scores = {"home": [], "draw": [], "away": []}
+    for s in result["top_scores"]:
+        h, a = map(int, s["score"].split("-"))
+        if h > a: dir_scores["home"].append(s)
+        elif h == a: dir_scores["draw"].append(s)
+        else: dir_scores["away"].append(s)
+
+    top_matching = dir_scores[pred_dir][:3]
+    others = [s for s in result["top_scores"] if s not in top_matching]
+    result["top_scores"] = (top_matching + others)[:5]
     return result

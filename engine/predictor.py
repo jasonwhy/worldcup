@@ -190,6 +190,9 @@ def predict(head_to_head: str) -> dict:
         result["win_pct"] = round(result["win_pct"] * (1-w) + mkt_home * 100 * w, 1)
         result["draw_pct"] = round(result["draw_pct"] * (1-w) + mkt_draw * 100 * w, 1)
         result["lose_pct"] = round(result["lose_pct"] * (1-w) + mkt_away * 100 * w, 1)
+        # SP融合后重新对齐比分方向
+        from .poisson import align_scores_to_direction
+        result = align_scores_to_direction(result)
 
     delta = round(home_final["total"] - away_final["total"], 1)
 
