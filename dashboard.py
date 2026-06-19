@@ -100,6 +100,15 @@ venue_tz = {
     "GHA-PAN": (-4, "Toronto"), "COL-UZB": (-6, "Mexico City"),
     "CZE-RSA": (-7, "Los Angeles"), "SUI-BIH": (-7, "San Francisco"),
     "CAN-QAT": (-7, "Vancouver"), "MEX-KOR": (-4, "Philadelphia"),
+    # 6/20
+    "USA-AUS": (-7, "Seattle"), "SCO-MAR": (-4, "Boston"),
+    "BRA-HAI": (-4, "Philadelphia"), "TUR-PAR": (-7, "Santa Clara"),
+    # 6/21
+    "GER-CIV": (-5, "Houston"), "ECU-CUW": (-5, "Kansas City"),
+    "NED-SWE": (-5, "Dallas"), "JPN-TUN": (-6, "Monterrey"),
+    # 6/22
+    "BEL-IRN": (-7, "Seattle"), "EGY-NZL": (-4, "Miami"),
+    "ESP-KSA": (-4, "Atlanta"), "CPV-URU": (-4, "Miami"),
 }
 
 def format_match_time(beijing_time, utc_offset):
