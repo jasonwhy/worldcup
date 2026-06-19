@@ -226,6 +226,42 @@ for rdate in sorted(results_by_date.keys(), key=lambda x: (int(x.split('/')[0]),
         result_rows += f"<tr><td>{flag(hn)} vs {flag(an)}</td><td><b>{m['score']}</b></td><td class='{cls}'>{ok}</td><td class='note-cell'>{m['note'][:40]}</td></tr>"
     result_rows += "</tbody></table></div>"
 
+# == 比分回测 (Score Prediction Backtest) ==
+score_backtest_rows = ""
+score_top1_hits = 0
+score_top3_hits = 0
+goal_error_total = 0
+backtest_n = 0
+
+for m in results["matches"]:
+    mid = f"{m['home']}-{m['away']}"
+    try:
+        p = predict(mid)
+        if "error" in p: continue
+        r = p["prediction"]
+        backtest_n += 1
+        actual = m["score"]
+        pred_top = r["top_scores"][0]["score"]
+        if actual == pred_top:
+            score_top1_hits += 1
+        hit_top3 = actual in [s["score"] for s in r["top_scores"][:3]]
+        if hit_top3:
+            score_top3_hits += 1
+        ah, aa = map(int, actual.split("-"))
+        ph, pa = map(int, pred_top.split("-"))
+        goal_error_total += abs((ah+aa) - (ph+pa))
+        hn = teams.get(m["home"],{}).get("name",m["home"])
+        an = teams.get(m["away"],{}).get("name",m["away"])
+        hit1_mark = "✅" if actual == pred_top else ""
+        hit3_mark = "✅" if hit_top3 else "❌"
+        score_backtest_rows += f"<tr><td>{flag(hn)} vs {flag(an)}</td><td><b>{actual}</b></td><td>{pred_top}</td><td class='text-green'>{hit1_mark}</td><td class='{'text-green' if hit_top3 else 'text-red'}'>{hit3_mark}</td></tr>"
+    except:
+        pass
+
+avg_goal_error = round(goal_error_total / max(1, backtest_n), 1)
+top1_rate_str = f"{score_top1_hits/backtest_n*100:.0f}%" if backtest_n else "-"
+top3_rate_str = f"{score_top3_hits/backtest_n*100:.0f}%" if backtest_n else "-"
+
 # ============================================================
 # PANEL 3: 积分排名 (Standings + Rankings)
 # ============================================================
@@ -456,7 +492,7 @@ cold_teams.sort(key=lambda x: x[2])
 hot_rows = "".join(f'<span class="trend-badge hot">{F.get(n,"🏳️")} {n} +{gd}</span>' for tid,n,gd,sc in hot_teams[:6])
 cold_rows = "".join(f'<span class="trend-badge cold">{F.get(n,"🏳️")} {n} {gd}</span>' for tid,n,gd,sc in cold_teams[:4])
 
-# --- Live Now (for Highlights panel) ---
+# --- Live Now / Upcoming (for Highlights panel) ---
 live_now_html = ""
 if live_scores.get("matches_in_progress"):
     live_now_html = '<div class="hl-card live-hl-card"><div class="hl-card-title">🔴 正在直播</div>'
@@ -472,10 +508,51 @@ if live_scores.get("matches_in_progress"):
         vinfo = venue_tz.get(mid, (-5, ""))
         _, bj_time = format_match_time(MATCH_SCHEDULE.get(mid, "? ?:?"), vinfo[0])
         live_now_html += f"""<div class="live-hl-match">
-        <div class="live-hl-header"><span class="live-dot"></span> {minute}\' · 🇨🇳 北京 {bj_time}</div>
+        <div class="live-hl-header"><span class="live-dot"></span> {minute}' · 🇨🇳 北京 {bj_time}</div>
         <div class="live-hl-teams">{flag(hn)} <span class="live-score">{hg}-{ag}</span> {flag(an)}</div>
         <div class="live-hl-note">{note[:45]}</div></div>"""
     live_now_html += '</div>'
+else:
+    # 无直播时显示即将进行的4场比赛
+    upcoming = []
+    for match_id, time_str in sorted(MATCH_SCHEDULE.items(), key=lambda x: (x[1].split()[0].split("/")[0], x[1].split()[0].split("/")[1], x[1].split()[1] if len(x[1].split())>1 else "00:00")):
+        if match_id not in played_map and match_id not in live_map:
+            d = time_str.split()[0]
+            t = time_str.split()[1] if len(time_str.split())>1 else ""
+            upcoming.append((match_id, d, t))
+        if len(upcoming) >= 4:
+            break
+    if upcoming:
+        live_now_html = '<div class="hl-card upcoming-hl-card"><div class="hl-card-title">⏰ 即将开赛</div>'
+        for mid, d, t in upcoming:
+            home, away = mid.split("-")
+            hn = teams.get(home,{}).get("name",home)
+            an = teams.get(away,{}).get("name",away)
+            vinfo = venue_tz.get(mid, (-5, ""))
+            local_t, bj_t = format_match_time(f"{d} {t}", vinfo[0])
+            try:
+                p = predict(mid)
+                if "error" not in p:
+                    wpct = p["prediction"]["win_pct"]
+                    dpct = p["prediction"]["draw_pct"]
+                    lpct = p["prediction"]["lose_pct"]
+                    top_score = p["prediction"]["top_scores"][0]["score"]
+                else:
+                    wpct = dpct = lpct = 33
+                    top_score = "?-?"
+            except:
+                wpct = dpct = lpct = 33
+                top_score = "?-?"
+            live_now_html += f"""<div class="live-hl-match">
+            <div class="live-hl-header">📅 {d} {t} · 🇨🇳 {bj_t}</div>
+            <div class="live-hl-teams">{flag(hn)} <span style="color:var(--text-secondary);font-size:12px">vs</span> {flag(an)}</div>
+            <div style="display:flex;gap:3px;margin-top:2px">
+              <span style="flex:{wpct};background:var(--bar-win);height:3px;border-radius:2px" title="主{wpct:.0f}%"></span>
+              <span style="flex:{dpct};background:var(--bar-draw);height:3px;border-radius:2px" title="平{dpct:.0f}%"></span>
+              <span style="flex:{lpct};background:var(--bar-lose);height:3px;border-radius:2px" title="客{lpct:.0f}%"></span>
+            </div>
+            <div class="live-hl-note">AI预测: {top_score} (主{wpct:.0f}% 平{dpct:.0f}% 客{lpct:.0f}%)</div></div>"""
+        live_now_html += '</div>'
 
 # ============================================================
 # CSS (FIFA/Fox-inspired dark theme)
@@ -770,6 +847,17 @@ html = f"""<!DOCTYPE html><html lang="zh"><head><meta charset="UTF-8"><meta name
   <div style="margin-bottom:12px">
     <h2 style="font-size:16px;color:var(--accent);margin-bottom:4px">📊 赛果回测</h2>
     <p style="font-size:10px;color:var(--text-secondary)">{results['total_played']}场已赛 · {results['direction_correct']}场判对 · {results['direction_rate']}%正确率</p>
+  </div>
+  <!-- 比分预测回测 -->
+  <div class="hl-card" style="margin-bottom:16px">
+    <div class="hl-card-title">🎯 比分预测回测 ({backtest_n}场)</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center;margin-bottom:12px">
+      <div><div class="num" style="font-size:24px;color:var(--green)">{top1_rate_str}</div><div class="label">比分Top1命中</div></div>
+      <div><div class="num" style="font-size:24px;color:var(--amber)">{top3_rate_str}</div><div class="label">比分Top3命中</div></div>
+      <div><div class="num" style="font-size:20px;color:var(--blue)">{avg_goal_error}</div><div class="label">场均进球误差</div></div>
+      <div><div class="num" style="font-size:20px;color:var(--text-secondary)">{score_top1_hits}/{backtest_n}</div><div class="label">精确命中/总</div></div>
+    </div>
+    <table class="data-table"><thead><tr><th>比赛</th><th>实际</th><th>预测Top1</th><th>命中</th><th>Top3</th></tr></thead><tbody>{score_backtest_rows}</tbody></table>
   </div>
   {result_rows}
 </div>
