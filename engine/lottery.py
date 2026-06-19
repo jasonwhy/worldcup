@@ -33,7 +33,7 @@ FLAG = {
     "Mexico": "🇲🇽", "South Korea": "🇰🇷", "United States": "🇺🇸", "Uruguay": "🇺🇾",
     "Croatia": "🇭🇷", "Japan": "🇯🇵", "Senegal": "🇸🇳", "Switzerland": "🇨🇭",
     "Austria": "🇦🇹", "Sweden": "🇸🇪", "Canada": "🇨🇦", "Australia": "🇦🇺",
-    "Ecuador": "🇪🇨", "Türkiye": "🇹🇷", "Scotland": "🏴󠁧󠁢󠁳󠁣󠁴󠁿", "Czechia": "🇨🇿",
+    "Ecuador": "🇪🇨", "Türkiye": "🇹🇷", "Scotland": "🏴", "Czechia": "🇨🇿",
     "Serbia": "🇷🇸", "Egypt": "🇪🇬", "Iran": "🇮🇷", "Côte d'Ivoire": "🇨🇮",
     "Ivory Coast": "🇨🇮", "Ghana": "🇬🇭", "Algeria": "🇩🇿", "Tunisia": "🇹🇳",
     "South Africa": "🇿🇦", "Cape Verde": "🇨🇻", "Saudi Arabia": "🇸🇦",
