@@ -1,10 +1,10 @@
 {
-  "last_full_update": "2026-06-18T09:15:00",
+  "last_full_update": "2026-06-19T01:00:00",
   "sources": {
     "espn": {
       "name": "ESPN",
       "url": "espn.com/soccer/worldcup",
-      "last_check": "2026-06-18",
+      "last_check": "2026-06-19",
       "items_found": 5,
       "type": "media",
       "status": "active"
@@ -12,7 +12,7 @@
     "fox_sports": {
       "name": "Fox Sports",
       "url": "foxsports.com/soccer/fifa-world-cup",
-      "last_check": "2026-06-18",
+      "last_check": "2026-06-19",
       "items_found": 3,
       "type": "media",
       "status": "active"
@@ -20,7 +20,7 @@
     "yahoo_sports": {
       "name": "Yahoo Sports",
       "url": "sports.yahoo.com/soccer/world-cup",
-      "last_check": "2026-06-18",
+      "last_check": "2026-06-19",
       "items_found": 2,
       "type": "media",
       "status": "active"
@@ -28,7 +28,7 @@
     "bbc": {
       "name": "BBC Sport",
       "url": "bbc.com/sport/football",
-      "last_check": "2026-06-18",
+      "last_check": "2026-06-19",
       "items_found": 3,
       "type": "media",
       "status": "active"
@@ -36,7 +36,7 @@
     "sky_sports": {
       "name": "Sky Sports",
       "url": "skysports.com/football",
-      "last_check": "2026-06-18",
+      "last_check": "2026-06-19",
       "items_found": 4,
       "type": "media",
       "status": "active"
@@ -44,7 +44,7 @@
     "mirror": {
       "name": "The Mirror",
       "url": "mirror.co.uk/sport/football",
-      "last_check": "2026-06-18",
+      "last_check": "2026-06-19",
       "items_found": 1,
       "type": "gossip",
       "status": "active"
@@ -52,7 +52,7 @@
     "observer": {
       "name": "The Observer",
       "url": "observer.co.uk",
-      "last_check": "2026-06-18",
+      "last_check": "2026-06-19",
       "items_found": 1,
       "type": "gossip",
       "status": "active"
@@ -60,7 +60,7 @@
     "ge_globo": {
       "name": "Ge.Globo",
       "url": "ge.globo.com",
-      "last_check": "2026-06-18",
+      "last_check": "2026-06-19",
       "items_found": 2,
       "type": "team_news",
       "status": "active"
@@ -68,7 +68,7 @@
     "fabrizio_romano": {
       "name": "Fabrizio Romano",
       "url": "x.com/FabrizioRomano",
-      "last_check": "2026-06-18",
+      "last_check": "2026-06-19",
       "items_found": 1,
       "type": "transfer_gossip",
       "status": "active"
@@ -76,7 +76,7 @@
     "independent": {
       "name": "The Independent",
       "url": "independent.co.uk/sport/football",
-      "last_check": "2026-06-18",
+      "last_check": "2026-06-19",
       "items_found": 3,
       "type": "injury",
       "status": "active"
@@ -92,7 +92,7 @@
     "squadwire": {
       "name": "SquadWire",
       "url": "squadwire.app",
-      "last_check": "2026-06-18",
+      "last_check": "2026-06-19",
       "items_found": 5,
       "type": "injury",
       "status": "active"
@@ -108,7 +108,7 @@
     "dutch_caribbean": {
       "name": "Dutch Caribbean News",
       "url": "dutchcaribbeannews.com",
-      "last_check": "2026-06-18",
+      "last_check": "2026-06-19",
       "items_found": 2,
       "type": "media",
       "status": "active"
@@ -116,7 +116,7 @@
     "al_jazeera": {
       "name": "Al Jazeera",
       "url": "aljazeera.com/sports",
-      "last_check": "2026-06-18",
+      "last_check": "2026-06-19",
       "items_found": 2,
       "type": "media",
       "status": "active"
@@ -124,7 +124,7 @@
     "netease": {
       "name": "网易彩票",
       "url": "sports.163.com/caipiao",
-      "last_check": "2026-06-18",
+      "last_check": "2026-06-19",
       "items_found": 8,
       "type": "odds",
       "status": "active"
@@ -132,7 +132,7 @@
     "fifa_official": {
       "name": "FIFA Official",
       "url": "fifa.com",
-      "last_check": "2026-06-18",
+      "last_check": "2026-06-19",
       "items_found": 3,
       "type": "official",
       "status": "active"

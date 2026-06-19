@@ -267,7 +267,7 @@
       "player": "Christian Pulisic",
       "position": "forward",
       "role": "core_scorer",
-      "status": "doubtful",
+      "status": "active",
       "return_date": "2026-06-19",
       "irreplaceability": 2.0,
       "date": "2026-06-18",
@@ -297,7 +297,7 @@
       "player": "Alphonso Davies",
       "position": "defender",
       "role": "core_creator",
-      "status": "doubtful",
+      "status": "active",
       "return_date": "2026-06-19",
       "irreplaceability": 2.0,
       "date": "2026-06-18",
@@ -311,6 +311,16 @@
       "return_date": null,
       "irreplaceability": 0.5,
       "date": "2026-06-17"
+    },
+    {
+      "player": "Ismael Kone",
+      "position": "midfielder",
+      "role": "regular_starter",
+      "status": "out",
+      "return_date": null,
+      "irreplaceability": 1.5,
+      "reason": "对Qatar被Madibo背后铲球断腿, 担架离场, 赛事报销",
+      "date": "2026-06-19"
     }
   ],
   "UZB": [

@@ -37,7 +37,7 @@
   },
   "POR": {
     "locker_room": {
-      "score": -5,
+      "score": -4.8,
       "reason": "1-1平后危机: Martinez拒绝换CR7('换最佳射手无意义'), Sutton称'尴尬', CR7仅25触球全队最少, B费明显沮丧, 10场大赛0进球",
       "date": "2026-06-18",
       "original_score": -5
@@ -49,7 +49,7 @@
       "original_score": 0
     },
     "player_off_field": {
-      "score": -3,
+      "score": -2.9,
       "reason": "CR7发X:'远未结束', 球迷两极分化; 名宿Clichy:队友潜意识受影响, Rooney:需要传中支援",
       "date": "2026-06-18",
       "original_score": -3
@@ -111,7 +111,7 @@
   },
   "TUN": {
     "locker_room": {
-      "score": -2.9,
+      "score": -2.7,
       "reason": "1-5惨败瑞典后士气崩溃, 主帅Lamouchi预计被解雇→赛前内乱(ESPN); 下一场对日本压力巨大",
       "date": "2026-06-17",
       "original_score": -3
@@ -148,7 +148,7 @@
   },
   "BRA": {
     "locker_room": {
-      "score": -4,
+      "score": -3.8,
       "reason": "Neymar仅限健身训练未触球, 小组赛全缺确认, MRI有进展但'即使复出也难达100%', 球迷抗议持续",
       "date": "2026-06-18",
       "original_score": -4
@@ -185,7 +185,7 @@
   },
   "GHA": {
     "locker_room": {
-      "score": 0,
+      "score": -1.0,
       "reason": "Partey签证上诉被加拿大法院驳回, 但Yirenkyi补时绝杀→士气逆转, L组出线有希望",
       "date": "2026-06-18",
       "original_score": -1
@@ -240,7 +240,7 @@
   },
   "ARG": {
     "locker_room": {
-      "score": -1.9,
+      "score": -1.8,
       "reason": "Messi帽子戏法但疑似红牌未判(ESPN:100%红牌), FIFA被指控保护巨星; Haaland发Snap致敬又引争议",
       "date": "2026-06-17",
       "original_score": -2
@@ -259,7 +259,7 @@
   },
   "ENG": {
     "locker_room": {
-      "score": 1,
+      "score": -1.9,
       "reason": "Kane追平Lineker纪录+Tuchel中场逆转+贝林Rashford替补建功, 英格兰士气高涨",
       "date": "2026-06-18",
       "original_score": -2
@@ -278,7 +278,7 @@
   },
   "CRO": {
     "locker_room": {
-      "score": -2,
+      "score": -1.0,
       "reason": "2-4负英格兰暴露老化, Modric 58分被换, Dalic:'无犯错空间', 黄金一代末路",
       "date": "2026-06-18",
       "original_score": -1
@@ -333,7 +333,7 @@
   },
   "COD": {
     "locker_room": {
-      "score": 3,
+      "score": 2.9,
       "reason": "52年归来即创历史: 首球+首分+首平, 逼平葡萄牙震惊世界, 球队士气爆棚",
       "date": "2026-06-18",
       "original_score": 3
@@ -341,23 +341,26 @@
     "political": {
       "level": 0,
       "score": 0,
-      "reason": ""
+      "reason": "",
+      "original_score": 0
     },
     "player_off_field": {
       "score": 2,
-      "reason": "Wissa成为国家英雄, Instagram暴涨, 52年等待终有回报"
+      "reason": "Wissa成为国家英雄, Instagram暴涨, 52年等待终有回报",
+      "original_score": 2
     }
   },
   "UEA": {
     "political": {
       "level": 2,
       "score": -2,
-      "reason": "UEFA主席切费林称48队赛制'多场完全无趣', 13国联合抗议, 足球政治矛盾激化"
+      "reason": "UEFA主席切费林称48队赛制'多场完全无趣', 13国联合抗议, 足球政治矛盾激化",
+      "original_score": -2
     }
   },
   "JPN": {
     "locker_room": {
-      "score": -3,
+      "score": -2.9,
       "reason": "伤病潮爆发: Mitoma+Minamino+Endo已退+久保最新倒下, 对突尼斯几乎无人可用, 森保一压力巨大",
       "date": "2026-06-18",
       "original_score": -3
@@ -365,16 +368,18 @@
     "political": {
       "level": 0,
       "score": 0,
-      "reason": ""
+      "reason": "",
+      "original_score": 0
     },
     "player_off_field": {
       "score": 0,
-      "reason": ""
+      "reason": "",
+      "original_score": 0
     }
   },
   "COL": {
     "locker_room": {
-      "score": 2,
+      "score": 1.9,
       "reason": "3-1强势开门红, Diaz传射成MVP, Campaz替补建功, 更衣室氛围极佳, 目标小组第一",
       "date": "2026-06-18",
       "original_score": 2
@@ -382,11 +387,13 @@
     "political": {
       "level": 0,
       "score": 0,
-      "reason": ""
+      "reason": "",
+      "original_score": 0
     },
     "player_off_field": {
       "score": 1,
-      "reason": "Diaz回应金球奖呼声:'专注世界杯', 全队高海拔Azteca适应良好"
+      "reason": "Diaz回应金球奖呼声:'专注世界杯', 全队高海拔Azteca适应良好",
+      "original_score": 1
     }
   },
   "UZB": {
@@ -399,11 +406,64 @@
     "political": {
       "level": 0,
       "score": 0,
-      "reason": ""
+      "reason": "",
+      "original_score": 0
     },
     "player_off_field": {
       "score": 1,
-      "reason": "Fayzullaev成为国家英雄, 乌兹别克社交媒体爆发, 历史性亮相获全球尊重"
+      "reason": "Fayzullaev成为国家英雄, 乌兹别克社交媒体爆发, 历史性亮相获全球尊重",
+      "original_score": 1
+    }
+  },
+  "MEX": {
+    "locker_room": {
+      "score": 2,
+      "reason": "两连胜积6分领跑A组, 主场优势明显, 出线在望, 但Montes红牌缺阵防线受考验",
+      "date": "2026-06-19",
+      "original_score": 2
+    },
+    "political": {
+      "level": 0,
+      "score": 0,
+      "reason": ""
+    },
+    "player_off_field": {
+      "score": 0,
+      "reason": ""
+    }
+  },
+  "CAN": {
+    "locker_room": {
+      "score": 0,
+      "reason": "6-0历史首胜但Kone断腿惨剧冲淡喜悦, Marsch冲对方教练席, 更衣室情绪复杂",
+      "date": "2026-06-19",
+      "original_score": 0
+    },
+    "political": {
+      "level": 0,
+      "score": 0,
+      "reason": ""
+    },
+    "player_off_field": {
+      "score": 0,
+      "reason": ""
+    }
+  },
+  "QAT": {
+    "locker_room": {
+      "score": -3,
+      "reason": "0-6惨败+被罚至9人+Madibo红牌断腿争议, 出线几乎无望, 士气崩溃",
+      "date": "2026-06-19",
+      "original_score": -3
+    },
+    "political": {
+      "level": 0,
+      "score": 0,
+      "reason": ""
+    },
+    "player_off_field": {
+      "score": 0,
+      "reason": ""
     }
   }
 }

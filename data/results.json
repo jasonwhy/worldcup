@@ -1,9 +1,9 @@
 {
-  "updated": "2026-06-18T12:05:23",
-  "total_played": 24,
-  "direction_correct": 19,
-  "direction_total": 24,
-  "direction_rate": 79.2,
+  "updated": "2026-06-19T01:00:00",
+  "total_played": 28,
+  "direction_correct": 21,
+  "direction_total": 28,
+  "direction_rate": 75.0,
   "matches": [
     {
       "date": "6/11",
@@ -196,6 +196,38 @@
       "score": "3-1",
       "prediction_correct": "✅",
       "note": "Munoz破门+Fayzullaev历史首球扳平+哥伦比亚3-1, 乌兹别克首秀收获首球"
+    },
+    {
+      "date": "6/18",
+      "home": "CZE",
+      "away": "RSA",
+      "score": "1-1",
+      "prediction_correct": "❌",
+      "note": "Sadilek 6分破门+Mokoena 83分点球扳平, 双方均1分"
+    },
+    {
+      "date": "6/18",
+      "home": "SUI",
+      "away": "BIH",
+      "score": "4-1",
+      "prediction_correct": "✅",
+      "note": "下半场爆发: Manzambi 74分凌空+连进4球, 补水暂停换人策略奏效, Mahmic补时破门"
+    },
+    {
+      "date": "6/18",
+      "home": "CAN",
+      "away": "QAT",
+      "score": "6-0",
+      "prediction_correct": "✅",
+      "note": "Jonathan David帽子戏法+加拿大历史首胜, Qatar被罚至9人, Kone惨遭断腿重伤"
+    },
+    {
+      "date": "6/18",
+      "home": "MEX",
+      "away": "KOR",
+      "score": "1-0",
+      "prediction_correct": "❌",
+      "note": "MEX 1-0险胜, 墨西哥主场优势, 积6分领跑A组, 韩国首败"
     }
   ]
 }
