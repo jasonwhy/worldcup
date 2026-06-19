@@ -178,7 +178,7 @@ def predict(head_to_head: str) -> dict:
     )
     # 懂球帝高级数据 (仅未来比赛启用, 已赛不参与回测)
 
-    # [v2.3] SP市场先验融合 — 贝叶斯约束模型输出
+    # [v2.4] SP市场先验融合 — 动态贝叶斯权重
     sp = load_json("sp.json")
     match_sp = sp.get("matches", {}).get(f"{home_id}-{away_id}", {})
     if match_sp and match_sp.get("home", 0) > 0:
@@ -187,8 +187,11 @@ def predict(head_to_head: str) -> dict:
         mkt_home = (1/match_sp["home"]) / inv_sum
         mkt_draw = (1/match_sp["draw"]) / inv_sum
         mkt_away = (1/match_sp["away"]) / inv_sum
-        # 贝叶斯融合: 模型85% + 市场15%
-        w = 0.15
+        # 动态权重: 模型与市场偏离越大, SP权重越高 (封顶0.30, 保底0.08)
+        model_max = max(result["win_pct"], result["draw_pct"], result["lose_pct"])
+        mkt_max = max(mkt_home * 100, mkt_draw * 100, mkt_away * 100)
+        divergence = abs(model_max - mkt_max)
+        w = min(0.30, max(0.08, 0.08 + divergence * 0.004))
         result["win_pct"] = round(result["win_pct"] * (1-w) + mkt_home * 100 * w, 1)
         result["draw_pct"] = round(result["draw_pct"] * (1-w) + mkt_draw * 100 * w, 1)
         result["lose_pct"] = round(result["lose_pct"] * (1-w) + mkt_away * 100 * w, 1)
