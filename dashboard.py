@@ -39,6 +39,13 @@ def auto_refresh():
         if changed: json.dump(injuries, open(DATA/"injuries.json","w"), indent=2, ensure_ascii=False)
 
 auto_refresh()
+# 后验校准 (自动调整模型参数)
+try:
+    from engine.calibrator import calibrate
+    calibrate(verbose=True)
+except Exception as e:
+    pass
+
 def load(n): return json.load(open(DATA/n))
 
 teams = load("teams.json")
