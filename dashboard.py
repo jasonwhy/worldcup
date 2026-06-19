@@ -404,20 +404,24 @@ for bdate, bmatches in upcoming_dates.items():
 # ============================================================
 
 # --- Golden Boot ---
-scorer_map = {}  # name -> (goals, flag_team_code, team_name)
 scorer_notes = {
-    "Messi": (3, "ARG"), "Mbappe": (2, "FRA"), "Haaland": (2, "NOR"),
-    "Havertz": (2, "GER"), "Balogun": (2, "USA"), "Ayari": (2, "SWE"),
-    "Just": (2, "NZL"), "Hwang": (1, "KOR"), "Irankunda": (1, "AUS"),
-    "Schmid": (1, "AUT"), "Arnautovic": (1, "AUT"),
-    "Nmecha": (1, "GER"), "Musiala": (1, "GER"), "Schlotterbeck": (1, "GER"),
+    "L. Messi": (3, "ARG"), "J. David": (3, "CAN"),
+    "E. Haaland": (2, "NOR"), "Y. Ayari": (2, "SWE"),
+    "K. Havertz": (2, "GER"), "F. Balogun": (2, "USA"),
+    "H. Kane": (2, "ENG"), "J. Quinones": (2, "MEX"),
+    "B. Just": (2, "NZL"), "Mbappe": (2, "FRA"),
+    "Irankunda": (1, "AUS"), "Schmid": (1, "AUT"),
+    "Arnautovic": (1, "AUT"), "F. Nmecha": (1, "GER"),
+    "Musiala": (1, "GER"), "Schlotterbeck": (1, "GER"),
     "Undav": (1, "GER"), "Brown": (1, "GER"),
     "Summerville": (1, "NED"), "Van Dijk": (1, "NED"),
     "Nakamura": (1, "JPN"), "Kamada": (1, "JPN"),
     "Amad": (1, "CIV"), "Isak": (1, "SWE"), "Gyokeres": (1, "SWE"),
     "Hussein": (1, "IRQ"), "Olwan": (1, "JOR"),
     "Ashour": (1, "EGY"), "Araujo": (1, "URU"),
-    "Al-Amri": (1, "KSA"),
+    "Al-Amri": (1, "KSA"), "Rashford": (1, "ENG"),
+    "Bellingham": (1, "ENG"), "L. Diaz": (1, "COL"),
+    "Hwang": (1, "KOR"),
 }
 boot_sorted = sorted(scorer_notes.items(), key=lambda x: -x[1][0])
 boot_rows = ""
@@ -427,11 +431,26 @@ for i, (name, (goals, tid)) in enumerate(boot_sorted[:15], 1):
     cls = "gold" if i<=3 else ""
     boot_rows += f"<tr><td class='num-cell'>{medal}</td><td>{F.get(tn,'🏳️')} {name}</td><td class='num-cell'><b>{goals}</b></td><td class='note-cell'>{tn}</td></tr>"
 
+# --- Assist Leaders ---
+assist_notes = {
+    "C. Wood": (2, "NZL"), "A. Isak": (2, "SWE"),
+    "R. Gravenberch": (2, "NED"), "J. Kimmich": (2, "GER"),
+    "D. Undav": (2, "GER"), "C. Roldan": (1, "USA"),
+    "G. Reyna": (1, "USA"), "W. McKennie": (1, "USA"),
+}
+assist_sorted = sorted(assist_notes.items(), key=lambda x: -x[1][0])
+assist_rows = ""
+for i, (name, (ast, tid)) in enumerate(assist_sorted[:8], 1):
+    tn = teams.get(tid,{}).get("name", tid)
+    assist_rows += f"<tr><td class='num-cell'>{i}.</td><td>{F.get(tn,'🏳️')} {name}</td><td class='num-cell'><b>{ast}</b></td><td class='note-cell'>{tn}</td></tr>"
+
 # --- Upset Wall ---
 upsets = [
     ("🇨🇻 Cape Verde 0-0 🇪🇸 Spain", "人口<50万岛国首秀逼平欧洲冠军, 27射0球, 40岁Vozinha封神", "⭐⭐⭐"),
-    ("🇸🇦 Saudi Arabia 1-1 🇺🇾 Uruguay", "换帅后首战逼平南美劲旅, Araujo 80分才救主", "⭐⭐"),
+    ("🇨🇩 DR Congo 1-1 🇵🇹 Portugal", "52年后回归首秀逼平葡萄牙, Wissa打入历史首球", "⭐⭐⭐"),
+    ("🇸🇦 Saudi Arabia 1-1 🇺🇾 Uruguay", "换帅后首战逼平南美劲旅, Araujo 80分救主", "⭐⭐"),
     ("🇨🇮 Ivory Coast 1-0 🇪🇨 Ecuador", "Amad替补绝杀, 非洲黑马搅局", "⭐⭐"),
+    ("🇦🇺 Australia 2-0 🇹🇷 Turkiye", "低位防守+快速反击完封土耳其, 身体碾压", "⭐⭐"),
     ("🇶🇦 Qatar 1-1 🇨🇭 Switzerland", "东道主VAR争议下逼平欧洲二档", "⭐"),
 ]
 upset_rows = ""
@@ -800,6 +819,11 @@ html = f"""<!DOCTYPE html><html lang="zh"><head><meta charset="UTF-8"><meta name
     <div class="hl-card">
       <div class="hl-card-title">👟 金靴争夺</div>
       <table class="data-table"><thead><tr><th></th><th>球员</th><th>进球</th><th>球队</th></tr></thead><tbody>{boot_rows}</tbody></table>
+    </div>
+    <!-- Assist Leaders -->
+    <div class="hl-card">
+      <div class="hl-card-title">🅰️ 助攻王</div>
+      <table class="data-table"><thead><tr><th></th><th>球员</th><th>助攻</th><th>球队</th></tr></thead><tbody>{assist_rows}</tbody></table>
     </div>
     <!-- Upset Wall -->
     <div class="hl-card">
