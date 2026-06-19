@@ -630,7 +630,7 @@ a{color:var(--blue);text-decoration:none}
 .tab-btn .icon{font-size:14px;display:block;margin-bottom:2px}
 
 /* Panels */
-.panel{display:none;padding:12px 16px;max-width:1200px;margin:0 auto}
+.panel{display:none;padding:12px 16px;max-width:1200px;margin:0 auto;content-visibility:auto;contain-intrinsic-size:auto 500px}
 .panel.active{display:block}
 
 /* Match Cards (Schedule) */
@@ -981,10 +981,12 @@ function showBetDate(id,btn){{
     document.getElementById(savedBetDate).style.display='block';
   }}
 }})();
-// 智能刷新
-var hasLive = document.querySelectorAll('.live-now').length > 0;
-var interval = hasLive ? 30000 : 60000;
-setTimeout(function(){{location.reload()}}, interval);
+// 智能刷新 (移动端友好: 延长间隔, 错误保护)
+var hasLive = document.querySelectorAll('.live-dot').length > 0;
+var interval = hasLive ? 45000 : 120000;
+setTimeout(function(){{
+  try{{location.reload()}}catch(e){{}}
+}}, interval);
 </script></body></html>"""
 
 out = Path(__file__).parent / "dashboard.html"

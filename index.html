@@ -53,7 +53,7 @@ a{color:var(--blue);text-decoration:none}
 .tab-btn .icon{font-size:14px;display:block;margin-bottom:2px}
 
 /* Panels */
-.panel{display:none;padding:12px 16px;max-width:1200px;margin:0 auto}
+.panel{display:none;padding:12px 16px;max-width:1200px;margin:0 auto;content-visibility:auto;contain-intrinsic-size:auto 500px}
 .panel.active{display:block}
 
 /* Match Cards (Schedule) */
@@ -691,7 +691,7 @@ a{color:var(--blue);text-decoration:none}
       <div class="bet-plan-header">📋 6/22 购彩方案 · 200元预算</div>
       <div class="betting-plan">======================================================================
   竞彩足球 2026世界杯 自动投注方案 v4.0
-  生成时间: 2026-06-20 01:42  |  预算: 200元
+  生成时间: 2026-06-20 01:44  |  预算: 200元
   算法: 正EV筛选 + 高置信优先 | 引擎: 模型自动输出 v4.0 (正EV+选择性投注)
   📊 正EV场次: 0场 | 平均edge: +0.0%
 ======================================================================
@@ -755,7 +755,7 @@ a{color:var(--blue);text-decoration:none}
 ⚠️ 风险提示:
   • 排除 🇧🇪 比利时 vs 🇮🇷 伊朗: 低——建议观望
 
-📐 模型自动输出 v4.0 (2026-06-20 01:42) | 正EV筛选+高置信优先 | 竞彩90分钟赛果为准 | 仅作参考</div>
+📐 模型自动输出 v4.0 (2026-06-20 01:44) | 正EV筛选+高置信优先 | 竞彩90分钟赛果为准 | 仅作参考</div>
     </div></div><div id="bet-6-20" class="bet-date-panel" style="display:none">
     <div class="bet-matches-grid"><div class="bet-card">
                 <div class="bet-card-header">
@@ -822,7 +822,7 @@ a{color:var(--blue);text-decoration:none}
       <div class="bet-plan-header">📋 6/20 购彩方案 · 200元预算</div>
       <div class="betting-plan">======================================================================
   竞彩足球 2026世界杯 自动投注方案 v4.0
-  生成时间: 2026-06-20 01:42  |  预算: 200元
+  生成时间: 2026-06-20 01:44  |  预算: 200元
   算法: 正EV筛选 + 高置信优先 | 引擎: 模型自动输出 v4.0 (正EV+选择性投注)
   📊 正EV场次: 3场 | 平均edge: +7.8%
 ======================================================================
@@ -873,7 +873,7 @@ a{color:var(--blue);text-decoration:none}
 ⚠️ 风险提示:
   • 排除 🇺🇸 美国 vs 🇦🇺 澳大利亚: 低——建议观望
 
-📐 模型自动输出 v4.0 (2026-06-20 01:42) | 正EV筛选+高置信优先 | 竞彩90分钟赛果为准 | 仅作参考</div>
+📐 模型自动输出 v4.0 (2026-06-20 01:44) | 正EV筛选+高置信优先 | 竞彩90分钟赛果为准 | 仅作参考</div>
     </div></div><div id="bet-6-21" class="bet-date-panel" style="display:none">
     <div class="bet-matches-grid"><div class="bet-card">
                 <div class="bet-card-header">
@@ -940,7 +940,7 @@ a{color:var(--blue);text-decoration:none}
       <div class="bet-plan-header">📋 6/21 购彩方案 · 200元预算</div>
       <div class="betting-plan">======================================================================
   竞彩足球 2026世界杯 自动投注方案 v4.0
-  生成时间: 2026-06-20 01:42  |  预算: 200元
+  生成时间: 2026-06-20 01:44  |  预算: 200元
   算法: 正EV筛选 + 高置信优先 | 引擎: 模型自动输出 v4.0 (正EV+选择性投注)
   📊 正EV场次: 1场 | 平均edge: +16.0%
 ======================================================================
@@ -1001,7 +1001,7 @@ a{color:var(--blue);text-decoration:none}
 💵 全中总回报: ≈411元
 ══════════════════════════════════════════════════════════════════════
 
-📐 模型自动输出 v4.0 (2026-06-20 01:42) | 正EV筛选+高置信优先 | 竞彩90分钟赛果为准 | 仅作参考</div>
+📐 模型自动输出 v4.0 (2026-06-20 01:44) | 正EV筛选+高置信优先 | 竞彩90分钟赛果为准 | 仅作参考</div>
     </div></div>
 </div>
 
@@ -1061,8 +1061,10 @@ function showBetDate(id,btn){
     document.getElementById(savedBetDate).style.display='block';
   }
 })();
-// 智能刷新
-var hasLive = document.querySelectorAll('.live-now').length > 0;
-var interval = hasLive ? 30000 : 60000;
-setTimeout(function(){location.reload()}, interval);
+// 智能刷新 (移动端友好: 延长间隔, 错误保护)
+var hasLive = document.querySelectorAll('.live-dot').length > 0;
+var interval = hasLive ? 45000 : 120000;
+setTimeout(function(){
+  try{location.reload()}catch(e){}
+}, interval);
 </script></body></html>
