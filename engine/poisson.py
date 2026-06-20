@@ -74,9 +74,10 @@ def poisson_prob(lmbda: float, k: int) -> float:
 
 def build_prob_matrix(xg_a: float, xg_b: float, max_goals: int = 8,
                      match_round: str = "group_1", temperature: float = 25.0,
-                     score_gap: float = 0.0) -> Dict:
+                     score_gap: float = 0.0, team_draw_factor: float = 1.0) -> Dict:
     """
     构建完整概率矩阵
+    team_draw_factor: [v3.0 P2] 两队历史平局倾向因子 (1.0=平均, >1=偏好平局)
     match_round: group_1/group_2/group_3/ko [P0]
     temperature: 比赛温度(°C) [P0]
     score_gap: 两队总分差 [P1] 用于判断是否放宽大比分过滤
@@ -134,6 +135,8 @@ def build_prob_matrix(xg_a: float, xg_b: float, max_goals: int = 8,
 
     # P0: 首轮平局加成 (带保护: 原胜率>50%时强度减半, 避免将明确胜负拖成平局)
     draw_bonus = DRAW_BONUS.get(match_round, 1.0)
+    # [v3.0 P2] 比赛级平局因子: 按两队历史平局倾向调节
+    draw_bonus *= team_draw_factor
     # P0: 温差修正 (>32°C提升平局概率)
     temp_bonus = 1.0
     if temperature > 32:
@@ -295,7 +298,7 @@ def predict_match(home_score: float, away_score: float,
                   style_bonus: float = 0.0,
                   home_player_penalty: float = 0.0, away_player_penalty: float = 0.0,
                   home_fatigue: float = 0.0, away_fatigue: float = 0.0,
-                  dq_bonus: float = 0.0) -> Dict:
+                  dq_bonus: float = 0.0, team_draw_factor: float = 1.0) -> Dict:
     """
     完整比赛预测 [v2.3]
     *_xg_off/def: xG代理值 [P1]
@@ -381,7 +384,8 @@ def predict_match(home_score: float, away_score: float,
     result = build_prob_matrix(xg_home, xg_away,
                                match_round=match_round,
                                temperature=temperature,
-                               score_gap=score_gap)
+                               score_gap=score_gap,
+                               team_draw_factor=team_draw_factor)
 
     # 八卦修正
     result = apply_gossip_shift(result, home_gossip_deduction, away_gossip_deduction)

@@ -147,6 +147,16 @@ def predict(head_to_head: str) -> dict:
     home_fat = fatigue_penalty(home_id, today_str)
     away_fat = fatigue_penalty(away_id, today_str)
 
+    # [v3.0 P2] 比赛级平局因子: 两队历史平局倾向的几何平均
+    try:
+        import json as _json, math as _math
+        _df = _json.load(open(DATA_DIR / "draw_factors.json"))
+        _hf = _df.get(home_id, 1.0)
+        _af = _df.get(away_id, 1.0)
+        team_df = _math.sqrt(_hf * _af)  # 几何平均
+    except:
+        team_df = 1.0
+
     # 泊松预测 [v2.3]
     result = predict_match(
         home_score=home_final["total"],
@@ -174,7 +184,8 @@ def predict(head_to_head: str) -> dict:
         home_player_penalty=home_pp,
         away_player_penalty=away_pp,
         home_fatigue=home_fat,
-        away_fatigue=away_fat
+        away_fatigue=away_fat,
+        team_draw_factor=team_df
     )
     # 懂球帝高级数据 (仅未来比赛启用, 已赛不参与回测)
 
