@@ -45,6 +45,16 @@
       "irreplaceability": 3.0,
       "date": "2026-06-17",
       "reason": "Grade2小腿撕裂(5/17桑托斯比赛), 巴西队医确认小组赛全缺, 球迷怒斥'身体已废', 目标淘汰赛复出"
+    },
+    {
+      "player": "Raphinha",
+      "status": "doubtful",
+      "role": "winger",
+      "irreplaceability": 1.0,
+      "reason": "大腿肌肉拉伤(Haiti战上半场伤退), 待进一步检查",
+      "date": "2026-06-20",
+      "return_date": "2026-06-24",
+      "position": "forward"
     }
   ],
   "NED": [
@@ -260,6 +270,16 @@
       "irreplaceability": 1.5,
       "reason": "阿基里斯腱反复发作, 4月缺席6场, 对克罗地亚替补出场, day-to-day管理",
       "date": "2026-06-18"
+    },
+    {
+      "player": "Declan Rice",
+      "status": "doubtful",
+      "role": "midfielder",
+      "irreplaceability": 1.3,
+      "reason": "Croatia战伤退, 伤情待评估",
+      "date": "2026-06-18",
+      "return_date": "2026-06-21",
+      "position": "midfielder"
     }
   ],
   "USA": [
@@ -377,6 +397,18 @@
       "irreplaceability": 1.0,
       "reason": "伤退,Marcos Senesi紧急入替",
       "date": "2026-06-18"
+    }
+  ],
+  "AUS": [
+    {
+      "player": "Mathew Leckie",
+      "status": "doubtful",
+      "role": "winger",
+      "irreplaceability": 0.8,
+      "reason": "USA战71分钟伤退",
+      "date": "2026-06-20",
+      "return_date": "2026-06-25",
+      "position": "forward"
     }
   ]
 }
