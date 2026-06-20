@@ -11,17 +11,7 @@ from datetime import date
 
 MATCH_DATE = sys.argv[1] if len(sys.argv) > 1 else str(date.today())
 
-JS_CODE = f"""
-async () => {{
-    const date = '{MATCH_DATE}';
-    const url = `https://webapi.sporttery.cn/gateway/jc/football/getMatchListV1.qry?matchPage=1&pcOrWap=1&matchBeginDate=${{date}}&matchEndDate=${{date}}`;
-    const resp = await fetch(url, {{headers: {{'Accept': 'application/json'}}}});
-    const data = await resp.json();
-    return data;
-}}
-"""
-
-print(f"🏧 竞彩SP抓取 v2.0 — {MATCH_DATE}")
+print(f"🏧 竞彩SP抓取 v2.1 — {MATCH_DATE}")
 print(f"{'='*50}")
 
 try:
@@ -32,15 +22,12 @@ except ImportError:
     sys.exit(1)
 
 with sync_playwright() as p:
-    browser = p.chromium.launch(
-        headless=True,
-        executable_path="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-    )
+    browser = p.chromium.launch(headless=True)
     page = browser.new_page()
-    page.goto("https://m.sporttery.cn/mjc/jsq/zqhhgg/", wait_until="domcontentloaded")
-    page.wait_for_timeout(3000)
-
-    result = page.evaluate(JS_CODE)
+    # 直接用Playwright发API请求, 绕过页面的CORS限制
+    api_url = f"https://webapi.sporttery.cn/gateway/jc/football/getMatchListV1.qry?matchPage=1&pcOrWap=1&matchBeginDate={MATCH_DATE}&matchEndDate={MATCH_DATE}"
+    response = page.request.get(api_url, headers={"Accept": "application/json"})
+    result = response.json()
     browser.close()
 
 if isinstance(result, dict) and "value" in result:
