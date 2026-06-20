@@ -392,17 +392,29 @@ for bdate in sorted_dates:
     plan_text = ""
     match_cards = ""
     if not is_expired and unplayed_count > 0:
-        # 留底优先: 已有存档直接用, 无存档生成后永久保存
-        if bdate in plan_archive:
-            plan_text = plan_archive[bdate]
-        else:
-            try:
-                plan = generate_plan(match_ids)
-                plan_text = format_lottery(plan).replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
-                plan_archive[bdate] = plan_text
-                json.dump(plan_archive, open(PLAN_ARCHIVE, "w"), indent=2, ensure_ascii=False)
-            except:
-                plan_text = "方案生成中..."
+        # 方案留底+对比: 生成新方案, 对比存档, 打印差异, 更新存档
+        try:
+            plan = generate_plan(match_ids)
+            plan_text = format_lottery(plan).replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
+            # 对比旧方案
+            old_text = plan_archive.get(bdate, "")
+            if old_text and old_text != plan_text:
+                import re
+                old_ev = re.search(r'平均edge: ([+\-\d.]+%)', old_text)
+                new_ev = re.search(r'平均edge: ([+\-\d.]+%)', plan_text)
+                ev_change = ""
+                if old_ev and new_ev:
+                    ev_change = f" EV {old_ev.group(1)}→{new_ev.group(1)}"
+                old_lines = set(l.strip() for l in old_text.split('\n') if '→' in l)
+                new_lines = set(l.strip() for l in plan_text.split('\n') if '→' in l)
+                changed = len(old_lines - new_lines)
+                if changed > 0:
+                    print(f"  📝 {bdate} 方案变更: {changed}项调整{ev_change}")
+            # 更新存档
+            plan_archive[bdate] = plan_text
+            json.dump(plan_archive, open(PLAN_ARCHIVE, "w"), indent=2, ensure_ascii=False)
+        except:
+            plan_text = plan_archive.get(bdate, "方案生成中...")
 
     for bmid, bkickoff in bmatches:
         home, away = bmid.split("-")
