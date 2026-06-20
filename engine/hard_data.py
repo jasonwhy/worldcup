@@ -271,9 +271,9 @@ def hard_data_score(team_id: str, opponent_id: str = None) -> dict:
     momentum_score = 50 + momentum * 10  # 动量-5~+5 → 0~100
     round_score = 50 + round_bonus * 3   # 轮次动力±3 → 0~100
 
-    # 基础:38% 状态:33% 伤病:10% 动量:5% 轮次:4% 对位:10%
-    final = (base * 0.38 + form * 0.33 + injury_score * 0.10 +
-            momentum_score * 0.05 + round_score * 0.04 + (50 + matchup_bonus * 5) * 0.10)
+    # [v3.0] 基础:36% 状态:31% 伤病:10% 动量:6% 轮次:8% 对位:9%
+    final = (base * 0.36 + form * 0.31 + injury_score * 0.10 +
+            momentum_score * 0.06 + round_score * 0.08 + (50 + matchup_bonus * 5) * 0.09)
     return {
         "score": round(final, 1),
         "detail": {
