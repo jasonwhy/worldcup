@@ -1,6 +1,6 @@
 {
-  "updated": "2026-06-20T12:45:00",
-  "source": "网易彩票 sports.163.com/caipiao",
+  "updated": "2026-06-20T18:48:00",
+  "source": "捷报比分 cp.nowscore.com",
   "matches": {
     "POR-COD": {
       "home": 1.13,
@@ -95,16 +95,18 @@
       "away": 2.8
     },
     "GER-CIV": {
-      "home": 1.37,
-      "draw": 4.45,
-      "away": 5.75,
+      "home": 1.33,
+      "draw": 4.75,
+      "away": 6.0,
       "single": false,
       "handicap": -1
     },
     "ECU-CUW": {
-      "home": 1.4,
-      "draw": 4.2,
-      "away": 7.5
+      "home": 1.14,
+      "draw": 8.61,
+      "away": 21.41,
+      "single": false,
+      "handicap": -2
     },
     "NED-SWE": {
       "home": 1.54,
@@ -119,13 +121,17 @@
       "away": 5.5
     },
     "TUN-JPN": {
-      "home": 6.65,
-      "draw": 4.02,
-      "away": 1.37,
+      "home": 6.8,
+      "draw": 4.05,
+      "away": 1.36,
       "single": false,
       "handicap": 1
     },
     "ESP-KSA": {
+      "home": 1.1,
+      "draw": 9.91,
+      "away": 25.89,
+      "single": false,
       "handicap": -2
     },
     "BEL-IRN": {
@@ -150,19 +156,23 @@
       "handicap": 1
     },
     "ARG-AUT": {
-      "home": 1.51,
-      "draw": 3.6,
-      "away": 5.3,
+      "home": 1.49,
+      "draw": 3.65,
+      "away": 5.42,
       "single": false,
       "handicap": -1
     },
     "FRA-IRQ": {
+      "home": 1.08,
+      "draw": 10.9,
+      "away": 28.64,
+      "single": false,
       "handicap": -3
     },
     "NOR-SEN": {
-      "home": 2.03,
-      "draw": 3.2,
-      "away": 3.08,
+      "home": 2.25,
+      "draw": 3.45,
+      "away": 3.14,
       "single": false,
       "handicap": -1
     },
