@@ -1,9 +1,9 @@
 {
-  "updated": "2026-06-20T09:38:39",
-  "total_played": 30,
-  "direction_correct": 21,
-  "direction_total": 30,
-  "direction_rate": 70.0,
+  "updated": "2026-06-20T13:11:49",
+  "total_played": 32,
+  "direction_correct": 22,
+  "direction_total": 32,
+  "direction_rate": 68.8,
   "matches": [
     {
       "date": "6/11",
@@ -244,6 +244,22 @@
       "score": "0-1",
       "prediction_correct": "❌",
       "note": "SCO 0-1 MAR: 摩洛哥反击制胜, 苏格兰主场失守"
+    },
+    {
+      "date": "6/20",
+      "home": "BRA",
+      "away": "HAI",
+      "score": "3-0",
+      "prediction_correct": "✅",
+      "note": "BRA胜HAI"
+    },
+    {
+      "date": "6/20",
+      "home": "TUR",
+      "away": "PAR",
+      "score": "0-1",
+      "prediction_correct": "❌",
+      "note": "PAR胜TUR"
     }
   ]
 }
