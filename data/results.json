@@ -1,9 +1,9 @@
 {
-  "updated": "2026-06-20T13:11:49",
-  "total_played": 32,
-  "direction_correct": 22,
-  "direction_total": 32,
-  "direction_rate": 68.8,
+  "updated": "2026-06-21T02:54:09",
+  "total_played": 33,
+  "direction_correct": 23,
+  "direction_total": 33,
+  "direction_rate": 69.7,
   "matches": [
     {
       "date": "6/11",
@@ -260,6 +260,14 @@
       "score": "0-1",
       "prediction_correct": "❌",
       "note": "PAR胜TUR"
+    },
+    {
+      "date": "6/21",
+      "home": "NED",
+      "away": "SWE",
+      "score": "5-1",
+      "prediction_correct": "✅",
+      "note": "NED胜SWE"
     }
   ]
 }
