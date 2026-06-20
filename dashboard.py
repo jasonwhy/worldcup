@@ -396,23 +396,35 @@ for bdate in sorted_dates:
         try:
             plan = generate_plan(match_ids)
             plan_text = format_lottery(plan).replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
-            # 对比旧方案
+            # 对比旧方案, 生成变更标注
+            diff_note = ""
             old_text = plan_archive.get(bdate, "")
             if old_text and old_text != plan_text:
                 import re
                 old_ev = re.search(r'平均edge: ([+\-\d.]+%)', old_text)
                 new_ev = re.search(r'平均edge: ([+\-\d.]+%)', plan_text)
-                ev_change = ""
+                ev_note = ""
                 if old_ev and new_ev:
-                    ev_change = f" EV {old_ev.group(1)}→{new_ev.group(1)}"
-                old_lines = set(l.strip() for l in old_text.split('\n') if '→' in l)
-                new_lines = set(l.strip() for l in plan_text.split('\n') if '→' in l)
-                changed = len(old_lines - new_lines)
-                if changed > 0:
-                    print(f"  📝 {bdate} 方案变更: {changed}项调整{ev_change}")
+                    ev_note = f" EV: {old_ev.group(1)} → {new_ev.group(1)}"
+                # 比对推荐方向行
+                old_picks = set()
+                new_picks = set()
+                for line in old_text.split('\n'):
+                    if '→' in line and ('胜' in line or '平局' in line):
+                        old_picks.add(line.strip()[:80])
+                for line in plan_text.split('\n'):
+                    if '→' in line and ('胜' in line or '平局' in line):
+                        new_picks.add(line.strip()[:80])
+                changed = old_picks - new_picks
+                if changed or ev_note:
+                    import datetime
+                    now_str = datetime.datetime.now().strftime('%m/%d %H:%M')
+                    diff_note = f'<div class="plan-diff">📝 更新 {now_str}: {len(changed)}项调整{ev_note}</div>'
             # 更新存档
             plan_archive[bdate] = plan_text
             json.dump(plan_archive, open(PLAN_ARCHIVE, "w"), indent=2, ensure_ascii=False)
+            # 把变更标注加到方案前面
+            plan_text = diff_note + plan_text
         except:
             plan_text = plan_archive.get(bdate, "方案生成中...")
 
@@ -755,6 +767,7 @@ a{color:var(--blue);text-decoration:none}
 
 /* Betting Panel */
 .betting-plan{background:var(--bg-card);border-radius:var(--radius);padding:16px;border:1px solid var(--border);font-family:var(--font-mono);font-size:11px;line-height:1.6;white-space:pre-wrap;color:var(--text-primary);overflow-x:auto}
+.plan-diff{background:var(--amber);color:#000;padding:6px 12px;border-radius:4px;font-size:11px;margin-bottom:8px;font-weight:bold}
 
 /* Utility */
 .text-green{color:var(--green)}
