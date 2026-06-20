@@ -323,62 +323,79 @@ for tid, g in sorted(gossip.items()):
 # ============================================================
 # PANEL 5: 购彩方案 (Betting) — 按日期分Tab, 卡片式布局
 # ============================================================
-# Collect all upcoming matchdays from schedule
+# Collect ALL matchdays from schedule (including played/past dates)
 from collections import OrderedDict
-upcoming_dates = OrderedDict()
+from datetime import datetime
+now = datetime.now()
+all_dates = OrderedDict()
 for match_id, time_str in sorted(MATCH_SCHEDULE.items()):
     parts = time_str.split()
     d = parts[0]  # "6/18"
     t = parts[1] if len(parts)>1 else ""
-    if match_id in played_map: continue  # Skip played
-    if d not in upcoming_dates: upcoming_dates[d] = []
-    upcoming_dates[d].append((match_id, t))
+    if d not in all_dates: all_dates[d] = []
+    all_dates[d].append((match_id, t))
 
-# Generate per-date betting content (sorted by date, default to nearest)
+# Generate per-date betting content (ALL dates visible, past dates marked)
 bet_date_tabs = ""
 bet_date_panels = ""
-# Score each date for recommendation (average confidence level)
 date_scores = {}
-for bdate, bmatches in upcoming_dates.items():
+today_approx = f"{now.month}/{now.day}"
+for bdate, bmatches in all_dates.items():
     total_max_pct = 0
     count = 0
     for bmid, _ in bmatches:
-        try:
-            p = predict(bmid)
-            if "error" not in p:
-                wp, dp, lp = p["prediction"]["win_pct"], p["prediction"]["draw_pct"], p["prediction"]["lose_pct"]
-                total_max_pct += max(wp, dp, lp)
-                count += 1
-        except: pass
-    date_scores[bdate] = round(total_max_pct / max(1, count), 1)
+        if bmid not in played_map:
+            try:
+                p = predict(bmid)
+                if "error" not in p:
+                    wp, dp, lp = p["prediction"]["win_pct"], p["prediction"]["draw_pct"], p["prediction"]["lose_pct"]
+                    total_max_pct += max(wp, dp, lp)
+                    count += 1
+            except: pass
+    date_scores[bdate] = round(total_max_pct / max(1, count), 1) if count > 0 else 0
 
-# Sort dates chronologically
-sorted_dates = sorted(upcoming_dates.keys(), key=lambda x: (int(x.split('/')[0]), int(x.split('/')[1])))
-hot_date = max(date_scores, key=date_scores.get) if date_scores else sorted_dates[0]
+# Sort chronologically
+sorted_dates = sorted(all_dates.keys(), key=lambda x: (int(x.split('/')[0]), int(x.split('/')[1])))
+# Default to today or nearest upcoming
+default_date = None
+for d in sorted_dates:
+    if d >= today_approx:
+        default_date = d
+        break
+if not default_date: default_date = sorted_dates[0] if sorted_dates else None
+# Hot date: highest score among upcoming dates
+upcoming_dates_hot = {d: s for d, s in date_scores.items() if d >= today_approx}
+hot_date = max(upcoming_dates_hot, key=upcoming_dates_hot.get) if upcoming_dates_hot else (default_date or "")
 
 first_panel = True
 for bdate in sorted_dates:
-    bmatches = upcoming_dates[bdate]
+    bmatches = all_dates[bdate]
     match_ids = [m[0] for m in bmatches]
+    unplayed_count = sum(1 for m in match_ids if m not in played_map)
     date_label = f"{bdate} ({len(bmatches)}场)"
     is_hot = (bdate == hot_date)
     hot_tag = ' 🔥' if is_hot else ''
     bdate_safe = bdate.replace("/","-")
-    active_cls = "active" if first_panel else ""
+    active_cls = "active" if bdate == default_date else ""
     bet_date_tabs += f'<button class="bet-date-tab {active_cls}" onclick="showBetDate(\'bet-{bdate_safe}\',this)">{date_label}{hot_tag}</button>'
-    first_panel = False
 
-    try:
-        plan = generate_plan(match_ids)
-        plan_text = format_lottery(plan).replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
-    except:
-        plan_text = "方案生成中..."
+    # Determine if this date is past/expired
+    is_expired = bdate < today_approx or unplayed_count == 0
 
+    plan_text = ""
     match_cards = ""
+    if not is_expired and unplayed_count > 0:
+        try:
+            plan = generate_plan(match_ids)
+            plan_text = format_lottery(plan).replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
+        except:
+            plan_text = "方案生成中..."
+
     for bmid, bkickoff in bmatches:
         home, away = bmid.split("-")
         hn = teams.get(home,{}).get("name",home)
         an = teams.get(away,{}).get("name",away)
+        played_match = bmid in played_map
         try:
             p = predict(bmid)
             if "error" not in p:
@@ -392,10 +409,16 @@ for bdate in sorted_dates:
                 conf = r.get('confidence','中')
                 cold_icon = "🔥" if "高" in cold else ("⚠️" if "中" in cold else "✅")
 
+                status_badge = ""
+                if played_match:
+                    pm = played_map[bmid]
+                    status_badge = f'<span class="bet-status played">已赛 {pm["score"]}</span>'
+
                 match_cards += f"""<div class="bet-card">
                 <div class="bet-card-header">
                   <span class="bet-time">{bdate} {bkickoff}</span>
                   <span class="bet-confidence {'conf-high' if conf=='高' else ('conf-mid' if conf=='中' else 'conf-low')}">{conf}置信</span>
+                  {status_badge}
                 </div>
                 <div class="bet-teams">{flag(hn)} <span class="bet-vs">VS</span> {flag(an)}</div>
                 <div class="bet-probs">
@@ -411,12 +434,14 @@ for bdate in sorted_dates:
         except:
             match_cards += f"""<div class="bet-card"><div class="bet-teams">{flag(hn)} vs {flag(an)}</div></div>"""
 
-    active_panel = 'style="display:block"' if bdate == sorted_dates[0] else 'style="display:none"'
+    active_panel = 'style="display:block"' if bdate == default_date else 'style="display:none"'
+    expired_banner = '<div class="expired-banner">⏰ 已截止投注</div>' if is_expired else ''
     bet_date_panels += f"""<div id="bet-{bdate_safe}" class="bet-date-panel" {active_panel}>
+    {expired_banner}
     <div class="bet-matches-grid">{match_cards}</div>
     <div class="bet-plan-section">
       <div class="bet-plan-header">📋 {bdate} 购彩方案 · 200元预算</div>
-      <div class="betting-plan">{plan_text}</div>
+      <div class="betting-plan">{plan_text if plan_text else '该比赛日已结束'}</div>
     </div></div>"""
 
 
