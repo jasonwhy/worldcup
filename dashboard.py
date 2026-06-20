@@ -60,6 +60,13 @@ sys.path.insert(0, str(Path(__file__).parent))
 from engine.predictor import final_score, predict
 from engine.lottery import generate_plan, format_lottery, MATCH_SCHEDULE
 
+# 方案留底存档 — 一旦生成永不修改, 只追加新日期
+PLAN_ARCHIVE = DATA / "bet_plans_archive.json"
+plan_archive = {}
+if PLAN_ARCHIVE.exists():
+    try: plan_archive = json.load(open(PLAN_ARCHIVE))
+    except: plan_archive = {}
+
 F = {"France":"🇫🇷","Spain":"🇪🇸","Argentina":"🇦🇷","England":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","Brazil":"🇧🇷","Portugal":"🇵🇹","Germany":"🇩🇪","Netherlands":"🇳🇱","Belgium":"🇧🇪","Norway":"🇳🇴","Morocco":"🇲🇦","Colombia":"🇨🇴","Mexico":"🇲🇽","South Korea":"🇰🇷","United States":"🇺🇸","Uruguay":"🇺🇾","Croatia":"🇭🇷","Japan":"🇯🇵","Senegal":"🇸🇳","Switzerland":"🇨🇭","Austria":"🇦🇹","Sweden":"🇸🇪","Canada":"🇨🇦","Australia":"🇦🇺","Ecuador":"🇪🇨","Türkiye":"🇹🇷","Scotland":"🏴","Czechia":"🇨🇿","Egypt":"🇪🇬","Iran":"🇮🇷","Ghana":"🇬🇭","Algeria":"🇩🇿","Tunisia":"🇹🇳","South Africa":"🇿🇦","Cape Verde":"🇨🇻","Saudi Arabia":"🇸🇦","Qatar":"🇶🇦","Iraq":"🇮🇶","Jordan":"🇯🇴","Uzbekistan":"🇺🇿","New Zealand":"🇳🇿","Panama":"🇵🇦","Haiti":"🇭🇹","Curaçao":"🇨🇼","DR Congo":"🇨🇩","Congo DR":"🇨🇩","Bosnia-Herzegovina":"🇧🇦","Bosnia":"🇧🇦","Paraguay":"🇵🇾","Cote dIvoire":"🇨🇮","Ivory Coast":"🇨🇮"}
 def flag(name): return f"{F.get(name,'🏳️')} {name}"
 
@@ -385,11 +392,17 @@ for bdate in sorted_dates:
     plan_text = ""
     match_cards = ""
     if not is_expired and unplayed_count > 0:
-        try:
-            plan = generate_plan(match_ids)
-            plan_text = format_lottery(plan).replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
-        except:
-            plan_text = "方案生成中..."
+        # 留底优先: 已有存档直接用, 无存档生成后永久保存
+        if bdate in plan_archive:
+            plan_text = plan_archive[bdate]
+        else:
+            try:
+                plan = generate_plan(match_ids)
+                plan_text = format_lottery(plan).replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
+                plan_archive[bdate] = plan_text
+                json.dump(plan_archive, open(PLAN_ARCHIVE, "w"), indent=2, ensure_ascii=False)
+            except:
+                plan_text = "方案生成中..."
 
     for bmid, bkickoff in bmatches:
         home, away = bmid.split("-")
