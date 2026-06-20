@@ -1,9 +1,9 @@
 {
   "updated": "2026-06-20T09:29:35",
   "total_played": 30,
-  "direction_correct": 22,
+  "direction_correct": 21,
   "direction_total": 30,
-  "direction_rate": 73.3,
+  "direction_rate": 70.0,
   "matches": [
     {
       "date": "6/11",
@@ -241,9 +241,9 @@
       "date": "6/20",
       "home": "SC",
       "away": "MAR",
-      "score": "0-0",
-      "prediction_correct": "✅",
-      "note": "平局"
+      "score": "0-1",
+      "prediction_correct": "❌",
+      "note": "SCO 0-1 MAR: 摩洛哥反击制胜, 苏格兰主场失守"
     }
   ]
 }
