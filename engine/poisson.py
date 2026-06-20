@@ -1,27 +1,43 @@
 """
-泊松比分预测引擎 —— 系统最终输出 v2.1
+泊松比分预测引擎 —— 系统最终输出 v3.0
 - 总分 → xG预期进球
 - 泊松概率矩阵 (0-8球)
 - 八卦冷门修正
 - 盘口约束校正
-- 首轮平局加成 + 温差修正 [P0]
+- 平局加成 + 温差修正 [P0]
 - 屠杀因子 + 大比分过滤优化 [P1]
 - 胜平负% + 最可能比分Top3
+- [v3.0] 校准文件隔离, 全局变量不再被直接修改
 """
 import math
+import json
+from pathlib import Path
 from typing import Tuple, List, Dict
 
+DATA_DIR = Path(__file__).parent.parent / "data"
 
 # 世界杯历史场均进球中位数
 BASELINE_XG = 1.35
 
-# P0: 平局加成系数 (v2.2: 修复double-multiply后补偿)
+# P0: 平局加成系数 (v3.0: 审计校准, 对标实际平局率30%)
 DRAW_BONUS = {
-    "group_1": 2.0,   # 首轮：保守试探+弱队摆大巴
-    "group_2": 1.6,   # 次轮：部分球队需要抢分
+    "group_1": 1.6,   # 首轮 (降0.4: 模型平局率33%→对标实际30%)
+    "group_2": 1.3,   # 次轮 (降0.3)
     "group_3": 1.0,   # 末轮：恢复正常
     "ko": 0.8,        # 淘汰赛：必须分胜负
 }
+
+# [v3.0] 加载校准文件 (calibrator写入, 引擎读取, 不直接改全局变量)
+_calib_file = DATA_DIR / "calibration.json"
+if _calib_file.exists():
+    try:
+        _calib = json.load(open(_calib_file))
+        if "draw_bonus" in _calib:
+            DRAW_BONUS.update(_calib["draw_bonus"])
+        if "baseline_xg" in _calib:
+            BASELINE_XG = _calib["baseline_xg"]
+    except:
+        pass
 
 
 def score_to_xg(total_score: float, defense_score: float = 50,
@@ -146,6 +162,9 @@ def build_prob_matrix(xg_a: float, xg_b: float, max_goals: int = 8,
             strength *= 0.7
         elif score_gap > 12:
             strength *= 0.85
+        elif score_gap > 8:
+            # [v3.0] Δ5-10区间错误率62%, 平局加成额外降30%
+            strength *= 0.70
 
         effective_draw_bonus = 1.0 + (effective_draw_bonus - 1.0) * strength
     if effective_draw_bonus != 1.0:

@@ -79,55 +79,63 @@ def calibrate(verbose=True):
 
     adjustments = []
 
+    # [v3.0] 所有校准写入 calibration.json, 不再直接修改全局变量
+    calib = {}
+    if (DATA / "calibration.json").exists():
+        calib = json.load(open(DATA / "calibration.json"))
+
     # 1. 进球偏差: 预测偏低>25% → 上调BASELINE_XG
     goal_ratio = actual_goals / max(1, pred_goals)
+    from .poisson import BASELINE_XG as SRC_XG, DRAW_BONUS as SRC_DB
     if goal_ratio > 1.20:
-        factor = min(1.20, goal_ratio * 0.85 + 0.15)  # 保守上调
+        factor = min(1.20, goal_ratio * 0.85 + 0.15)
+        old_xg = calib.get("baseline_xg", SRC_XG)
+        new_xg = round(SRC_XG * factor, 2)
+        calib["baseline_xg"] = new_xg
         adjustments.append({
-            "param": "BASELINE_XG",
-            "old": 1.35,
-            "new": round(1.35 * factor, 2),
+            "param": "BASELINE_XG", "old": old_xg, "new": new_xg,
             "reason": f"进球偏低{goal_ratio-1:+.0%}, 上调xG基线"
         })
     elif goal_ratio < 0.80:
         factor = max(0.85, goal_ratio)
+        old_xg = calib.get("baseline_xg", SRC_XG)
+        new_xg = round(SRC_XG * factor, 2)
+        calib["baseline_xg"] = new_xg
         adjustments.append({
-            "param": "BASELINE_XG",
-            "old": 1.35,
-            "new": round(1.35 * factor, 2),
+            "param": "BASELINE_XG", "old": old_xg, "new": new_xg,
             "reason": f"进球偏高{goal_ratio-1:+.0%}, 下调xG基线"
         })
 
-    # 2. 平局偏差: 实际平局率超过预测→上调group_1 DRAW_BONUS
+    # 2. 平局偏差
     pred_draw_rate = sum(1 for m in results["matches"]
                          if m["prediction_correct"] == "✅" and
                          m["score"].split("-")[0] == m["score"].split("-")[1]) / max(1, len(results["matches"]))
     actual_draw_rate = actual_draws / n
     if actual_draw_rate > 0.30 and pred_draw_rate < actual_draw_rate - 0.05:
-        from .poisson import DRAW_BONUS
-        old = DRAW_BONUS["group_1"]
-        DRAW_BONUS["group_1"] = round(old * 1.10, 2)
-        DRAW_BONUS["group_2"] = round(DRAW_BONUS["group_2"] * 1.05, 2)
+        db = calib.get("draw_bonus", {})
+        old_g1 = db.get("group_1", SRC_DB["group_1"])
+        new_g1 = round(min(1.8, old_g1 * 1.05), 2)
+        new_g2 = round(min(1.5, db.get("group_2", SRC_DB["group_2"]) * 1.03), 2)
+        calib["draw_bonus"] = {"group_1": new_g1, "group_2": new_g2}
         adjustments.append({
-            "param": "DRAW_BONUS.group_1",
-            "old": old,
-            "new": DRAW_BONUS["group_1"],
-            "reason": f"平局率偏高{actual_draw_rate:.0%} vs 预测{pred_draw_rate:.0%}"
+            "param": "DRAW_BONUS.group_1", "old": old_g1, "new": new_g1,
+            "reason": f"平局率偏高{actual_draw_rate:.0f} vs 预测{pred_draw_rate:.0f}"
         })
 
-    # 3. 方向偏差: 持续跌破70%→降低保守阈值 (仅当方向样本>=20)
+    # 3. 方向偏差
     dir_acc = direction_correct / max(1, direction_total)
     if dir_acc < 0.70 and direction_total >= 20:
-        from .lottery import THRESHOLD
-        old_t = THRESHOLD["conservative_min_delta"]
-        THRESHOLD["conservative_min_delta"] = max(8, old_t - 1)
+        ct = calib.get("thresholds", {})
+        old_t = ct.get("conservative_min_delta", 10)
+        new_t = max(8, old_t - 1)
+        calib["thresholds"] = {"conservative_min_delta": new_t}
         adjustments.append({
-            "param": "conservative_min_delta",
-            "old": old_t,
-            "new": THRESHOLD["conservative_min_delta"],
-            "reason": f"方向准确率{dir_acc:.0%}偏低, 微调门槛"
+            "param": "conservative_min_delta", "old": old_t, "new": new_t,
+            "reason": f"方向准确率{dir_acc:.0f}%偏低, 微调门槛"
         })
 
+    if adjustments:
+        json.dump(calib, open(DATA / "calibration.json", "w"), indent=2)
     # 输出报告
     report = {
         "status": "done",
