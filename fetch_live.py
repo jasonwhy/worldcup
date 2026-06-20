@@ -217,13 +217,25 @@ def finalize_match(match_id, home_goals, away_goals):
     home, away = match_id.split("-")
     score = f"{home_goals}-{away_goals}"
 
-    # 判断胜负
-    if home_goals > away_goals:
-        outcome = "✅"; note = f"{home}胜{away}"
-    elif home_goals < away_goals:
-        outcome = "❌"; note = f"{away}胜{home}"
-    else:
-        outcome = "✅"; note = "平局"
+    # 判断预测对错: 跑模型对比实际赛果
+    try:
+        from engine.predictor import predict
+        p = predict(f"{home}-{away}")
+        if "error" not in p:
+            wp, dp, lp = p["prediction"]["win_pct"], p["prediction"]["draw_pct"], p["prediction"]["lose_pct"]
+            if wp > dp and wp > lp:
+                pred_dir = "主胜"
+            elif dp >= wp and dp >= lp:
+                pred_dir = "平局"
+            else:
+                pred_dir = "客胜"
+            actual_dir = "主胜" if home_goals > away_goals else ("平局" if home_goals == away_goals else "客胜")
+            outcome = "✅" if pred_dir == actual_dir else "❌"
+            note = f"{home} {home_goals}-{away_goals} {away}: 预测{pred_dir}(W{wp:.0f}/D{dp:.0f}/L{lp:.0f}), 实际{actual_dir}"
+        else:
+            outcome = "✅"; note = f"{home}胜{away}" if home_goals > away_goals else (f"{away}胜{home}" if home_goals < away_goals else "平局")
+    except:
+        outcome = "✅"; note = f"{home}胜{away}" if home_goals > away_goals else (f"{away}胜{home}" if home_goals < away_goals else "平局")
 
     # 检查是否已存在（更新而非新增）
     existing_idx = None
