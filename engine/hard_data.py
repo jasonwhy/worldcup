@@ -348,15 +348,15 @@ def attacking_conversion(team_id: str) -> float:
 # ============================================================
 
 def xg_proxy(team_id: str) -> dict:
-    """xG代理: 从近5场进球/失球估算进攻和防守xG"""
+    """xG代理: 从近5场进球/失球估算进攻和防守xG (Fox xG备用: data/fox_xg.json)"""
     teams = load_json("teams.json")
     team = teams.get(team_id)
     if not team:
         return {"offensive": 1.5, "defensive": 1.5, "net": 0.0}
     r5 = team["recent_5"]
     gf, ga = r5["gf"], r5["ga"]
-    off_xg = gf / 5  # 场均进球 = 进攻xG代理
-    def_xg = ga / 5  # 场均失球 = 防守xG代理
+    off_xg = gf / 5
+    def_xg = ga / 5
     net = off_xg - def_xg
     return {
         "offensive": round(off_xg, 2),

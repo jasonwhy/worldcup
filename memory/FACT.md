@@ -1,25 +1,20 @@
-# 2026 World Cup Prediction System — Architecture Decisions
+# CRITICAL RULES — Highest Priority
 
-## Data Sync Architecture (v4.3)
-- **results.json**: Single source of truth for match results. dashboard.py reads dynamically, no hardcoded lists.
-- **news.json**: Centralized news store. All 7 dashboard panels read from JSON files.
-- **injuries.json**: 28 entries across 11 teams. `return_date` drives auto-clean.
-- **gossip.json**: 18 teams tracked. Uses `original_score` field to prevent double-decay.
+## Betting Plan Archive (方案留底)
+- `data/bet_plans_archive.json` stores ALL generated plans permanently
+- **NEVER delete or modify archived plans** — only append new dates or add change annotations
+- Each dashboard regeneration must compare new plan vs archive, show diff (📝), then save
+- Expired dates show "⏰ 已截止投注" banner but remain visible
+- This is the #1 non-negotiable rule
 
-## Real-Time Update (v4.3)
-- **auto_refresh()**: Runs before every dashboard generation — applies gossip time decay (14-day half-life, e^(-0.05*days)) based on `original_score` not current score; cleans injuries with passed return_date.
-- **--watch mode**: File watcher monitors data/*.json every 2 seconds. On change, auto-regenerates dashboard.html.
-- **--serve + --watch**: Combined mode — HTTP server + file watcher for live development.
-- Browser auto-refresh: 60 seconds (was 5 min).
+## Prediction Accuracy
+- `fetch_live.py` must call `predict()` engine to determine ✅/❌ — never hardcode
+- Current direction rate: 25/33 = 76% (P0: DRAW_BONUS 1.6/1.3 + P2: team draw factor)
+- calibrator writes to `data/calibration.json` — does NOT mutate global variables
 
-## Key Design Rules
-1. Gossip decay MUST use `original_score` field, not current score, to prevent repeated decay.
-2. All JSON files are source of truth — dashboard.py has zero hardcoded data.
-3. `audit_sync.py` validates cross-file consistency (results ↔ groups, JSON ↔ dashboard.py).
-4. `fetch_updates.py` is the manual update helper; auto_refresh() handles automated decay/clean.
-
-## Media Sources
-- 18 sources tracked in sources.json (16 active, 1 stale, 1 blocked)
-- Action Network: stale 5 days (injury data)
-- 竞彩网 (sporttery.cn): blocked by WAF
-- 网易彩票 (sports.163.com/caipiao): primary SP source
+## Data Sources (priority order)
+1. nowscore.com (竞彩 SP/RQSPF/进球/半全/比分)
+2. FIFA.com (赛程权威)
+3. AP/ESPN/Sky (赛果验证)
+4. 网易彩票 (SP备用)
+5. 懂球帝 (球员/球队数据)

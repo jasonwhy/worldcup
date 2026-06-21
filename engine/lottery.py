@@ -68,8 +68,9 @@ RULE = {
     "deadline": "开球前1分钟",   # 竞彩实际: 单关截止开球前, 串关截止最早一场开球前
     # 预算分配
     "budget": 200,
-    "banker_pct": 0.20, "parlay_pct": 0.35,
-    "balanced_pct": 0.15, "flexi_pct": 0.20, "aggressive_pct": 0.10,
+    "banker_pct": 0.15, "parlay_pct": 0.25,
+    "rqspf_pct": 0.15, "balanced_pct": 0.10,
+    "flexi_pct": 0.15, "aggressive_pct": 0.10,
     # 单关场次: 动态从SP数据读取, 此列表为兜底
     "single_matches": [],
 }
@@ -118,6 +119,50 @@ HANDICAP_MAP = {
     10: "(-0.5)", 5: "(-0.5)", 0: "(平手)",
 }
 
+# 让球胜平负(RQSPF) 方向判断
+def rqspf_pick(home_xg: float, away_xg: float, handicap_line: int, cn_home: str, cn_away: str) -> dict:
+    """
+    根据模型xG和让球盘口判断RQSPF方向
+    handicap_line: 负数=主队让球, 正数=主队受让
+    返回: {direction, pick_name, odds_key, confidence}
+    """
+    model_diff = home_xg - away_xg
+    adjusted = model_diff + handicap_line  # handicap_line为负(让球), 调整后diff变小
+
+    hcap = handicap_line  # 负数=主让, 正数=主受
+    if adjusted > 0.5:
+        return {"direction": "home", "pick": f"{cn_home}({hcap})让球胜",
+                "pick_short": "让球主胜", "confidence": "高" if adjusted > 1.0 else "中"}
+    elif adjusted < -0.5:
+        if hcap < 0:
+            pick_str = f"{cn_away}(+{abs(hcap)})让球胜"
+        else:
+            pick_str = f"{cn_away}({hcap})让球胜"
+        return {"direction": "away", "pick": pick_str,
+                "pick_short": "让球客胜", "confidence": "高" if adjusted < -1.0 else "中"}
+    else:
+        return {"direction": "draw", "pick": f"{cn_home}({hcap})让球平",
+                "pick_short": "让球平", "confidence": "中"}
+
+# 总进球数预测
+def tg_predict(total_xg: float) -> dict:
+    """
+    模型xG → 总进球数选项
+    返回: {primary, secondary, odds_key}
+    """
+    tg = total_xg
+    if tg < 0.8: return {"primary": "0", "secondary": "1", "odds_key": "0"}
+    elif tg < 1.5: return {"primary": "1", "secondary": "2", "odds_key": "1"}
+    elif tg < 2.2: return {"primary": "2", "secondary": "1", "odds_key": "2"}
+    elif tg < 2.8: return {"primary": "2", "secondary": "3", "odds_key": "2"}
+    elif tg < 3.3: return {"primary": "3", "secondary": "2", "odds_key": "3"}
+    elif tg < 3.8: return {"primary": "3", "secondary": "4", "odds_key": "3"}
+    elif tg < 4.3: return {"primary": "4", "secondary": "3", "odds_key": "4"}
+    elif tg < 4.8: return {"primary": "4", "secondary": "5", "odds_key": "4"}
+    elif tg < 5.5: return {"primary": "5", "secondary": "4", "odds_key": "5"}
+    elif tg < 6.5: return {"primary": "6", "secondary": "5", "odds_key": "6"}
+    else: return {"primary": "7+", "secondary": "6", "odds_key": "7+"}
+
 
 def load_json(name):
     with open(DATA_DIR / name, "r") as f:
@@ -158,16 +203,54 @@ def _sp_data():
     return _get_sp()
 
 def _match_sp(match_id: str) -> dict:
-    return _sp_data().get("matches", {}).get(match_id, {})
+    sp = _sp_data()
+    m = sp.get("matches", {}).get(match_id)
+    if m: return m
+    # 反向查找并交换主客赔率: EGY-NZL → NZL-EGY
+    rev = "-".join(match_id.split("-")[::-1])
+    rev_m = sp.get("matches", {}).get(rev, {})
+    if rev_m:
+        swapped = dict(rev_m)
+        if "home" in swapped and "away" in swapped:
+            swapped["home"], swapped["away"] = swapped["away"], swapped["home"]
+        return swapped
+    return {}
 
 def _match_handicap_sp(match_id: str) -> dict:
-    return _sp_data().get("handicap", {}).get(match_id, {})
+    sp = _sp_data()
+    m = sp.get("handicap", {}).get(match_id)
+    if m: return m
+    rev = "-".join(match_id.split("-")[::-1])
+    rev_m = sp.get("handicap", {}).get(rev, {})
+    if rev_m:
+        swapped = dict(rev_m)
+        if "home" in swapped and "away" in swapped:
+            swapped["home"], swapped["away"] = swapped["away"], swapped["home"]
+        if "line" in swapped:
+            swapped["line"] = -swapped["line"]  # 让球方向反转
+        return swapped
+    return {}
 
 def _match_tg_sp(match_id: str) -> dict:
-    return _sp_data().get("total_goals", {}).get(match_id, {})
+    sp = _sp_data()
+    # 1) 从 total_goals 专用字典查找
+    m = sp.get("total_goals", {}).get(match_id)
+    if m: return m
+    rev = "-".join(match_id.split("-")[::-1])
+    m = sp.get("total_goals", {}).get(rev, {})
+    if m: return m
+    # 2) 从 match 条目内嵌的 total_goals 查找
+    match_data = _match_sp(match_id)
+    if match_data and match_data.get("total_goals"):
+        return match_data["total_goals"]
+    return {}
 
 def _match_score_sp(match_id: str) -> dict:
-    return _sp_data().get("score", {}).get(match_id, {})
+    sp = _sp_data()
+    m = sp.get("score", {}).get(match_id)
+    if m: return m
+    rev = "-".join(match_id.split("-")[::-1])
+    return sp.get("score", {}).get(rev, {})
 
 def _is_single_match(match_id: str) -> bool:
     """从SP数据动态判断是否为单关场次"""
@@ -205,10 +288,10 @@ def est_odds(prob: float, bet_type: str = "wdl", match_id: str = None,
             if "主胜" in str(pick): return sp.get("home", _model_odds(prob))
             if "客胜" in str(pick): return sp.get("away", _model_odds(prob))
             if "平" in str(pick): return sp.get("draw", _model_odds(prob))
-    tg_sp = _match_tg_sp(match_id) if match_id else {}
-    if tg_sp and bet_type == "total_goals":
+    tg_sp_val = _match_tg_sp(match_id) if match_id else {}
+    if tg_sp_val and bet_type == "total_goals":
         tg = str(int(str(pick).replace("总进球","").replace("球",""))) if pick else "2"
-        return tg_sp.get(tg, 3.20)
+        return tg_sp_val.get(tg, 3.20)
     score_sp = _match_score_sp(match_id) if match_id else {}
     if score_sp and bet_type == "score":
         return score_sp.get(str(pick), round(1.0/0.10*0.71, 1))
@@ -288,7 +371,52 @@ def classify_match(match_id: str, p: dict) -> dict:
         flagged_match = f"{flag(parts[0])} {cn_h} vs {flag(parts[1])} {cn_a}"
     else:
         flagged_match = p["match"]
+        cn_h, cn_a = parts[0] if len(parts)==2 else ("","")
     kickoff = MATCH_SCHEDULE.get(match_id, "")
+
+    # RQSPF (让球胜平负) 预测
+    rqspf = None
+    hsp = _match_handicap_sp(match_id)
+    if not hsp or hsp.get("line") is None:
+        # fallback: 检查matches中的handicap字段(只有line, 无odds)
+        msp = _match_sp(match_id)
+        if msp and msp.get("handicap") is not None:
+            hsp = {"line": msp["handicap"], "home": 0, "draw": 0, "away": 0}
+    if hsp and hsp.get("line") is not None:
+        line = hsp["line"]
+        rqspf = rqspf_pick(r["xg_home"], r["xg_away"], line,
+                           f"{flag(parts[0])} {cn_h}" if len(parts)==2 else cn_h,
+                           f"{flag(parts[1])} {cn_a}" if len(parts)==2 else cn_a)
+        rqspf["handicap_line"] = line
+        rqspf["adjusted_diff"] = round(r["xg_home"] - r["xg_away"] + line, 2)
+        real_odds = hsp.get(rqspf["direction"], 0)
+        if real_odds > 0:
+            rqspf["odds"] = real_odds
+        else:
+            # 无真实SP时估算: 让球后概率越明确, 赔率越低
+            adj_abs = abs(rqspf["adjusted_diff"])
+            rqspf_prob = min(65, max(30, 30 + adj_abs * 18))
+            rqspf["odds"] = round(1.0 / (rqspf_prob / 100) * 0.71, 2)
+            rqspf["odds_estimated"] = True
+
+    # 总进球数预测
+    tg_pred = tg_predict(r["total_xg"])
+    tg_sp = _match_tg_sp(match_id)
+    tg_odds = tg_sp.get(tg_pred["odds_key"], 3.30) if tg_sp else 3.30
+    tg_pred["odds"] = tg_odds
+
+    # 半全场预测 (基于xG对比 + SP方向)
+    htft = None
+    match_sp_data = _match_sp(match_id)
+    if match_sp_data and match_sp_data.get("half_full"):
+        hf = match_sp_data["half_full"]
+        if direction == "home":
+            htft_pick = "胜胜" if r["xg_home"] > r["xg_away"] * 1.5 else "平胜"
+        elif direction == "away":
+            htft_pick = "负负" if r["xg_away"] > r["xg_home"] * 1.5 else "平负"
+        else:
+            htft_pick = "平平"
+        htft = {"pick": htft_pick, "odds": hf.get(htft_pick, 5.0)}
 
     return {
         "match_id": match_id, "match_name": flagged_match, "kickoff": kickoff,
@@ -302,6 +430,11 @@ def classify_match(match_id: str, p: dict) -> dict:
         "is_usable": not is_excluded, "is_excluded": is_excluded,
         "handicap_advice": handicap_advice,
         "home_gossip": h["gossip"], "away_gossip": a["gossip"],
+        # v5.0 竞彩全玩法
+        "rqspf": rqspf,
+        "tg_pred": tg_pred,
+        "htft": htft,
+        "cn_home": cn_h, "cn_away": cn_a,
     }
 
 
@@ -406,6 +539,27 @@ def generate_plan(matches: list) -> dict:
     excluded_pool = [c for c in classified if c.get("is_excluded")]
     draw_pool = [c for c in classified if c["direction"] == "draw" and c["dir_prob"] >= 40]
 
+    # ★ v5.0 RQSPF池: 有让球盘数据的场次, 按(赔率黄金区间 + 方向置信度)排序
+    rqspf_pool = [c for c in classified if c.get("rqspf") and not c.get("is_excluded")
+                  and c["rqspf"]["confidence"] in ("高", "中")]
+    # RQSPF排序: 优先赔率在1.8-2.5黄金区间的
+    def rqspf_score(c):
+        odds = c["rqspf"].get("odds", 1.0)
+        golden = 1.0 if 1.8 <= odds <= 2.5 else (0.8 if 2.5 < odds <= 3.5 else 0.5)
+        return golden * 100 + min(c["dir_prob"], 99)
+    rqspf_pool.sort(key=rqspf_score, reverse=True)
+
+    # ★ v5.0 总进球池: 有总进球SP数据的场次
+    tg_pool = [c for c in classified if c.get("tg_pred") and not c.get("is_excluded")]
+    tg_pool.sort(key=lambda x: x["tg_pred"].get("odds", 0), reverse=True)
+
+    # ★ v5.0 单关优化池: SP标记为单关的场次
+    single_pool = [c for c in classified if c["match_id"] in dyn_singles
+                   and not c.get("is_excluded")
+                   and c["direction"] != "draw"
+                   and c["dir_prob"] >= 40]
+    single_pool.sort(key=lambda x: (x["dir_prob"], abs(x["delta"])), reverse=True)
+
     # 稳胆: 最优单场
     banker_pool.sort(key=lambda x: (x["dir_prob"], abs(x["delta"])), reverse=True)
     banker = banker_pool[0] if banker_pool else None
@@ -446,18 +600,22 @@ def generate_plan(matches: list) -> dict:
     score_candidates.sort(key=lambda x: x["dir_prob"], reverse=True)
     aggressive_bet = score_candidates[:3]
 
-    # 资金分配
+    # 资金分配 v5.0: 新增RQSPF仓位
     b_banker = int(RULE["budget"] * RULE["banker_pct"])
     b_conservative = int(RULE["budget"] * RULE["parlay_pct"])
+    b_rqspf = int(RULE["budget"] * RULE["rqspf_pct"])
     b_balanced = int(RULE["budget"] * RULE["balanced_pct"])
     b_flexi = int(RULE["budget"] * RULE["flexi_pct"])
     b_aggressive = int(RULE["budget"] * RULE["aggressive_pct"])
-    b_reserve = RULE["budget"] - b_banker - b_conservative - b_balanced - b_flexi - b_aggressive
+    b_reserve = RULE["budget"] - b_banker - b_conservative - b_rqspf - b_balanced - b_flexi - b_aggressive
 
     # 回收跳过层级预算 → 优先补充稳健仓
     if not banker: b_reserve += b_banker; b_banker = 0
     if not (balanced_wdl and balanced_tg): b_reserve += b_balanced; b_balanced = 0
     if len(aggressive_bet) < 3: b_reserve += b_aggressive; b_aggressive = 0
+    # RQSPF不可用时回收
+    rqspf_bet = rqspf_pool[:2] if len(rqspf_pool) >= 2 else []
+    if len(rqspf_bet) < 2: b_reserve += b_rqspf; b_rqspf = 0
     # 稳健2串1可用时 → 其他仓跳过的预算补充到稳健仓(最可靠)
     if len(conservative_bet) >= 2:
         extra = b_reserve * 0.5  # 保留金的一半给稳健仓
@@ -466,14 +624,30 @@ def generate_plan(matches: list) -> dict:
     elif len(conservative_bet) < 2:
         b_reserve += b_conservative; b_conservative = 0
 
-    # 单关推荐: 从动态单关列表中选方向明确的场次
+    # ★ v5.0 单关推荐: 从单关池中优选, 含RQSPF和TG建议
     single_bets = []
-    for c in classified:
-        if (c["match_id"] in dyn_singles
-                and not c["is_excluded"]
-                and c["direction"] != "draw"
-                and c["dir_prob"] >= 40):
-            single_bets.append(c)
+    for c in single_pool:
+        bet_info = {
+            "match": c["match_name"], "match_id": c["match_id"],
+            "spf_pick": c["dir_name"], "spf_prob": c["dir_prob"],
+            "spf_odds": est_odds(c["dir_prob"], match_id=c["match_id"], direction=c["direction"]),
+            "kickoff": c["kickoff"],
+            "ev": c.get("ev_score", 0),
+        }
+        # RQSPF建议
+        if c.get("rqspf"):
+            bet_info["rqspf_pick"] = c["rqspf"]["pick"]
+            bet_info["rqspf_odds"] = c["rqspf"].get("odds", 0)
+            bet_info["rqspf_confidence"] = c["rqspf"]["confidence"]
+        # TG建议
+        if c.get("tg_pred"):
+            bet_info["tg_pick"] = f"总进球{c['tg_pred']['primary']}球"
+            bet_info["tg_odds"] = c["tg_pred"].get("odds", 0)
+        # 半全场建议
+        if c.get("htft"):
+            bet_info["htft_pick"] = f"半全场-{c['htft']['pick']}"
+            bet_info["htft_odds"] = c["htft"]["odds"]
+        single_bets.append(bet_info)
 
     # 赔率计算
     # 稳胆
@@ -551,7 +725,7 @@ def generate_plan(matches: list) -> dict:
     }
 
     plan = {
-        "generated_by": "模型自动输出 v4.0 (正EV+选择性投注)",
+        "generated_by": "模型自动输出 v5.0 (全玩法: SPF+RQSPF+总进球+半全场+混合过关)",
         "total_budget": RULE["budget"],
         "value_stats": ev_stats,
         "skipped": skipped_deadline,
@@ -592,6 +766,24 @@ def generate_plan(matches: list) -> dict:
             "golden_check": check_golden_range(cons_combined, "2串1") if cons_combined else None,
             "condition": " AND ".join([b["dir_name"] for b in conservative_bet]),
         } if len(conservative_bet) >= 2 else {"error": "无可投场次"},
+        # ★ v5.0 RQSPF仓 (让球胜平负 2串1)
+        "rqspf": {
+            "name": "让球2串1", "amount": b_rqspf, "type": "2串1 让球胜平负 (竞彩主力玩法)",
+            "bets": [{
+                "match": b["match_name"], "pick": b["rqspf"]["pick_short"],
+                "full_pick": b["rqspf"]["pick"], "match_id": b["match_id"],
+                "handicap_line": b["rqspf"]["handicap_line"],
+                "model_xg_diff": round(b["xg_home"] - b["xg_away"], 2),
+                "adjusted_diff": b["rqspf"]["adjusted_diff"],
+                "rqspf_confidence": b["rqspf"]["confidence"],
+                "est_odds": b["rqspf"].get("odds", 2.0),
+                "reason": f"让{b['rqspf']['handicap_line']}球后 xG差={b['rqspf']['adjusted_diff']:+.1f}",
+            } for b in rqspf_bet],
+            "est_odds": round(rqspf_bet[0]["rqspf"].get("odds",2.0) * rqspf_bet[1]["rqspf"].get("odds",2.0), 2) if len(rqspf_bet) >= 2 else 0,
+            "est_return": round(b_rqspf * (rqspf_bet[0]["rqspf"].get("odds",2.0) * rqspf_bet[1]["rqspf"].get("odds",2.0)), 0) if len(rqspf_bet) >= 2 else 0,
+            "condition": " AND ".join([b["rqspf"]["pick"] for b in rqspf_bet]) if len(rqspf_bet) >= 2 else "",
+            "note": "让球盘赔率更接近黄金区间(1.8-2.5), 是竞彩主力玩法",
+        } if len(rqspf_bet) >= 2 else {"error": "无可投RQSPF场次(需2场有让球盘数据+高/中置信度)"},
         # 均衡仓
         "balanced": {
             "name": "均衡混合", "amount": b_balanced,
@@ -634,6 +826,9 @@ def generate_plan(matches: list) -> dict:
             "condition": " AND ".join([f"{b['match_name']} {b['top_score']}" for b in aggressive_bet[:3]]),
         } if len(aggressive_bet) >= 3 else {"error": "条件不满足"},
         "reserve": {"amount": b_reserve, "reason": "保留金：按实战铁律每日保留5%"},
+        # ★ v5.0 单关推荐 (全玩法)
+        "single_bets": single_bets,
+        "single_bet_note": "单关场次可单独投注, 命中即兑; RQSPF赔率更优时可替代SPF" if single_bets else "",
         "risk_notes": [],
     }
 
@@ -656,7 +851,7 @@ def format_lottery(plan: dict) -> str:
     L = []
     now_ts = datetime.now().strftime("%Y-%m-%d %H:%M")
     L.append("=" * 70)
-    L.append("  竞彩足球 2026世界杯 自动投注方案 v4.0")
+    L.append("  竞彩足球 2026世界杯 自动投注方案 v5.0 (全玩法)")
     L.append(f"  生成时间: {now_ts}  |  预算: {plan['total_budget']}元")
     L.append(f"  算法: 正EV筛选 + 高置信优先 | 引擎: {plan['generated_by']}")
     # Value stats
@@ -713,16 +908,28 @@ def format_lottery(plan: dict) -> str:
             ev_str = ""
             if "model_signal" in b: extra = f" ({b['model_signal']})"
             elif "model_prob" in b: extra = f" 概率{b['model_prob']}%"
+            elif "rqspf_confidence" in b: extra = f" [{b.get('rqspf_confidence','')}]"
             # Show EV if available
             ev_val = b.get("ev", 0)
             if ev_val > 0.01:
                 ev_str = f"  EV+{ev_val:.0%}"
             elif ev_val < -0.01:
                 ev_str = f"  EV{ev_val:.0%}"
+            # RQSPF special: show adjusted diff and reason
+            rqspf_extra = ""
+            if "adjusted_diff" in b:
+                rqspf_extra = f"  让球后xG差={b['adjusted_diff']:+.1f}"
+                if "reason" in b:
+                    rqspf_extra += f" ({b['reason']})"
             ht = b.get("handicap_tip", "")
             ht_str = ""
             if ht:
                 ht_str = f"  💡让球: {ht['pick']}"
+            elif "handicap_line" in b:
+                line = b["handicap_line"]
+                if line > 0: ht_str = f"  让{line}球"
+                elif line < 0: ht_str = f"  让{abs(line)}球"
+                else: ht_str = f"  平手"
             else:
                 mid = b.get("match_id","")
                 hsp = _match_handicap_sp(mid)
@@ -733,7 +940,7 @@ def format_lottery(plan: dict) -> str:
                     else: ht_str = f"  💡让球: 平手"
             time = MATCH_SCHEDULE.get(b.get("match_id",""), "")
             ev_part = b.get("ev_str", "")
-            L.append(f"  {time:<10} {b['match']:<36} → {b['pick']:<14}{extra} 估赔{b['est_odds']}{ht_str}{ev_part}")
+            L.append(f"  {time:<10} {b['match']:<36} → {b['pick']:<14}{extra} 估赔{b['est_odds']}{ht_str}{rqspf_extra}{ev_part}")
         if detail:
             L.append(f"  结构: {detail['structure']} | 每单位{detail.get('per_unit_cost','')} × {detail.get('units','')}倍 = {detail.get('actual_bet','')}元")
             pairs = detail.get("pairs", [])
@@ -754,14 +961,35 @@ def format_lottery(plan: dict) -> str:
         L.append(f"  命中条件: {plan_dict.get('condition', '')[:80]}")
         gc = plan_dict.get("golden_check", "")
         if gc: L.append(f"  {gc}")
+        note = plan_dict.get("note", "")
+        if note: L.append(f"  💡 {note}")
         ret = plan_dict.get("est_return", 0)
         all_ret = plan_dict.get("all_hit_return", ret)
         total_return += all_ret if isinstance(all_ret, (int, float)) else ret
 
     render_tier("conservative", "🛡️")
+    render_tier("rqspf", "⚽")
     render_tier("balanced", "📊")
     render_tier("flexi", "🔀")
     render_tier("aggressive", "🎯")
+
+    # ★ v5.0 单关推荐 (全玩法)
+    single_bets = plan.get("single_bets", [])
+    if single_bets:
+        L.append(f"\n{'─'*70}")
+        L.append(f"🎯 单关推荐 (可单独投注, 命中即兑)")
+        L.append(f"{'─'*70}")
+        for sb in single_bets[:6]:
+            time = MATCH_SCHEDULE.get(sb.get("match_id",""), "")
+            L.append(f"  {time:<10} {sb['match']}")
+            L.append(f"    SPF: {sb['spf_pick']:<14} 概率{sb['spf_prob']}%  赔率{sb.get('spf_odds','?')}")
+            if sb.get("rqspf_pick"):
+                L.append(f"    RQSPF: {sb['rqspf_pick']:<20} 赔率{sb.get('rqspf_odds','?')} ({sb.get('rqspf_confidence','')})")
+            if sb.get("tg_pick"):
+                L.append(f"    总进球: {sb['tg_pick']:<16} 赔率{sb.get('tg_odds','?')}")
+            if sb.get("htft_pick"):
+                L.append(f"    半全场: {sb['htft_pick']:<16} 赔率{sb.get('htft_odds','?')}")
+            L.append("")
 
     # 保留金
     reserve = plan.get("reserve", {})
@@ -775,5 +1003,5 @@ def format_lottery(plan: dict) -> str:
         L.append(f"\n⚠️ 风险提示:")
         for n in plan["risk_notes"]: L.append(f"  • {n}")
 
-    L.append(f"\n📐 模型自动输出 v4.0 ({now_ts}) | 正EV筛选+高置信优先 | 竞彩90分钟赛果为准 | 仅作参考")
+    L.append(f"\n📐 模型自动输出 v5.0 ({now_ts}) | 正EV+全玩法覆盖 | 竞彩90分钟赛果为准 | 仅作参考")
     return "\n".join(L)
