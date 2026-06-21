@@ -747,6 +747,87 @@ def generate_all_opportunities(classified: list, config: PortfolioConfig = None)
     return opportunities
 
 
+def generate_parlay_opportunities(single_ops: list, config: PortfolioConfig) -> list:
+    """
+    从单注候选中生成串关机会: 2串1 (同玩法+混合过关)
+    竞彩规则: SPF最多8串, RQSPF最多8串, 总进球最多6串, 混合以最低上限为准
+    """
+    parlays = []
+    n = len(single_ops)
+    if n < 2:
+        return parlays
+
+    # 只取top-N单注来做组合 (避免组合爆炸)
+    top_ops = sorted(single_ops, key=lambda o: o.ev / math.sqrt(max(0.1, o.odds - 1)), reverse=True)
+    top_ops = top_ops[:15]  # 最多15个候选, C(15,2)=105组合
+
+    for i in range(len(top_ops)):
+        for j in range(i + 1, len(top_ops)):
+            a, b = top_ops[i], top_ops[j]
+            # 不能同一场比赛
+            if a.match_id == b.match_id:
+                continue
+            # 不能同一场次相近开球时间
+            if a.kickoff == b.kickoff:
+                continue
+
+            # 组合赔率
+            combined_odds = round(a.odds * b.odds, 2)
+            if combined_odds < config.min_odds or combined_odds > 50.0:
+                continue
+
+            # 组合概率(独立假设)
+            pa, pb = a.model_prob / 100.0, b.model_prob / 100.0
+            combined_prob = pa * pb
+            combined_prob_pct = combined_prob * 100
+
+            # 组合EV
+            combined_ev = combined_prob * combined_odds - 1.0
+            if combined_ev <= 0:
+                continue
+
+            # 市场隐含
+            a_imp = a.market_implied / 100.0 if a.market_implied > 0 else 1.0 / a.odds
+            b_imp = b.market_implied / 100.0 if b.market_implied > 0 else 1.0 / b.odds
+            market_implied = a_imp * b_imp * 100
+
+            # 组合edge
+            combined_edge = combined_prob_pct - market_implied
+
+            # 玩法标签
+            if a.play_type == b.play_type:
+                parlay_type = f"2串1-{a.play_type}"
+                parlay_name = f"同玩法2串1({_play_type_name(a.play_type)})"
+            else:
+                parlay_type = "2串1-混合过关"
+                parlay_name = f"混合过关({_play_type_name(a.play_type)}×{_play_type_name(b.play_type)})"
+
+            # 选择最早截止时间
+            kickoff = a.kickoff if a.kickoff <= b.kickoff else b.kickoff
+
+            parlays.append(BetOpportunity(
+                match_id=f"{a.match_id}+{b.match_id}",
+                match_name=f"[{a.pick_short}]{a.match_name} × [{b.pick_short}]{b.match_name}",
+                kickoff=kickoff,
+                play_type=parlay_type,
+                pick=f"{a.pick} + {b.pick}",
+                pick_short=f"2串1({a.pick_short},{b.pick_short})",
+                model_prob=round(combined_prob_pct, 1),
+                odds=combined_odds,
+                edge_pct=round(combined_edge, 1),
+                ev=round(combined_ev, 3),
+                kelly_full_pct=0, stake=0,
+                confidence="中" if a.confidence == "高" and b.confidence == "高" else "中",
+                delta=0,
+                market_implied=round(market_implied, 1),
+                note=f"{_play_type_name(a.play_type)}×{_play_type_name(b.play_type)} {a.odds}×{b.odds}={combined_odds}",
+            ))
+
+    # 按风险调整EV排序, 返回top
+    parlays.sort(key=lambda o: o.ev / math.sqrt(max(0.1, o.odds - 1)), reverse=True)
+    return parlays[:30]  # 最多30个串关候选
+
+
 def kelly_stake(edge_pct: float, odds: float, bankroll: float, fraction: float = 0.25) -> float:
     """
     凯利准则仓位计算
@@ -970,11 +1051,17 @@ def generate_plan(matches: list) -> dict:
             c["is_value"] = val["is_value"]
             c["ev_score"] = val["ev"]
 
-    # ★ 生成所有投注机会
-    opportunities = generate_all_opportunities(classified, config)
+    # ★ 生成所有单注投注机会
+    single_opportunities = generate_all_opportunities(classified, config)
+
+    # ★ 生成串关机会 (2串1 + 混合过关)
+    parlay_opportunities = generate_parlay_opportunities(single_opportunities, config)
+
+    # ★ 合并: 单注 + 串关 → 统一池
+    all_opportunities = single_opportunities + parlay_opportunities
 
     # ★ 投资组合选择
-    portfolio = select_portfolio(opportunities, config)
+    portfolio = select_portfolio(all_opportunities, config)
 
     # 排除场次信息
     excluded_pool = [c for c in classified if c.get("is_excluded")]
@@ -1020,7 +1107,7 @@ def generate_plan(matches: list) -> dict:
         "skipped": skipped_deadline,
         # ★ v6.0 核心: 投资组合
         "portfolio": portfolio,
-        "opportunities_total": len(opportunities),
+        "opportunities_total": len(all_opportunities),
         # 向后兼容字段
         "classified": {
             "banker_pool": [c["match_name"] for c in banker_pool],
