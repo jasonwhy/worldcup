@@ -604,23 +604,22 @@ for bdate in sorted_dates:
 
 # --- Golden Boot ---
 scorer_notes = {
-    "L. Messi": (3, "ARG"), "J. David": (3, "CAN"),
-    "E. Haaland": (2, "NOR"), "Y. Ayari": (2, "SWE"),
+    "D. Undav": (3, "GER"), "L. Messi": (3, "ARG"), "J. David": (3, "CAN"),
+    "C. Gakpo": (2, "NED"), "B. Brobbey": (2, "NED"),
+    "Vinicius Jr": (2, "BRA"), "M. Cunha": (2, "BRA"),
+    "I. Saibari": (2, "MAR"), "J. Manzambi": (2, "SUI"),
+    "H. Kane": (2, "ENG"), "E. Haaland": (2, "NOR"),
+    "Mbappe": (2, "FRA"), "Y. Ayari": (2, "SWE"),
     "K. Havertz": (2, "GER"), "F. Balogun": (2, "USA"),
-    "H. Kane": (2, "ENG"), "J. Quinones": (2, "MEX"),
-    "B. Just": (2, "NZL"), "Mbappe": (2, "FRA"),
-    "Irankunda": (1, "AUS"), "Schmid": (1, "AUT"),
-    "Arnautovic": (1, "AUT"), "F. Nmecha": (1, "GER"),
-    "Musiala": (1, "GER"), "Schlotterbeck": (1, "GER"),
-    "Undav": (1, "GER"), "Brown": (1, "GER"),
-    "Summerville": (1, "NED"), "Van Dijk": (1, "NED"),
-    "Nakamura": (1, "JPN"), "Kamada": (1, "JPN"),
-    "Amad": (1, "CIV"), "Isak": (1, "SWE"), "Gyokeres": (1, "SWE"),
-    "Hussein": (1, "IRQ"), "Olwan": (1, "JOR"),
-    "Ashour": (1, "EGY"), "Araujo": (1, "URU"),
-    "Al-Amri": (1, "KSA"), "Rashford": (1, "ENG"),
-    "Bellingham": (1, "ENG"), "L. Diaz": (1, "COL"),
-    "Hwang": (1, "KOR"),
+    "E. Just": (2, "NZL"), "N. Irankunda": (2, "AUS"),
+    "C. Metcalfe": (2, "AUS"), "J. Quinones": (2, "MEX"),
+    "R. Jimenez": (2, "MEX"), "Hwang": (2, "KOR"),
+    "O. Hyeon-Gyu": (2, "KOR"), "M. Rashford": (2, "ENG"),
+    "Summerville": (2, "NED"), "J. McGinn": (2, "SCO"),
+    "B. Embolo": (2, "SUI"), "G. Reyna": (2, "USA"),
+    "C. Larin": (2, "CAN"), "J. Lukic": (2, "BIH"),
+    "L. Krejci": (2, "CZE"), "M. Araujo": (2, "URU"),
+    "A. Al-Amri": (2, "KSA"),
 }
 boot_sorted = sorted(scorer_notes.items(), key=lambda x: -x[1][0])
 boot_rows = ""
@@ -630,12 +629,18 @@ for i, (name, (goals, tid)) in enumerate(boot_sorted[:15], 1):
     cls = "gold" if i<=3 else ""
     boot_rows += f"<tr><td class='num-cell'>{medal}</td><td>{F.get(tn,'🏳️')} {name}</td><td class='num-cell'><b>{goals}</b></td><td class='note-cell'>{tn}</td></tr>"
 
-# --- Assist Leaders ---
+# --- Assist Leaders --- (数据来源: Sofascore/Fox Sports/KhelNow 截至6/21赛后)
 assist_notes = {
-    "C. Wood": (2, "NZL"), "A. Isak": (2, "SWE"),
-    "R. Gravenberch": (2, "NED"), "J. Kimmich": (2, "GER"),
-    "D. Undav": (2, "GER"), "C. Roldan": (1, "USA"),
-    "G. Reyna": (1, "USA"), "W. McKennie": (1, "USA"),
+    "A. Isak": (3, "SWE"),
+    "J. Kimmich": (2, "GER"), "R. Gravenberch": (2, "NED"),
+    "D. Undav": (2, "GER"), "C. Wood": (2, "NZL"),
+    "J. Enciso": (2, "PAR"), "B. Diaz": (2, "MAR"),
+    "L. Messi": (1, "ARG"), "K. Mbappe": (1, "FRA"),
+    "Vinicius Jr": (1, "BRA"), "H. Kane": (1, "ENG"),
+    "E. Haaland": (1, "NOR"), "C. Gakpo": (1, "NED"),
+    "B. Brobbey": (1, "NED"), "G. Reyna": (1, "USA"),
+    "C. Pulisic": (1, "USA"), "J. Bellingham": (1, "ENG"),
+    "M. Odegaard": (1, "NOR"), "Pedri": (1, "ESP"),
 }
 assist_sorted = sorted(assist_notes.items(), key=lambda x: -x[1][0])
 assist_rows = ""
