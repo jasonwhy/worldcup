@@ -1,9 +1,9 @@
 {
   "updated": "2026-06-21T15:29:13",
   "total_played": 36,
-  "direction_correct": 26,
+  "direction_correct": 25,
   "direction_total": 36,
-  "direction_rate": 72.2,
+  "direction_rate": 69.4,
   "matches": [
     {
       "date": "6/11",
@@ -58,7 +58,7 @@
       "home": "BRA",
       "away": "MAR",
       "score": "1-1",
-      "prediction_correct": "✅",
+      "prediction_correct": "❌",
       "note": "Neymar缺阵"
     },
     {
@@ -130,7 +130,7 @@
       "home": "IRN",
       "away": "NZL",
       "score": "2-2",
-      "prediction_correct": "✅",
+      "prediction_correct": "❌",
       "note": "政治干扰下两度扳平"
     },
     {
@@ -202,7 +202,7 @@
       "home": "CZE",
       "away": "RSA",
       "score": "1-1",
-      "prediction_correct": "❌",
+      "prediction_correct": "✅",
       "note": "Sadilek 6分破门+Mokoena 83分点球扳平, 双方均1分"
     },
     {
@@ -287,9 +287,9 @@
     },
     {
       "date": "6/21",
-      "home": "TUN",
-      "away": "JPN",
-      "score": "0-4",
+      "home": "JPN",
+      "away": "TUN",
+      "score": "4-0",
       "prediction_correct": "✅",
       "note": "TUN 0-4 JPN: 预测客胜(W18/D28/L53), 实际客胜"
     }
