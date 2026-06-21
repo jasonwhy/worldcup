@@ -749,83 +749,187 @@ def generate_all_opportunities(classified: list, config: PortfolioConfig = None)
 
 def generate_parlay_opportunities(single_ops: list, config: PortfolioConfig) -> list:
     """
-    从单注候选中生成串关机会: 2串1 (同玩法+混合过关)
+    从单注候选中生成串关: 2串1→3串1→4串1 + M串N容错(3串4)
     竞彩规则: SPF最多8串, RQSPF最多8串, 总进球最多6串, 混合以最低上限为准
     """
     parlays = []
-    n = len(single_ops)
-    if n < 2:
+    if len(single_ops) < 2:
         return parlays
 
-    # 只取top-N单注来做组合 (避免组合爆炸)
-    top_ops = sorted(single_ops, key=lambda o: o.ev / math.sqrt(max(0.1, o.odds - 1)), reverse=True)
-    top_ops = top_ops[:15]  # 最多15个候选, C(15,2)=105组合
+    # 按风险调整EV排序选top
+    ranked = sorted(single_ops, key=lambda o: o.ev / math.sqrt(max(0.1, o.odds - 1)), reverse=True)
+    top15 = ranked[:15]
+    top10 = ranked[:10]
+    top8 = ranked[:8]
 
-    for i in range(len(top_ops)):
-        for j in range(i + 1, len(top_ops)):
-            a, b = top_ops[i], top_ops[j]
-            # 不能同一场比赛
-            if a.match_id == b.match_id:
-                continue
-            # 不能同一场次相近开球时间
-            if a.kickoff == b.kickoff:
-                continue
+    def _make_multi_leg(ops_list, parlay_name, max_legs_per_match=1):
+        """通用多串生成: n个单注组合"""
+        n = len(ops_list)
+        results = []
+        indices = list(range(n))
 
-            # 组合赔率
-            combined_odds = round(a.odds * b.odds, 2)
-            if combined_odds < config.min_odds or combined_odds > 50.0:
-                continue
+        def _recurse(start, selected):
+            if len(selected) >= 2:
+                # 生成这个组合
+                odds = 1.0
+                prob = 1.0
+                mkt_imp = 1.0
+                match_ids_set = set()
+                for op in selected:
+                    odds *= op.odds
+                    prob *= op.model_prob / 100.0
+                    mkt_imp *= (op.market_implied / 100.0 if op.market_implied > 0 else 1.0 / op.odds)
+                    match_ids_set.add(op.match_id)
 
-            # 组合概率(独立假设)
-            pa, pb = a.model_prob / 100.0, b.model_prob / 100.0
-            combined_prob = pa * pb
-            combined_prob_pct = combined_prob * 100
+                k = len(selected)
+                combined_odds = round(odds, 2)
+                if combined_odds < config.min_odds or combined_odds > 200.0:
+                    return  # 不再继续(赔率已超界,更深串关更超)
 
-            # 组合EV
-            combined_ev = combined_prob * combined_odds - 1.0
-            if combined_ev <= 0:
-                continue
+                combined_prob_pct = prob * 100
+                combined_ev = prob * combined_odds - 1.0
+                if combined_ev <= 0:
+                    return
 
-            # 市场隐含
-            a_imp = a.market_implied / 100.0 if a.market_implied > 0 else 1.0 / a.odds
-            b_imp = b.market_implied / 100.0 if b.market_implied > 0 else 1.0 / b.odds
-            market_implied = a_imp * b_imp * 100
+                combined_edge = combined_prob_pct - mkt_imp * 100
+                types = list(set(op.play_type for op in selected))
+                type_label = "×".join(_play_type_name(t) for t in types) if len(types) > 1 else _play_type_name(types[0])
 
-            # 组合edge
-            combined_edge = combined_prob_pct - market_implied
+                if len(set(types)) == 1:
+                    parlay_type = f"{k}串1-{types[0]}"
+                else:
+                    parlay_type = f"{k}串1-混合过关"
 
-            # 玩法标签
-            if a.play_type == b.play_type:
-                parlay_type = f"2串1-{a.play_type}"
-                parlay_name = f"同玩法2串1({_play_type_name(a.play_type)})"
-            else:
-                parlay_type = "2串1-混合过关"
-                parlay_name = f"混合过关({_play_type_name(a.play_type)}×{_play_type_name(b.play_type)})"
+                match_name = " × ".join(f"[{op.pick_short}]{op.match_name}" for op in selected)
+                pick = " + ".join(op.pick for op in selected)
+                pick_short_list = ",".join(op.pick_short for op in selected)
+                kickoff = max(op.kickoff for op in selected)
+                conf = "高" if all(op.confidence == "高" for op in selected) else "中"
 
-            # 选择最早截止时间
-            kickoff = a.kickoff if a.kickoff <= b.kickoff else b.kickoff
+                results.append(BetOpportunity(
+                    match_id="+".join(op.match_id for op in selected),
+                    match_name=match_name, kickoff=kickoff,
+                    play_type=parlay_type,
+                    pick=pick,
+                    pick_short=f"{k}串1({pick_short_list})",
+                    model_prob=round(combined_prob_pct, 1),
+                    odds=combined_odds,
+                    edge_pct=round(combined_edge, 1),
+                    ev=round(combined_ev, 3),
+                    kelly_full_pct=0, stake=0,
+                    confidence=conf, delta=0,
+                    market_implied=round(mkt_imp * 100, 1),
+                    note=f"{type_label} {'×'.join(str(op.odds) for op in selected)}={combined_odds}",
+                ))
 
-            parlays.append(BetOpportunity(
-                match_id=f"{a.match_id}+{b.match_id}",
-                match_name=f"[{a.pick_short}]{a.match_name} × [{b.pick_short}]{b.match_name}",
-                kickoff=kickoff,
-                play_type=parlay_type,
-                pick=f"{a.pick} + {b.pick}",
-                pick_short=f"2串1({a.pick_short},{b.pick_short})",
-                model_prob=round(combined_prob_pct, 1),
-                odds=combined_odds,
-                edge_pct=round(combined_edge, 1),
-                ev=round(combined_ev, 3),
-                kelly_full_pct=0, stake=0,
-                confidence="中" if a.confidence == "高" and b.confidence == "高" else "中",
-                delta=0,
-                market_implied=round(market_implied, 1),
-                note=f"{_play_type_name(a.play_type)}×{_play_type_name(b.play_type)} {a.odds}×{b.odds}={combined_odds}",
-            ))
+            if len(selected) >= parlay_name:  # 达到目标串数
+                return
 
-    # 按风险调整EV排序, 返回top
-    parlays.sort(key=lambda o: o.ev / math.sqrt(max(0.1, o.odds - 1)), reverse=True)
-    return parlays[:30]  # 最多30个串关候选
+            for i in range(start, n):
+                op = ops_list[i]
+                # 跳过同场比赛
+                if any(op.match_id == s.match_id for s in selected):
+                    continue
+                # 跳过已超界的组合
+                if selected:
+                    test_odds = math.prod(s.odds for s in selected) * op.odds
+                    if test_odds > 200.0:
+                        continue
+                _recurse(i + 1, selected + [op])
+
+        _recurse(0, [])
+        return results
+
+    # ── 2串1 (from top15, 已有但用递归统一生成) ──
+    parlays.extend(_make_multi_leg(top15, 2))
+
+    # ── 3串1 (from top10, C(10,3)=120) ──
+    parlays.extend(_make_multi_leg(top10, 3))
+
+    # ── 4串1 (from top8, C(8,4)=70) ──
+    parlays.extend(_make_multi_leg(top8, 4))
+
+    # ── 3串4 (M串N容错) ──
+    # 对top 3串1候选, 生成3串4结构: 3注2串1 + 1注3串1 = 4注/倍 = 8元/倍
+    top3s = [p for p in parlays if p.play_type.startswith("3串1")]
+    top3s.sort(key=lambda o: o.ev / math.sqrt(max(0.1, o.odds - 1)), reverse=True)
+    for t3 in top3s[:8]:  # top8个3串1
+        legs = t3.match_id.split("+")
+        if len(legs) != 3:
+            continue
+        # 找对应的单注
+        leg_ops = []
+        for lid in legs:
+            found = next((o for o in top15 if o.match_id == lid), None)
+            if found:
+                leg_ops.append(found)
+        if len(leg_ops) != 3:
+            continue
+
+        # 3注2串1赔率
+        pairs = [(0,1),(0,2),(1,2)]
+        pair_odds = [round(leg_ops[i].odds * leg_ops[j].odds, 2) for i,j in pairs]
+        # 1注3串1赔率
+        triple_odds = t3.odds
+        # 总投入: 4注×2元=8元/倍
+        cost_per_unit = 8
+
+        # 最大回报(全中): sum(3注2串1) + 1注3串1
+        # 最小回报(错1场): min(2串1) — 还有1注2串1命中
+        min_pair = min(pair_odds)
+        max_return = round(sum(pair_odds) * 2 + triple_odds * 2, 0)
+
+        # 3串4的等效EV: 考虑容错
+        # 全中概率 = 三场都中
+        full_prob = math.prod(o.model_prob / 100.0 for o in leg_ops)
+        # 错1场概率 = 任意2场中+1场错
+        miss1_prob = 0.0
+        for miss_idx in range(3):
+            p_miss = 1.0
+            for j in range(3):
+                if j == miss_idx:
+                    p_miss *= (1.0 - leg_ops[j].model_prob / 100.0)
+                else:
+                    p_miss *= leg_ops[j].model_prob / 100.0
+            miss1_prob += p_miss
+
+        expected_return_34 = full_prob * max_return + miss1_prob * min_pair * 2
+        combined_ev = expected_return_34 / cost_per_unit - 1.0 if cost_per_unit > 0 else 0
+        if combined_ev <= 0:
+            continue
+
+        # 等效赔率: 最大回报/投入
+        equiv_odds = round(max_return / cost_per_unit, 1)
+
+        parlays.append(BetOpportunity(
+            match_id=t3.match_id,
+            match_name=t3.match_name,
+            kickoff=t3.kickoff,
+            play_type="3串4-M串N",
+            pick=f"3串4: {t3.pick}",
+            pick_short=f"3串4({t3.pick_short})",
+            model_prob=round(full_prob * 100, 1),
+            odds=equiv_odds,
+            edge_pct=round(t3.model_prob - (1.0 / equiv_odds * 100), 1),
+            ev=round(combined_ev, 3),
+            kelly_full_pct=0, stake=0,
+            confidence=t3.confidence, delta=0,
+            market_implied=round(1.0 / equiv_odds * 100, 1),
+            note=f"M串N容错 3×2串1+1×3串1={4}注/倍 全中≈{max_return}元 错1场保{pair_odds.index(min_pair)+1}注",
+        ))
+
+    # 去重: match_id + play_type 作为key (3串1和3串4同腿不冲突)
+    seen = set()
+    deduped = []
+    for p in parlays:
+        key = p.play_type + "|" + "+".join(sorted(p.match_id.split("+")))
+        if key not in seen:
+            seen.add(key)
+            deduped.append(p)
+
+    # 按风险调整EV排序
+    deduped.sort(key=lambda o: o.ev / math.sqrt(max(0.1, o.odds - 1)), reverse=True)
+    return deduped[:80]  # 最多80个串关候选
 
 
 def kelly_stake(edge_pct: float, odds: float, bankroll: float, fraction: float = 0.25) -> float:
@@ -895,6 +999,13 @@ def select_portfolio(opportunities: list, config: PortfolioConfig = None) -> Por
     for op in filtered:
         stake = kelly_stake(op.edge_pct, op.odds, config.budget, config.kelly_fraction)
         stake = max(config.min_stake_per_bet, min(config.max_stake_per_bet, stake))
+        # M串N: 3串4 = 8元/倍, 取整倍数
+        if op.play_type == "3串4-M串N":
+            unit = 8  # 4注×2元
+            if stake >= unit:
+                stake = int(stake / unit) * unit
+            else:
+                stake = unit  # 至少1倍
         op.stake = round(stake, 1)
         op.kelly_full_pct = round((op.edge_pct / (op.odds - 1.0)) * 100, 1) if op.odds > 1.0 else 0
 
