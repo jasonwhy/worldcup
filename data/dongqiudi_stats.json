@@ -1,7 +1,7 @@
 {
   "source": "懂球帝 pc.dongqiudi.com",
   "tournament": "2026世界杯",
-  "updated": "2026-06-19T23:00:00",
+  "updated": "2026-06-21",
   "teams": {
     "CAN": {
       "shots": 32,
@@ -31,10 +31,10 @@
       "key_passes": 15,
       "errors_lead_goal": 0,
       "box_saves": 2,
-      "fouls": 4,
-      "saves": 2,
-      "pass_accuracy": 90,
-      "offsides": 3
+      "fouls": 18,
+      "saves": 3,
+      "pass_accuracy": 89,
+      "offsides": 5
     },
     "ENG": {
       "shots": 21,
@@ -75,9 +75,9 @@
       "key_passes": 12,
       "errors_lead_goal": 0,
       "box_saves": 0,
-      "fouls": 18,
-      "saves": 1,
-      "pass_accuracy": 86,
+      "fouls": 23,
+      "saves": 2,
+      "pass_accuracy": 87,
       "offsides": 0
     },
     "ARG": {
@@ -130,10 +130,10 @@
       "key_passes": 10,
       "errors_lead_goal": 0,
       "box_saves": 0,
-      "fouls": 10,
-      "saves": 1,
-      "pass_accuracy": 78,
-      "offsides": 3
+      "fouls": 22,
+      "saves": 3,
+      "pass_accuracy": 81,
+      "offsides": 6
     },
     "ESP": {
       "shots": 15,
@@ -152,9 +152,9 @@
       "key_passes": 9,
       "errors_lead_goal": 0,
       "box_saves": 4,
-      "fouls": 14,
+      "fouls": 22,
       "saves": 4,
-      "pass_accuracy": 86,
+      "pass_accuracy": 87,
       "offsides": 1
     },
     "CIV": {
@@ -163,10 +163,10 @@
       "key_passes": 12,
       "errors_lead_goal": 0,
       "box_saves": 0,
-      "fouls": 10,
-      "saves": 1,
+      "fouls": 17,
+      "saves": 6,
       "pass_accuracy": 84,
-      "offsides": 0
+      "offsides": 1
     },
     "COL": {
       "shots": 14,
@@ -207,10 +207,10 @@
       "key_passes": 9,
       "errors_lead_goal": 0,
       "box_saves": 0,
-      "fouls": 13,
-      "saves": 0,
-      "pass_accuracy": 85,
-      "offsides": 2
+      "fouls": 25,
+      "saves": 2,
+      "pass_accuracy": 84,
+      "offsides": 3
     },
     "EGY": {
       "shots": 12,
@@ -229,10 +229,10 @@
       "key_passes": 9,
       "errors_lead_goal": 0,
       "box_saves": 4,
-      "fouls": 7,
+      "fouls": 22,
       "saves": 4,
-      "pass_accuracy": 83,
-      "offsides": 0
+      "pass_accuracy": 86,
+      "offsides": 1
     },
     "NZL": {
       "shots": 12,
@@ -251,10 +251,10 @@
       "key_passes": 8,
       "errors_lead_goal": 0,
       "box_saves": 1,
-      "fouls": 13,
-      "saves": 3,
-      "pass_accuracy": 85,
-      "offsides": 0
+      "fouls": 20,
+      "saves": 6,
+      "pass_accuracy": 87,
+      "offsides": 1
     },
     "NED": {
       "shots": 11,
@@ -262,10 +262,10 @@
       "key_passes": 10,
       "errors_lead_goal": 0,
       "box_saves": 1,
-      "fouls": 7,
-      "saves": 1,
+      "fouls": 16,
+      "saves": 8,
       "pass_accuracy": 88,
-      "offsides": 1
+      "offsides": 4
     },
     "SC": {
       "shots": 11,
@@ -284,10 +284,10 @@
       "key_passes": 9,
       "errors_lead_goal": 0,
       "box_saves": 2,
-      "fouls": 16,
-      "saves": 2,
+      "fouls": 29,
+      "saves": 5,
       "pass_accuracy": 87,
-      "offsides": 0
+      "offsides": 8
     },
     "HAI": {
       "shots": 10,
@@ -295,10 +295,10 @@
       "key_passes": 6,
       "errors_lead_goal": 0,
       "box_saves": 1,
-      "fouls": 23,
-      "saves": 1,
-      "pass_accuracy": 85,
-      "offsides": 3
+      "fouls": 37,
+      "saves": 3,
+      "pass_accuracy": 84,
+      "offsides": 7
     },
     "KSA": {
       "shots": 10,
@@ -350,10 +350,10 @@
       "key_passes": 3,
       "errors_lead_goal": 0,
       "box_saves": 3,
-      "fouls": 17,
-      "saves": 3,
-      "pass_accuracy": 72,
-      "offsides": 1
+      "fouls": 32,
+      "saves": 8,
+      "pass_accuracy": 62,
+      "offsides": 4
     },
     "QAT": {
       "shots": 9,
@@ -383,10 +383,10 @@
       "key_passes": 5,
       "errors_lead_goal": 3,
       "box_saves": 1,
-      "fouls": 8,
-      "saves": 1,
-      "pass_accuracy": 78,
-      "offsides": 6
+      "fouls": 16,
+      "saves": 2,
+      "pass_accuracy": 79,
+      "offsides": 7
     },
     "NOR": {
       "shots": 8,
@@ -493,9 +493,9 @@
       "key_passes": 3,
       "errors_lead_goal": 0,
       "box_saves": 3,
-      "fouls": 12,
-      "saves": 8,
-      "pass_accuracy": 74,
+      "fouls": 28,
+      "saves": 9,
+      "pass_accuracy": 72,
       "offsides": 1
     },
     "CUW": {
@@ -504,10 +504,10 @@
       "key_passes": 4,
       "errors_lead_goal": 1,
       "box_saves": 4,
-      "fouls": 11,
-      "saves": 4,
-      "pass_accuracy": 82,
-      "offsides": 1
+      "fouls": 21,
+      "saves": 19,
+      "pass_accuracy": 76,
+      "offsides": 3
     },
     "BEL": {
       "shots": 5,
