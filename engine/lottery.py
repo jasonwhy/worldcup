@@ -1,10 +1,12 @@
 """
-竞彩投注方案自动生成引擎 v3.1
-新增: SP动态读取 + 截止时间检查 + 今日不推荐机制
+竞彩投注方案自动生成引擎 v6.0
+体彩竞彩彩票投注系统 — 收益最大化投资组合优化
+核心理念: 机会驱动 · Kelly仓位 · 正EV精选 · 非均衡分配
 """
 import json, math
 from pathlib import Path
 from datetime import datetime
+from dataclasses import dataclass, field
 from .predictor import predict
 
 # 中文名映射
@@ -56,24 +58,89 @@ RULE = {
     # 玩法上限 (竞彩官方规则)
     "WDL_max_parlay": 8, "handicap_max_parlay": 8,
     "total_goals_max": 6, "score_max_parlay": 4, "htft_max_parlay": 4,
-    # 混合过关: 木桶原则-以关数上限最低玩法为准
     # 奖金规则
     "base_bet": 2, "return_rate": 0.71, "max_multiplier": 99,
-    "max_ticket": 20000, "max_single_bet": 2000, "max_daily": 10000,  # 2025新规
+    "max_ticket": 20000, "max_single_bet": 2000, "max_daily": 10000,
     "tax_threshold": 10000,
     "prize_2_3": 200000, "prize_4_5": 500000,
-    "prize_6_8": 5000000, "prize_9_plus": 2000000,  # 2025新规: 9串+上限200万
-    # 投注规则 (2025新规)
+    "prize_6_8": 5000000, "prize_9_plus": 2000000,
+    # 投注规则
     "match_duration": "90分钟+伤停补时",
-    "deadline": "开球前1分钟",   # 竞彩实际: 单关截止开球前, 串关截止最早一场开球前
-    # 预算分配
-    "budget": 200,
-    "banker_pct": 0.15, "parlay_pct": 0.25,
-    "rqspf_pct": 0.15, "balanced_pct": 0.10,
-    "flexi_pct": 0.15, "aggressive_pct": 0.10,
-    # 单关场次: 动态从SP数据读取, 此列表为兜底
+    "deadline": "开球前1分钟",
+    # ★ v6.0 投资组合优化参数
+    "budget": 200,                     # 预算上限(非强制分配)
+    "min_edge_pct": 0.5,               # 最低edge门槛(%)
+    "max_bets_per_match": 2,           # 每场最多投注数
+    "max_stake_per_bet": 50,           # 单注最大金额(元)
+    "min_stake_per_bet": 10,           # 单注最小金额(元)
+    "kelly_fraction": 0.25,            # 1/4 Kelly (保守)
+    "min_odds": 1.08,                  # 最低赔率
+    "max_odds": 50.0,                  # 最高赔率(排除彩票级)
+    "max_portfolio_bets": 8,           # 最大总注数
+    "rqspf_preference": True,          # RQSPF优先于SPF
+    "golden_odds_min": 1.8,            # 黄金赔率区间下限
+    "golden_odds_max": 2.5,            # 黄金赔率区间上限
+    "max_concentration_pct": 0.30,     # 单一方向最大集中度
+    "reserve_min_pct": 0.05,           # 最低保留比例
+    # 单关场次: 动态从SP数据读取
     "single_matches": [],
 }
+
+# ★ v6.0 数据结构
+@dataclass
+class BetOpportunity:
+    """投注机会 — 投资组合的基本单位"""
+    match_id: str
+    match_name: str
+    kickoff: str
+    play_type: str          # "spf"|"rqspf"|"total_goals"|"correct_score"|"half_full"
+    pick: str               # 完整投注项名称
+    pick_short: str
+    model_prob: float       # 模型概率 0-100
+    odds: float             # 实际SP赔率
+    edge_pct: float         # model_prob - market_implied (百分点)
+    ev: float               # (prob/100)*odds - 1
+    kelly_full_pct: float   # 全凯利比例
+    stake: float            # 1/4凯利仓位(元)
+    confidence: str = ""    # "高"|"中"|"低"
+    delta: float = 0.0
+    market_implied: float = 0.0
+    handicap_line: int = 0  # only RQSPF
+    note: str = ""
+
+@dataclass
+class PortfolioConfig:
+    """投资组合配置"""
+    budget: int = 200
+    min_edge_pct: float = 0.5
+    max_bets_per_match: int = 2
+    max_stake_per_bet: int = 50
+    min_stake_per_bet: int = 10
+    kelly_fraction: float = 0.25
+    min_odds: float = 1.08
+    max_odds: float = 50.0
+    max_portfolio_bets: int = 8
+    rqspf_preference: bool = True
+    golden_odds_min: float = 1.8
+    golden_odds_max: float = 2.5
+    max_concentration_pct: float = 0.30
+    reserve_min_pct: float = 0.05
+
+@dataclass
+class PortfolioResult:
+    """投资组合结果"""
+    bets: list = field(default_factory=list)
+    total_stake: int = 0
+    reserve: int = 0
+    total_ev_pct: float = 0.0
+    expected_return: float = 0.0
+    opportunities_scanned: int = 0
+    opportunities_selected: int = 0
+    concentration: dict = field(default_factory=dict)
+    skipped: list = field(default_factory=list)
+    excluded_count: int = 0
+    risk_notes: list = field(default_factory=list)
+    metadata: dict = field(default_factory=dict)
 
 # 比赛时间表 (北京时间)
 MATCH_SCHEDULE = {
@@ -467,22 +534,360 @@ def compute_value(match_id: str, direction: str, model_prob: float) -> dict:
     }
 
 
-def filter_value_bets(classified: list) -> list:
-    """正EV筛选: 只保留价值投注, 按EV排序"""
+
+# ═══════════════════════════════════════════════════════════════
+# 竞彩方案 v6.0 — 收益最大化投资组合引擎
+# ═══════════════════════════════════════════════════════════════
+
+def compute_tg_edge(goals_key: str, tg_sp: dict, model_xg: float) -> dict:
+    """
+    总进球数 edge 计算: 模型Poisson隐含概率 vs 市场赔率
+    """
+    odds = tg_sp.get(goals_key, 0)
+    if odds <= 1.0:
+        return {"edge": 0, "ev": 0, "is_value": False, "odds": odds, "model_implied": 0}
+    market_implied = 1.0 / odds * 100
+    # 本地Poisson PMF: P(X=k) = lambda^k * e^(-lambda) / k!
+    try:
+        k = int(goals_key.replace("7+", "7"))
+        if goals_key == "7+":
+            # P(X >= 7) = 1 - sum_{i=0}^{6} P(X=i)
+            cdf = 0.0
+            for i in range(7):
+                cdf += (model_xg ** i) * math.exp(-model_xg) / math.factorial(i)
+            model_implied_pct = (1 - cdf) * 100
+        else:
+            pmf = (model_xg ** k) * math.exp(-model_xg) / math.factorial(k)
+            model_implied_pct = pmf * 100
+    except (ValueError, OverflowError):
+        model_implied_pct = 10.0  # fallback
+    edge = model_implied_pct - market_implied
+    ev = (model_implied_pct / 100) * odds - 1.0
+    return {
+        "edge": round(edge, 1), "ev": round(ev, 3),
+        "is_value": ev > 0.005, "odds": odds,
+        "model_implied": round(model_implied_pct, 1),
+        "market_implied": round(market_implied, 1),
+    }
+
+
+def generate_all_opportunities(classified: list, config: PortfolioConfig = None) -> list:
+    """
+    对所有已分类比赛, 生成全部可用玩法的 BetOpportunity
+    返回: 候选机会列表
+    """
+    if config is None:
+        config = PortfolioConfig()
+    opportunities = []
+
     for c in classified:
-        val = compute_value(c["match_id"], c["direction"], c["dir_prob"])
-        c["value"] = val
-        c["is_value"] = val["is_value"]
-        c["ev_score"] = val["ev"]
+        if c.get("is_excluded"):
+            continue
+        mid = c["match_id"]
+        mn = c["match_name"]
+        ko = c["kickoff"]
+        delta = abs(c["delta"])
+        conf = c["confidence"]
+        xg_total = c["total_xg"]
 
-    # 按EV排序, 高价值优先
-    value_bets = [c for c in classified if c.get("is_value")]
-    value_bets.sort(key=lambda x: x.get("ev_score", 0), reverse=True)
-    return value_bets
+        # ── SPF (胜平负) ──
+        spf_val = compute_value(mid, c["direction"], c["dir_prob"])
+        if spf_val["is_value"] and spf_val["ev"] > 0:
+            opportunities.append(BetOpportunity(
+                match_id=mid, match_name=mn, kickoff=ko,
+                play_type="spf", pick=c["dir_name"], pick_short="SPF-"+c["direction"],
+                model_prob=c["dir_prob"], odds=spf_val["odds"],
+                edge_pct=spf_val["edge"], ev=spf_val["ev"],
+                kelly_full_pct=0, stake=0,
+                confidence=conf, delta=delta,
+                market_implied=spf_val.get("market_prob", 0),
+                note=f"WDL={c.get('wdl','')}",
+            ))
 
+        # ── RQSPF (让球胜平负) ──
+        rq = c.get("rqspf")
+        if rq and rq.get("odds", 0) > 1.0:
+            rq_odds = rq["odds"]
+            market_imp = 1.0 / rq_odds * 100 if rq_odds > 1.0 else 0
+            # RQSPF概率: 调整后xG差映射
+            adj = abs(rq.get("adjusted_diff", 0))
+            rq_prob = min(70, max(30, 30 + adj * 20))
+            rq_edge = rq_prob - market_imp
+            rq_ev = (rq_prob / 100) * rq_odds - 1.0
+            if rq_ev > 0:
+                opportunities.append(BetOpportunity(
+                    match_id=mid, match_name=mn, kickoff=ko,
+                    play_type="rqspf", pick=rq.get("pick_short", rq.get("pick", "")),
+                    pick_short=rq.get("pick_short", "让球"),
+                    model_prob=round(rq_prob, 1), odds=rq_odds,
+                    edge_pct=round(rq_edge, 1), ev=round(rq_ev, 3),
+                    kelly_full_pct=0, stake=0,
+                    confidence=conf, delta=delta,
+                    market_implied=round(market_imp, 1),
+                    handicap_line=rq.get("handicap_line", 0),
+                    note=f"让{rq.get('handicap_line',0)}球 xG差={rq.get('adjusted_diff',0):+.1f}",
+                ))
+
+        # ── 总进球数 ──
+        tg = c.get("tg_pred")
+        tg_sp = _match_tg_sp(mid)
+        if tg and tg_sp:
+            for goals_key in [tg["primary"], tg.get("secondary", "")]:
+                if not goals_key:
+                    continue
+                tg_edge = compute_tg_edge(goals_key, tg_sp, xg_total)
+                if tg_edge["is_value"] and tg_edge["ev"] > 0:
+                    opportunities.append(BetOpportunity(
+                        match_id=mid, match_name=mn, kickoff=ko,
+                        play_type="total_goals",
+                        pick=f"总进球{goals_key}球",
+                        pick_short=f"总进球{goals_key}球",
+                        model_prob=tg_edge["model_implied"],
+                        odds=tg_edge["odds"],
+                        edge_pct=tg_edge["edge"], ev=tg_edge["ev"],
+                        kelly_full_pct=0, stake=0,
+                        confidence=conf, delta=delta,
+                        market_implied=tg_edge.get("market_implied", 0),
+                        note=f"xG={xg_total:.1f}",
+                    ))
+
+        # ── 半全场 ──
+        ht = c.get("htft")
+        if ht and ht.get("odds", 0) > 1.0:
+            ht_odds = ht["odds"]
+            market_imp = 1.0 / ht_odds * 100
+            # 半全场概率: 基于胜平负概率打折
+            ht_prob = c["dir_prob"] * 0.45  # 半全场≈45%基础方向概率
+            ht_edge = ht_prob - market_imp
+            ht_ev = (ht_prob / 100) * ht_odds - 1.0
+            if ht_ev > 0 and ht_odds <= config.max_odds:
+                opportunities.append(BetOpportunity(
+                    match_id=mid, match_name=mn, kickoff=ko,
+                    play_type="half_full",
+                    pick=f"半全场-{ht['pick']}",
+                    pick_short=f"半全{ht['pick']}",
+                    model_prob=round(ht_prob, 1), odds=ht_odds,
+                    edge_pct=round(ht_edge, 1), ev=round(ht_ev, 3),
+                    kelly_full_pct=0, stake=0,
+                    confidence=conf, delta=delta,
+                    market_implied=round(market_imp, 1),
+                ))
+
+        # ── 比分 (仅高置信+SP数据) ──
+        if conf == "高" and c.get("top_score"):
+            score_sp = _match_score_sp(mid)
+            top = c["top_score"]
+            if score_sp and top in score_sp:
+                s_odds = score_sp[top]
+                if s_odds > 1.0:
+                    s_prob = c["top3_scores"][0] if c.get("top3_scores") else 8.0
+                    if isinstance(s_prob, str):
+                        s_prob = 8.0
+                    s_market_imp = 1.0 / s_odds * 100
+                    s_edge = s_prob - s_market_imp
+                    s_ev = (s_prob / 100) * s_odds - 1.0
+                    if s_ev > 0 and s_odds <= config.max_odds:
+                        opportunities.append(BetOpportunity(
+                            match_id=mid, match_name=mn, kickoff=ko,
+                            play_type="correct_score",
+                            pick=f"比分{top}",
+                            pick_short=f"比分{top}",
+                            model_prob=float(s_prob), odds=s_odds,
+                            edge_pct=round(s_edge, 1), ev=round(s_ev, 3),
+                            kelly_full_pct=0, stake=0,
+                            confidence=conf, delta=delta,
+                            market_implied=round(s_market_imp, 1),
+                        ))
+
+    return opportunities
+
+
+def kelly_stake(edge_pct: float, odds: float, bankroll: float, fraction: float = 0.25) -> float:
+    """
+    凯利准则仓位计算
+    f* = (p*b - q) / b  其中 b = odds-1, p = model_prob, q = 1-p
+    返回: 建议投注金额(元)
+    """
+    if odds <= 1.0 or edge_pct <= 0:
+        return 0.0
+    model_prob = edge_pct / 100.0 + 1.0 / odds
+    # 概率合理性校验
+    if model_prob <= 0 or model_prob >= 1:
+        return 0.0
+    b = odds - 1.0
+    q = 1.0 - model_prob
+    full_kelly = max(0.0, (model_prob * b - q) / b)
+    stake = bankroll * full_kelly * fraction
+    return round(stake, 1)
+
+
+def select_portfolio(opportunities: list, config: PortfolioConfig = None) -> PortfolioResult:
+    """
+    投资组合选择器: 贪婪算法, 风险调整EV排序
+    """
+    if config is None:
+        config = PortfolioConfig()
+
+    # 1. 过滤
+    filtered = []
+    for op in opportunities:
+        if op.edge_pct < config.min_edge_pct:
+            continue
+        if op.odds < config.min_odds or op.odds > config.max_odds:
+            continue
+        if op.confidence == "低":
+            continue
+        if op.ev <= 0:
+            continue
+        filtered.append(op)
+
+    # 2. RQSPF优先: 同一比赛有SPF和RQSPF时, 若RQSPF在黄金区间而SPF不在, 仅保留RQSPF
+    if config.rqspf_preference:
+        match_ops = {}
+        for op in filtered:
+            match_ops.setdefault(op.match_id, []).append(op)
+        suppressed = []
+        for mid, ops in match_ops.items():
+            has_rqspf = any(o.play_type == "rqspf" for o in ops)
+            has_spf = any(o.play_type == "spf" for o in ops)
+            if has_rqspf and has_spf:
+                rq_odds = next((o.odds for o in ops if o.play_type == "rqspf"), 0)
+                sp_odds = next((o.odds for o in ops if o.play_type == "spf"), 0)
+                rq_golden = config.golden_odds_min <= rq_odds <= config.golden_odds_max
+                sp_golden = config.golden_odds_min <= sp_odds <= config.golden_odds_max
+                if rq_golden and not sp_golden:
+                    suppressed.extend([o for o in ops if o.play_type == "spf"])
+        filtered = [o for o in filtered if o not in suppressed]
+
+    # 3. 排序: 风险调整EV = ev / sqrt(odds-1) (夏普式, 惩罚高波动)
+    def sharpe_ev(op):
+        variance_penalty = math.sqrt(max(0.1, op.odds - 1.0))
+        return op.ev / variance_penalty
+    filtered.sort(key=sharpe_ev, reverse=True)
+
+    # 4. 计算Kelly仓位
+    for op in filtered:
+        stake = kelly_stake(op.edge_pct, op.odds, config.budget, config.kelly_fraction)
+        stake = max(config.min_stake_per_bet, min(config.max_stake_per_bet, stake))
+        op.stake = round(stake, 1)
+        op.kelly_full_pct = round((op.edge_pct / (op.odds - 1.0)) * 100, 1) if op.odds > 1.0 else 0
+
+    # 5. 贪婪填充
+    selected = []
+    match_bet_count = {}
+    direction_count = {"主胜": 0, "客胜": 0, "平局": 0, "其他": 0}
+    total_spent = 0
+
+    for op in filtered:
+        if len(selected) >= config.max_portfolio_bets:
+            break
+        # 比赛集中度
+        if match_bet_count.get(op.match_id, 0) >= config.max_bets_per_match:
+            continue
+        # 方向集中度
+        dir_key = _direction_key(op)
+        dir_current = direction_count.get(dir_key, 0) + op.stake
+        if dir_current / config.budget > config.max_concentration_pct:
+            continue
+        # 预算上限
+        if total_spent + op.stake > config.budget:
+            # 尝试降低仓位以适应预算
+            remaining = config.budget - total_spent
+            if remaining >= config.min_stake_per_bet:
+                op.stake = remaining
+            else:
+                continue
+
+        selected.append(op)
+        match_bet_count[op.match_id] = match_bet_count.get(op.match_id, 0) + 1
+        direction_count[dir_key] = direction_count.get(dir_key, 0) + op.stake
+        total_spent += op.stake
+
+    # 6. 保留金
+    reserve = config.budget - total_spent
+    min_reserve = int(config.budget * config.reserve_min_pct)
+    if reserve < min_reserve and selected:
+        # 从最小仓位削减
+        selected.sort(key=lambda o: o.stake)
+        for op in selected:
+            reduction = min(op.stake - config.min_stake_per_bet, min_reserve - reserve)
+            if reduction > 0:
+                op.stake -= reduction
+                total_spent -= reduction
+                reserve += reduction
+            if reserve >= min_reserve:
+                break
+
+    total_spent = int(sum(o.stake for o in selected))
+    reserve = config.budget - total_spent
+
+    # 7. 构建结果
+    total_ev = sum(o.ev * o.stake for o in selected) / max(1, total_spent) * 100
+    expected_ret = sum(o.stake * o.odds * o.model_prob / 100 for o in selected)
+
+    # 最大方向暴露
+    max_dir = max(direction_count.items(), key=lambda x: x[1]) if direction_count else ("none", 0)
+
+    result = PortfolioResult(
+        bets=selected,
+        total_stake=total_spent,
+        reserve=reserve,
+        total_ev_pct=round(total_ev, 1),
+        expected_return=round(expected_ret, 0),
+        opportunities_scanned=len(opportunities),
+        opportunities_selected=len(selected),
+        concentration={
+            "max_direction": max_dir[0],
+            "max_direction_pct": round(max_dir[1] / max(1, config.budget) * 100, 1),
+            "max_match_exposure": max(match_bet_count.values()) if match_bet_count else 0,
+        },
+    )
+    return result
+
+
+def _direction_key(op: BetOpportunity) -> str:
+    """提取投注方向关键字（用于集中度计算）"""
+    pick = op.pick_short + op.pick + op.play_type
+    if "主胜" in pick or "胜胜" in pick or ("half_full" in op.play_type and op.pick.endswith("胜")):
+        return "主胜方向"
+    elif "客胜" in pick or "负负" in pick or ("half_full" in op.play_type and op.pick.endswith("负")):
+        return "客胜方向"
+    elif ("平" in op.pick_short and "平局" in pick) or "平平" in pick or "让球平" in pick:
+        return "平局方向"
+    elif op.play_type == "total_goals":
+        return "总进球数"
+    else:
+        return op.play_type
+
+
+# ═══════════════════════════════════════════════════════════════
+# 主入口: generate_plan (签名保持兼容)
+# ═══════════════════════════════════════════════════════════════
 
 def generate_plan(matches: list) -> dict:
-    # P0: 截止时间检查 — 跳过已开球或不足15分钟的场次
+    """
+    竞彩方案 v6.0: 生成收益最大化投资组合 (替代均匀仓位分配)
+    参数 matches: 比赛ID列表, 如 ["BEL-IRN","ESP-KSA",...]
+    返回: dict (兼容旧格式 + 新结构化字段)
+    """
+    config = PortfolioConfig(
+        budget=RULE["budget"],
+        min_edge_pct=RULE["min_edge_pct"],
+        max_bets_per_match=RULE["max_bets_per_match"],
+        max_stake_per_bet=RULE["max_stake_per_bet"],
+        min_stake_per_bet=RULE["min_stake_per_bet"],
+        kelly_fraction=RULE["kelly_fraction"],
+        min_odds=RULE["min_odds"],
+        max_odds=RULE["max_odds"],
+        max_portfolio_bets=RULE["max_portfolio_bets"],
+        rqspf_preference=RULE["rqspf_preference"],
+        golden_odds_min=RULE["golden_odds_min"],
+        golden_odds_max=RULE["golden_odds_max"],
+        max_concentration_pct=RULE["max_concentration_pct"],
+        reserve_min_pct=RULE["reserve_min_pct"],
+    )
+
+    # P0: 截止时间检查
     skipped_deadline = []
     valid_matches = []
     for m in matches:
@@ -492,354 +897,105 @@ def generate_plan(matches: list) -> dict:
         else:
             skipped_deadline.append((m, reason))
 
+    # 预测 + 分类
     results = {}
+    classified = []
     for m in valid_matches:
         p = predict(m)
         if "error" not in p:
-            results[m] = classify_match(m, p)
+            c = classify_match(m, p)
+            classified.append(c)
+            results[m] = c
 
-    if not results:
-        skip_msg = ""
-        if skipped_deadline:
-            names = ", ".join(m for m,_ in skipped_deadline[:4])
-            skip_msg = f" (已跳过: {names}等{len(skipped_deadline)}场)"
-        return {"error": f"无有效比赛{skip_msg}", "skipped": skipped_deadline}
+    if not classified:
+        return {
+            "error": "无有效比赛" if not skipped_deadline else f"所有比赛已跳过({len(skipped_deadline)}场)",
+            "skipped": skipped_deadline,
+            "portfolio": None,
+        }
 
-    # 动态单关: 从SP数据读取 + 硬编码兜底
+    # EV标注
+    ev_enabled = False
+    real_sp_count = sum(1 for c in classified if _match_sp(c["match_id"]))
+    if real_sp_count >= len(classified) * 0.5:
+        ev_enabled = True
+        for c in classified:
+            val = compute_value(c["match_id"], c["direction"], c["dir_prob"])
+            c["value"] = val
+            c["is_value"] = val["is_value"]
+            c["ev_score"] = val["ev"]
+
+    # ★ 生成所有投注机会
+    opportunities = generate_all_opportunities(classified, config)
+
+    # ★ 投资组合选择
+    portfolio = select_portfolio(opportunities, config)
+
+    # 排除场次信息
+    excluded_pool = [c for c in classified if c.get("is_excluded")]
+    risk_notes = []
+    for c in excluded_pool:
+        reason = c["confidence"] if "低" in c.get("confidence", "") else c.get("cold_alert", "")
+        risk_notes.append(f"排除 {c['match_name']}: {reason}")
+
+    # SPF池信息（向后兼容）
+    cons_pool = sorted(
+        [c for c in classified if c.get("is_conservative")],
+        key=lambda x: (x.get("dir_prob", 0), abs(x.get("delta", 0))), reverse=True
+    )
+    banker_pool = sorted(
+        [c for c in classified if c.get("is_banker")],
+        key=lambda x: (x.get("dir_prob", 0), abs(x.get("delta", 0))), reverse=True
+    )
+
+    # 单关推荐
     dyn_singles = {m for m in results if _is_single_match(m)}
     dyn_singles.update(RULE.get("single_matches", []))
-
-    classified = list(results.values())
-
-    # v4.0: 正EV筛选
-    # 检测SP是真实数据还是模型估算(真实SP的概率和≠估算值)
-    real_sp_count = sum(1 for c in classified if _match_sp(c["match_id"]))
-    using_real_sp = real_sp_count >= len(classified) * 0.5
-
-    if using_real_sp:
-        classified_ev = filter_value_bets(classified)
-        # 需至少3场非排除场次才能形成有效方案
-        usable_ev = [c for c in classified_ev if not c.get("is_excluded")]
-        if len(usable_ev) >= 3:
-            classified = classified_ev
-        else:
-            # EV过滤后可用场次不足, 回退全量+标注EV
-            for c in classified:
-                val = compute_value(c["match_id"], c["direction"], c["dir_prob"])
-                c["value"] = val; c["is_value"] = val["is_value"]; c["ev_score"] = val["ev"]
-    else:
-        # SP为估算值, EV不可靠, 直接按分类
-        for c in classified:
-            c["value"] = {"ev": 0, "edge": 0, "is_value": True, "note": "SP估算"}
-            c["is_value"] = True; c["ev_score"] = 0
-
-    conservative_pool = [c for c in classified if c.get("is_conservative")]
-    banker_pool = [c for c in classified if c.get("is_banker")]
-    usable_pool = [c for c in classified if c.get("is_usable") and not c.get("is_excluded")]
-    excluded_pool = [c for c in classified if c.get("is_excluded")]
-    draw_pool = [c for c in classified if c["direction"] == "draw" and c["dir_prob"] >= 40]
-
-    # ★ v5.0 RQSPF池: 有让球盘数据的场次, 按(赔率黄金区间 + 方向置信度)排序
-    rqspf_pool = [c for c in classified if c.get("rqspf") and not c.get("is_excluded")
-                  and c["rqspf"]["confidence"] in ("高", "中")]
-    # RQSPF排序: 优先赔率在1.8-2.5黄金区间的
-    def rqspf_score(c):
-        odds = c["rqspf"].get("odds", 1.0)
-        golden = 1.0 if 1.8 <= odds <= 2.5 else (0.8 if 2.5 < odds <= 3.5 else 0.5)
-        return golden * 100 + min(c["dir_prob"], 99)
-    rqspf_pool.sort(key=rqspf_score, reverse=True)
-
-    # ★ v5.0 总进球池: 有总进球SP数据的场次
-    tg_pool = [c for c in classified if c.get("tg_pred") and not c.get("is_excluded")]
-    tg_pool.sort(key=lambda x: x["tg_pred"].get("odds", 0), reverse=True)
-
-    # ★ v5.0 单关优化池: SP标记为单关的场次
-    single_pool = [c for c in classified if c["match_id"] in dyn_singles
-                   and not c.get("is_excluded")
-                   and c["direction"] != "draw"
-                   and c["dir_prob"] >= 40]
-    single_pool.sort(key=lambda x: (x["dir_prob"], abs(x["delta"])), reverse=True)
-
-    # 稳胆: 最优单场
-    banker_pool.sort(key=lambda x: (x["dir_prob"], abs(x["delta"])), reverse=True)
-    banker = banker_pool[0] if banker_pool else None
-
-    # 稳健仓 2串1
-    conservative_pool.sort(key=lambda x: (x["dir_prob"], abs(x["delta"])), reverse=True)
-    conservative_bet = conservative_pool[:2]
-
-    # 均衡仓 (与稳健仓去重)
-    used_ids = {b["match_id"] for b in conservative_bet} if len(conservative_bet) >= 2 else set()
-    balanced_wdl = None
-    for c in classified:
-        if c["is_conservative"] and c["match_id"] not in used_ids and "低" not in c["confidence"]:
-            balanced_wdl = c; break
-    if not balanced_wdl:
-        for c in classified:
-            if (c["dir_prob"] >= 42 and abs(c["delta"]) >= 12 and c["cold_rank"] < 2
-                    and c["match_id"] not in used_ids and c["direction"] != "draw"
-                    and "低" not in c["confidence"]):
-                balanced_wdl = c; break
-
-    balanced_tg = None
-    if balanced_wdl:
-        for c in classified:
-            if c["total_goals_signal"] and c["match_id"] != balanced_wdl["match_id"] and not c["is_excluded"]:
-                balanced_tg = c; break
-    if not balanced_tg and draw_pool:
-        balanced_tg = draw_pool[0]
-        balanced_tg["total_goals_signal"] = 2
-
-    # ★ 自由过关 3串4 (3注2串1 + 1注3串1，错1场仍中2串1)
-    flexi_candidates = [c for c in classified if c["is_usable"] and not c["is_excluded"]]
-    flexi_candidates.sort(key=lambda x: (x["dir_prob"], abs(x["delta"])), reverse=True)
-    flexi_bet = flexi_candidates[:3]
-
-    # 进取仓比分
-    score_candidates = [c for c in classified if not c["is_excluded"] and c["confidence"] == "高"]
-    score_candidates.sort(key=lambda x: x["dir_prob"], reverse=True)
-    aggressive_bet = score_candidates[:3]
-
-    # 资金分配 v5.0: 新增RQSPF仓位
-    b_banker = int(RULE["budget"] * RULE["banker_pct"])
-    b_conservative = int(RULE["budget"] * RULE["parlay_pct"])
-    b_rqspf = int(RULE["budget"] * RULE["rqspf_pct"])
-    b_balanced = int(RULE["budget"] * RULE["balanced_pct"])
-    b_flexi = int(RULE["budget"] * RULE["flexi_pct"])
-    b_aggressive = int(RULE["budget"] * RULE["aggressive_pct"])
-    b_reserve = RULE["budget"] - b_banker - b_conservative - b_rqspf - b_balanced - b_flexi - b_aggressive
-
-    # 回收跳过层级预算 → 优先补充稳健仓
-    if not banker: b_reserve += b_banker; b_banker = 0
-    if not (balanced_wdl and balanced_tg): b_reserve += b_balanced; b_balanced = 0
-    if len(aggressive_bet) < 3: b_reserve += b_aggressive; b_aggressive = 0
-    # RQSPF不可用时回收
-    rqspf_bet = rqspf_pool[:2] if len(rqspf_pool) >= 2 else []
-    if len(rqspf_bet) < 2: b_reserve += b_rqspf; b_rqspf = 0
-    # 稳健2串1可用时 → 其他仓跳过的预算补充到稳健仓(最可靠)
-    if len(conservative_bet) >= 2:
-        extra = b_reserve * 0.5  # 保留金的一半给稳健仓
-        b_conservative += int(extra)
-        b_reserve -= int(extra)
-    elif len(conservative_bet) < 2:
-        b_reserve += b_conservative; b_conservative = 0
-
-    # ★ v5.0 单关推荐: 从单关池中优选, 含RQSPF和TG建议
     single_bets = []
-    for c in single_pool:
-        bet_info = {
-            "match": c["match_name"], "match_id": c["match_id"],
-            "spf_pick": c["dir_name"], "spf_prob": c["dir_prob"],
-            "spf_odds": est_odds(c["dir_prob"], match_id=c["match_id"], direction=c["direction"]),
-            "kickoff": c["kickoff"],
-            "ev": c.get("ev_score", 0),
-        }
-        # RQSPF建议
-        if c.get("rqspf"):
-            bet_info["rqspf_pick"] = c["rqspf"]["pick"]
-            bet_info["rqspf_odds"] = c["rqspf"].get("odds", 0)
-            bet_info["rqspf_confidence"] = c["rqspf"]["confidence"]
-        # TG建议
-        if c.get("tg_pred"):
-            bet_info["tg_pick"] = f"总进球{c['tg_pred']['primary']}球"
-            bet_info["tg_odds"] = c["tg_pred"].get("odds", 0)
-        # 半全场建议
-        if c.get("htft"):
-            bet_info["htft_pick"] = f"半全场-{c['htft']['pick']}"
-            bet_info["htft_odds"] = c["htft"]["odds"]
-        single_bets.append(bet_info)
+    for c in classified:
+        if c["match_id"] in dyn_singles and not c.get("is_excluded") and c["direction"] != "draw" and c.get("dir_prob", 0) >= 40:
+            bet_info = {
+                "match": c["match_name"], "match_id": c["match_id"],
+                "spf_pick": c["dir_name"], "spf_prob": c["dir_prob"],
+                "spf_odds": est_odds(c["dir_prob"], match_id=c["match_id"], direction=c["direction"]),
+                "kickoff": c["kickoff"],
+            }
+            if c.get("rqspf"):
+                bet_info["rqspf_pick"] = c["rqspf"]["pick"]
+                bet_info["rqspf_odds"] = c["rqspf"].get("odds", 0)
+            if c.get("tg_pred"):
+                bet_info["tg_pick"] = f"总进球{c['tg_pred']['primary']}球"
+                bet_info["tg_odds"] = c["tg_pred"].get("odds", 0)
+            single_bets.append(bet_info)
 
-    # 赔率计算
-    # 稳胆
-    banker_odds = est_odds(banker["dir_prob"], match_id=banker["match_id"], direction=banker["direction"]) if banker else 0
-    banker_return = round(b_banker * banker_odds) if banker else 0
-
-    # 稳健仓 - 用真实SP计算串关赔率
-    cons_odds_list = []
-    cons_combined = 0
-    if len(conservative_bet) >= 2:
-        cons_odds_list = [est_odds(b["dir_prob"], match_id=b["match_id"], direction=b["direction"]) for b in conservative_bet]
-        cons_combined = round(cons_odds_list[0] * cons_odds_list[1], 2)
-
-    # 均衡仓
-    bal_combined = 0
-    if balanced_wdl and balanced_tg:
-        wdl_sp = est_odds(balanced_wdl["dir_prob"], match_id=balanced_wdl["match_id"], direction=balanced_wdl["direction"])
-        tg_sp = _match_tg_sp(balanced_tg["match_id"]).get(str(balanced_tg.get("total_goals_signal", 2)), 3.20)
-        bal_combined = round(wdl_sp * tg_sp, 2)
-
-    # 自由过关3串4
-    flexi_return = 0
-    flexi_detail = {}
-    if len(flexi_bet) >= 3:
-        f_odds = [est_odds(b["dir_prob"], match_id=b["match_id"], direction=b["direction"]) for b in flexi_bet]
-        # 3注2串1赔率
-        pairs = [(0,1),(0,2),(1,2)]
-        pair_odds = [round(f_odds[i]*f_odds[j], 2) for i,j in pairs]
-        # 1注3串1
-        triple_odds = round(f_odds[0]*f_odds[1]*f_odds[2], 2)
-        # 每注2元, 4注共8元/倍
-        flexi_per_unit = 8
-        flexi_units = b_flexi // flexi_per_unit if flexi_per_unit > 0 else 0
-        flexi_actual_bet = flexi_units * flexi_per_unit if flexi_units > 0 else b_flexi
-        flexi_detail = {
-            "structure": "3注2串1 + 1注3串1 = 4注",
-            "per_unit_cost": f"{flexi_per_unit}元/倍",
-            "units": flexi_units if flexi_units > 0 else f"{(b_flexi/flexi_per_unit):.1f}(非整数)",
-            "actual_bet": flexi_actual_bet,
-            "pair_odds": f"{pair_odds[0]}× / {pair_odds[1]}× / {pair_odds[2]}×",
-            "triple_odds": f"{triple_odds}×",
-            "pairs": [f"{flexi_bet[i]['match_name']}+{flexi_bet[j]['match_name']}" for i,j in pairs],
-        }
-        if flexi_units > 0:
-            # 错1场: 仍中1注2串1
-            min_pair_return = round(min(pair_odds) * 2 * flexi_units)
-            # 全中: 3注2串1 + 1注3串1
-            all_pair_return = round(sum(pair_odds) * 2 * flexi_units)
-            all_triple_return = round(triple_odds * 2 * flexi_units)
-            flexi_return = all_pair_return + all_triple_return
-            flexi_detail["min_pair_return"] = min_pair_return
-
-    # 进取仓
-    agg_combined = 0
-    agg_odds_list = []
-    for b in aggressive_bet[:3]:
-        agg_odds_list.append(round(1.0 / 0.10 * 0.71, 1))
-    if len(agg_odds_list) >= 3:
-        agg_combined = round(agg_odds_list[0] * agg_odds_list[1] * agg_odds_list[2], 1)
-
-    # 赔率黄金区间校验
-    def check_golden_range(odds, label):
-        if 1.8 <= odds <= 2.5:
-            return f"✅ {label}赔率{odds}在黄金区间1.8-2.5"
-        elif odds < 1.8:
-            return f"⚠️ {label}赔率{odds}偏低(<1.8), 可考虑让球盘提升"
-        else:
-            return f"⚠️ {label}赔率{odds}偏高(>2.5), 准确率可能不足50%"
-
-    # EV统计
-    all_evs = [c.get("ev_score", 0) for c in classified if c.get("ev_score", 0) > 0]
-    ev_stats = {
-        "total": len(all_evs),
-        "avg_edge": round(sum(c.get("value", {}).get("edge", 0) for c in classified if c.get("value", {}).get("is_value")) / max(1, len(all_evs)), 1) if all_evs else 0
-    }
-
+    # 构建返回 (兼容旧dashboard.py)
     plan = {
-        "generated_by": "模型自动输出 v5.0 (全玩法: SPF+RQSPF+总进球+半全场+混合过关)",
-        "total_budget": RULE["budget"],
-        "value_stats": ev_stats,
+        "generated_by": "竞彩方案 v6.0 (收益最大化·Kelly仓位·正EV精选)",
+        "total_budget": config.budget,
         "skipped": skipped_deadline,
+        # ★ v6.0 核心: 投资组合
+        "portfolio": portfolio,
+        "opportunities_total": len(opportunities),
+        # 向后兼容字段
         "classified": {
             "banker_pool": [c["match_name"] for c in banker_pool],
-            "conservative_pool": [c["match_name"] for c in conservative_pool],
+            "conservative_pool": [c["match_name"] for c in cons_pool],
             "excluded_pool": [c["match_name"] for c in excluded_pool],
         },
-        # 新增：稳胆
-        "banker": {
-            "name": "稳胆单关",
-            "amount": b_banker,
-            "type": "单关胜平负" if banker and banker["dir_prob"] >= 50 else "单关(建议搭配串关使用)",
-            "bet": {
-                "match": banker["match_name"], "pick": banker["dir_name"], "match_id": banker["match_id"],
-                "model_prob": banker["dir_prob"], "est_odds": est_odds(banker["dir_prob"], match_id=banker["match_id"], direction=banker["direction"]),
-                "delta": banker["delta"], "cold": banker["cold_alert"],
-                "ev": banker.get("ev_score", 0),
-                "ev_str": f" EV+{banker['ev_score']:.0%}" if banker.get("ev_score", 0) > 0.01 else "",
-                "banker_reason": f"Δ={banker['delta']:.0f}, 概率{banker['dir_prob']}%, 全场最强方向信号",
-                "handicap_tip": banker.get("handicap_advice"),
-            } if banker else None,
-            "est_return": round(b_banker * banker_odds) if banker else 0,
-            "golden_check": check_golden_range(banker_odds, "稳胆") if banker else None,
-        } if banker else {"error": "今日无稳胆场次(Δ≥25+概率≥50%)"},
-        # 稳健仓
-        "conservative": {
-            "name": "稳健2串1", "amount": b_conservative, "type": "2串1 胜平负",
-            "bets": [{
-                "match": b["match_name"], "pick": b["dir_name"], "match_id": b["match_id"],
-                "model_prob": b["dir_prob"], "est_odds": est_odds(b["dir_prob"], match_id=b["match_id"], direction=b["direction"]),
-                "delta": b["delta"], "cold": b["cold_alert"],
-                "ev": b.get("ev_score", 0),
-                "ev_str": f" EV+{b['ev_score']:.0%}" if b.get("ev_score", 0) > 0.01 else "",
-                "handicap_tip": b.get("handicap_advice"),
-            } for b in conservative_bet],
-            "est_odds": cons_combined, "est_return": round(b_conservative * cons_combined if cons_combined else 0),
-            "golden_check": check_golden_range(cons_combined, "2串1") if cons_combined else None,
-            "condition": " AND ".join([b["dir_name"] for b in conservative_bet]),
-        } if len(conservative_bet) >= 2 else {"error": "无可投场次"},
-        # ★ v5.0 RQSPF仓 (让球胜平负 2串1)
-        "rqspf": {
-            "name": "让球2串1", "amount": b_rqspf, "type": "2串1 让球胜平负 (竞彩主力玩法)",
-            "bets": [{
-                "match": b["match_name"], "pick": b["rqspf"]["pick_short"],
-                "full_pick": b["rqspf"]["pick"], "match_id": b["match_id"],
-                "handicap_line": b["rqspf"]["handicap_line"],
-                "model_xg_diff": round(b["xg_home"] - b["xg_away"], 2),
-                "adjusted_diff": b["rqspf"]["adjusted_diff"],
-                "rqspf_confidence": b["rqspf"]["confidence"],
-                "est_odds": b["rqspf"].get("odds", 2.0),
-                "reason": f"让{b['rqspf']['handicap_line']}球后 xG差={b['rqspf']['adjusted_diff']:+.1f}",
-            } for b in rqspf_bet],
-            "est_odds": round(rqspf_bet[0]["rqspf"].get("odds",2.0) * rqspf_bet[1]["rqspf"].get("odds",2.0), 2) if len(rqspf_bet) >= 2 else 0,
-            "est_return": round(b_rqspf * (rqspf_bet[0]["rqspf"].get("odds",2.0) * rqspf_bet[1]["rqspf"].get("odds",2.0)), 0) if len(rqspf_bet) >= 2 else 0,
-            "condition": " AND ".join([b["rqspf"]["pick"] for b in rqspf_bet]) if len(rqspf_bet) >= 2 else "",
-            "note": "让球盘赔率更接近黄金区间(1.8-2.5), 是竞彩主力玩法",
-        } if len(rqspf_bet) >= 2 else {"error": "无可投RQSPF场次(需2场有让球盘数据+高/中置信度)"},
-        # 均衡仓
-        "balanced": {
-            "name": "均衡混合", "amount": b_balanced,
-            "type": "2串1 混合过关(胜平负+总进球)",
-            "bets": [
-                {"match": balanced_wdl["match_name"], "pick": balanced_wdl["dir_name"], "match_id": balanced_wdl["match_id"],
-                 "type": "胜平负", "model_prob": balanced_wdl["dir_prob"],
-                 "est_odds": est_odds(balanced_wdl["dir_prob"], match_id=balanced_wdl["match_id"], direction=balanced_wdl["direction"])},
-                {"match": balanced_tg["match_name"], "pick": f"总进球{balanced_tg['total_goals_signal']}球", "match_id": balanced_tg["match_id"],
-                 "type": "总进球数", "model_signal": f"xG={balanced_tg['total_xg']:.1f}",
-                 "est_odds": 3.20},
-            ] if balanced_wdl and balanced_tg else [],
-            "est_odds": bal_combined,
-            "est_return": round(b_balanced * bal_combined if bal_combined else 0),
-        } if balanced_wdl and balanced_tg else {"error": "条件不满足"},
-        # ★ 自由过关
-        "flexi": {
-            "name": "自由过关3串4", "amount": b_flexi if flexi_units > 0 else b_flexi,
-            "actual_bet": flexi_detail.get("actual_bet", b_flexi),
-            "type": "M串N 容错 (错1场仍中2串1)",
-            "bets": [{
-                "match": b["match_name"], "pick": b["dir_name"], "match_id": b["match_id"],
-                "model_prob": b["dir_prob"], "est_odds": est_odds(b["dir_prob"], match_id=b["match_id"], direction=b["direction"]),
-                "ev": b.get("ev_score", 0),
-                "ev_str": f" EV+{b['ev_score']:.0%}" if b.get("ev_score", 0) > 0.01 else "",
-            } for b in flexi_bet],
-            "detail": flexi_detail,
-            "all_hit_return": flexi_return,
-            "one_miss_return": flexi_detail.get("min_pair_return", "N/A") if isinstance(flexi_detail, dict) else "N/A",
-            "condition": "3场中至少2场 = 中1注2串1; 3场全中 = 3注2串1+1注3串1",
-        } if len(flexi_bet) >= 3 and flexi_units > 0 else {"error": "条件不满足"},
-        # 进取仓
-        "aggressive": {
-            "name": "进取比分", "amount": b_aggressive, "type": "3串1 比分",
-            "bets": [{
-                "match": fn(b["match_name"]), "pick": b["top_score"],
-                "score_prob": "~10%", "est_odds": round(1.0/0.10*0.71, 1),
-            } for b in aggressive_bet[:3]],
-            "est_odds": agg_combined, "est_return": round(b_aggressive * agg_combined if agg_combined else 0),
-            "condition": " AND ".join([f"{b['match_name']} {b['top_score']}" for b in aggressive_bet[:3]]),
-        } if len(aggressive_bet) >= 3 else {"error": "条件不满足"},
-        "reserve": {"amount": b_reserve, "reason": "保留金：按实战铁律每日保留5%"},
-        # ★ v5.0 单关推荐 (全玩法)
         "single_bets": single_bets,
-        "single_bet_note": "单关场次可单独投注, 命中即兑; RQSPF赔率更优时可替代SPF" if single_bets else "",
-        "risk_notes": [],
+        "single_bet_note": "单关场次建议单独投注; RQSPF赔率更优时可替代SPF" if single_bets else "",
+        "risk_notes": risk_notes,
+        "ev_enabled": ev_enabled,
     }
-
-    for c in excluded_pool:
-        reason = c["confidence"] if "低" in c["confidence"] else c["cold_alert"]
-        plan["risk_notes"].append(f"排除 {c['match_name']}: {reason}")
-
     return plan
 
 
+# ═══════════════════════════════════════════════════════════════
+# 格式化输出: format_lottery
+# ═══════════════════════════════════════════════════════════════
+
 def format_lottery(plan: dict) -> str:
+    """竞彩方案 v6.0 格式化输出"""
     if "error" in plan:
         msg = f"❌ {plan['error']}"
         skipped = plan.get("skipped", [])
@@ -848,160 +1004,122 @@ def format_lottery(plan: dict) -> str:
             msg += "\n💡 建议: 今日无可投场次, 保留资金等待明日"
         return msg
 
-    L = []
     now_ts = datetime.now().strftime("%Y-%m-%d %H:%M")
-    L.append("=" * 70)
-    L.append("  竞彩足球 2026世界杯 自动投注方案 v5.0 (全玩法)")
-    L.append(f"  生成时间: {now_ts}  |  预算: {plan['total_budget']}元")
-    L.append(f"  算法: 正EV筛选 + 高置信优先 | 引擎: {plan['generated_by']}")
-    # Value stats
-    val_count = plan.get("value_stats", {})
-    if val_count:
-        L.append(f"  📊 正EV场次: {val_count.get('total',0)}场 | 平均edge: {val_count.get('avg_edge',0):+.1f}%")
-    L.append("=" * 70)
+    L = []
+    L.append("═" * 68)
+    L.append("  竞彩方案 v6.0 · 2026世界杯 · 最优投资组合")
+    L.append(f"  生成时间: {now_ts}  |  预算上限: {plan['total_budget']}元")
+    L.append(f"  策略: 正EV精选 + 1/4 Kelly仓位 | 机会驱动·非均衡分配")
+    L.append("═" * 68)
 
-    # Deadline skipped info
+    # 跳过信息
     skipped = plan.get("skipped", [])
     if skipped:
         L.append(f"\n⚠️ 已跳过 {len(skipped)} 场 (开球/不足15分钟):")
         for m, reason in skipped[:4]:
             L.append(f"  • {m}: {reason}")
 
-    c = plan["classified"]
-    L.append(f"\n📋 场次: 稳胆{c['banker_pool'][:3]} | 稳健{c['conservative_pool'][:3]} | 排除{c['excluded_pool']}")
+    # ★ 投资组合核心
+    portfolio = plan.get("portfolio")
+    if portfolio is None:
+        L.append("\n❌ 未生成投资组合")
+        return "\n".join(L)
 
-    total_return = 0
+    ops_total = plan.get("opportunities_total", 0)
+    ops_sel = portfolio.opportunities_selected
+    L.append(f"\n📊 市场扫描: {len(plan.get('classified',{}).get('conservative_pool',[]))}场可投 → {ops_total}个投注机会 → {ops_sel}个入选")
+    L.append(f"💰 已部署: {portfolio.total_stake}元  |  保留: {portfolio.reserve}元")
+    L.append(f"📈 组合期望: EV+{portfolio.total_ev_pct}%  |  预期回报: ≈{portfolio.expected_return:.0f}元")
 
-    # 稳胆
-    banker = plan.get("banker", {})
-    if "error" not in banker:
-        b = banker["bet"]
-        L.append(f"\n{'─'*70}")
-        L.append(f"⭐ 稳胆单关 — {banker['amount']}元 | 单关胜平负")
-        L.append(f"{'─'*70}")
-        time = MATCH_SCHEDULE.get(b.get("match_id",""), "")
-        L.append(f"  {time:<10} {b['match']:<36} → {b['pick']:<22} 概率{b['model_prob']}% 估赔{b['est_odds']}  Δ={b['delta']:+.0f}")
-        L.append(f"  {b['banker_reason']}")
-        if b.get("handicap_tip"):
-            h = b["handicap_tip"]
-            L.append(f"  💡 让球盘建议: {h['line']} {h['pick']} ({h['reason']})")
-        L.append(f"  预估回报: ≈{banker['est_return']}元")
-        L.append(f"  {banker.get('golden_check', '')}")
-        total_return += banker.get("est_return", 0)
+    # 集中度
+    conc = portfolio.concentration
+    if conc:
+        L.append(f"🎯 集中度: 最大方向{conc.get('max_direction','?')} {conc.get('max_direction_pct',0)}%  |  最多{conc.get('max_match_exposure',0)}注/场")
+
+    L.append("─" * 68)
+
+    # 排名列表
+    if not portfolio.bets:
+        L.append("\n⚠️ 今日无符合条件的正EV投注机会")
+        L.append(f"   保留{plan['total_budget']}元等待明日更好机会")
+        reserve_reason = "无正EV机会"
     else:
-        L.append(f"\n⭐ 稳胆 — 跳过: {banker['error']}")
+        medals = ["🥇", "🥈", "🥉"] + [f"  {i+1}." for i in range(3, len(portfolio.bets))]
+        for i, bet in enumerate(portfolio.bets):
+            medal = medals[i] if i < len(medals) else f"  {i+1}."
+            L.append("")
+            L.append(f"{medal} #{i+1} {_play_type_name(bet.play_type)} · {bet.match_name}")
+            L.append(f"   方向: {bet.pick:<24} 赔率: {bet.odds:.2f}")
+            L.append(f"   模型概率: {bet.model_prob}%  |  市场隐含: {bet.market_implied}%  |  Edge: {bet.edge_pct:+.1f}pp")
+            L.append(f"   EV: {bet.ev:+.1%}  |  凯利仓位: {bet.stake:.0f}元 (1/{1/RULE['kelly_fraction']:.0f}凯利)")
+            if bet.note:
+                L.append(f"   依据: {bet.note}")
 
-    # 稳健仓
-    def render_tier(tier_name, emoji):
-        nonlocal total_return
-        plan_dict = plan.get(tier_name, {})
-        L.append(f"\n{'─'*70}")
-        if "error" in plan_dict:
-            L.append(f"{emoji} {plan_dict.get('name', tier_name)} — 跳过: {plan_dict['error']}")
-            return
-        detail = plan_dict.get("detail", {})
-        detail_str = f" | {detail.get('structure', '')}" if detail else ""
-        L.append(f"{emoji} {plan_dict['name']} — {plan_dict['amount']}元{detail_str} | {plan_dict['type']}")
-        L.append(f"{'─'*70}")
-        for b in plan_dict.get("bets", []):
-            extra = ""
-            ev_str = ""
-            if "model_signal" in b: extra = f" ({b['model_signal']})"
-            elif "model_prob" in b: extra = f" 概率{b['model_prob']}%"
-            elif "rqspf_confidence" in b: extra = f" [{b.get('rqspf_confidence','')}]"
-            # Show EV if available
-            ev_val = b.get("ev", 0)
-            if ev_val > 0.01:
-                ev_str = f"  EV+{ev_val:.0%}"
-            elif ev_val < -0.01:
-                ev_str = f"  EV{ev_val:.0%}"
-            # RQSPF special: show adjusted diff and reason
-            rqspf_extra = ""
-            if "adjusted_diff" in b:
-                rqspf_extra = f"  让球后xG差={b['adjusted_diff']:+.1f}"
-                if "reason" in b:
-                    rqspf_extra += f" ({b['reason']})"
-            ht = b.get("handicap_tip", "")
-            ht_str = ""
-            if ht:
-                ht_str = f"  💡让球: {ht['pick']}"
-            elif "handicap_line" in b:
-                line = b["handicap_line"]
-                if line > 0: ht_str = f"  让{line}球"
-                elif line < 0: ht_str = f"  让{abs(line)}球"
-                else: ht_str = f"  平手"
-            else:
-                mid = b.get("match_id","")
-                hsp = _match_handicap_sp(mid)
-                if hsp:
-                    line = hsp.get("line", 0)
-                    if line > 0: ht_str = f"  💡让球: 受让{line}球"
-                    elif line < 0: ht_str = f"  💡让球: 让{abs(line)}球"
-                    else: ht_str = f"  💡让球: 平手"
-            time = MATCH_SCHEDULE.get(b.get("match_id",""), "")
-            ev_part = b.get("ev_str", "")
-            L.append(f"  {time:<10} {b['match']:<36} → {b['pick']:<14}{extra} 估赔{b['est_odds']}{ht_str}{rqspf_extra}{ev_part}")
-        if detail:
-            L.append(f"  结构: {detail['structure']} | 每单位{detail.get('per_unit_cost','')} × {detail.get('units','')}倍 = {detail.get('actual_bet','')}元")
-            pairs = detail.get("pairs", [])
-            pair_odds = detail.get("pair_odds", "")
-            if pairs:
-                L.append(f"  📋 投注明细 (3串4):")
-                L.append(f"    注① 2串1: {pairs[0] if len(pairs)>0 else '?'}")
-                L.append(f"    注② 2串1: {pairs[1] if len(pairs)>1 else '?'}")
-                L.append(f"    注③ 2串1: {pairs[2] if len(pairs)>2 else '?'}")
-                L.append(f"    注④ 3串1: {' + '.join([b['pick'] for b in plan_dict.get('bets',[])[:3]]) if len(plan_dict.get('bets',[]))>=3 else '?'}")
-            L.append(f"  2串1赔率: {pair_odds}")
-            L.append(f"  3串1赔率: {detail.get('triple_odds','')}")
-            if plan_dict.get("one_miss_return"):
-                L.append(f"  🛡️ 容错: 错1场仍中1注2串1 ≈{plan_dict['one_miss_return']}元")
-        L.append(f"  预估回报: ≈{plan_dict.get('est_return', 0)}元")
-        if plan_dict.get("all_hit_return"):
-            L.append(f"  全中回报: ≈{plan_dict['all_hit_return']}元")
-        L.append(f"  命中条件: {plan_dict.get('condition', '')[:80]}")
-        gc = plan_dict.get("golden_check", "")
-        if gc: L.append(f"  {gc}")
-        note = plan_dict.get("note", "")
-        if note: L.append(f"  💡 {note}")
-        ret = plan_dict.get("est_return", 0)
-        all_ret = plan_dict.get("all_hit_return", ret)
-        total_return += all_ret if isinstance(all_ret, (int, float)) else ret
+        reserve_reason = "按投资组合纪律保留"
 
-    render_tier("conservative", "🛡️")
-    render_tier("rqspf", "⚽")
-    render_tier("balanced", "📊")
-    render_tier("flexi", "🔀")
-    render_tier("aggressive", "🎯")
+    L.append("")
+    L.append("─" * 68)
 
-    # ★ v5.0 单关推荐 (全玩法)
+    # 风险提示
+    L.append(f"\n🛡️ 风险管理:")
+    L.append(f"  · 最大单注暴露: {max((b.stake for b in portfolio.bets), default=0):.0f}元 "
+             f"({max((b.stake for b in portfolio.bets), default=0)/plan['total_budget']*100:.0f}% of budget)")
+    if conc:
+        L.append(f"  · 方向集中度: {conc.get('max_direction','?')}方向{conc.get('max_direction_pct',0)}% "
+                 f"(阈值{RULE['max_concentration_pct']*100:.0f}%)")
+        match_status = "✅安全" if conc.get('max_match_exposure', 0) <= RULE['max_bets_per_match'] else "⚠️超标"
+        L.append(f"  · 比赛集中度: 最多{conc.get('max_match_exposure',0)}注/场 ({match_status})")
+    L.append(f"  · 保留金: {portfolio.reserve}元 — {reserve_reason}")
+
+    # 排除场次
+    if plan.get("risk_notes"):
+        L.append(f"\n⚠️ 排除场次:")
+        for n in plan["risk_notes"][:5]:
+            L.append(f"  • {n}")
+
+    # 单关推荐
     single_bets = plan.get("single_bets", [])
     if single_bets:
-        L.append(f"\n{'─'*70}")
-        L.append(f"🎯 单关推荐 (可单独投注, 命中即兑)")
-        L.append(f"{'─'*70}")
-        for sb in single_bets[:6]:
-            time = MATCH_SCHEDULE.get(sb.get("match_id",""), "")
-            L.append(f"  {time:<10} {sb['match']}")
-            L.append(f"    SPF: {sb['spf_pick']:<14} 概率{sb['spf_prob']}%  赔率{sb.get('spf_odds','?')}")
+        L.append(f"\n{'─'*68}")
+        L.append(f"🎯 单关推荐 (可单独投注)")
+        L.append(f"{'─'*68}")
+        for sb in single_bets[:5]:
+            L.append(f"  {sb['match']}")
+            L.append(f"    SPF: {sb['spf_pick']:<16} 概率{sb['spf_prob']}%  赔率{sb.get('spf_odds','?')}")
             if sb.get("rqspf_pick"):
-                L.append(f"    RQSPF: {sb['rqspf_pick']:<20} 赔率{sb.get('rqspf_odds','?')} ({sb.get('rqspf_confidence','')})")
+                L.append(f"    RQSPF: {sb['rqspf_pick']:<20} 赔率{sb.get('rqspf_odds','?')}")
             if sb.get("tg_pick"):
                 L.append(f"    总进球: {sb['tg_pick']:<16} 赔率{sb.get('tg_odds','?')}")
-            if sb.get("htft_pick"):
-                L.append(f"    半全场: {sb['htft_pick']:<16} 赔率{sb.get('htft_odds','?')}")
-            L.append("")
 
-    # 保留金
-    reserve = plan.get("reserve", {})
-    L.append(f"\n💰 保留金: {reserve.get('amount', 0)}元 ({reserve.get('reason', '')})")
-
-    L.append(f"\n{'═'*70}")
-    L.append(f"💵 全中总回报: ≈{total_return}元")
-    L.append(f"{'═'*70}")
-
-    if plan["risk_notes"]:
-        L.append(f"\n⚠️ 风险提示:")
-        for n in plan["risk_notes"]: L.append(f"  • {n}")
-
-    L.append(f"\n📐 模型自动输出 v5.0 ({now_ts}) | 正EV+全玩法覆盖 | 竞彩90分钟赛果为准 | 仅作参考")
+    L.append("")
+    L.append("═" * 68)
+    L.append(f"📐 竞彩方案 v6.0 ({now_ts}) | 正EV+Kelly+组合优化 | 竞彩90分钟赛果为准 | 仅作参考")
     return "\n".join(L)
+
+
+def _play_type_name(pt: str) -> str:
+    """玩法中文名"""
+    return {
+        "spf": "胜平负",
+        "rqspf": "让球胜平负",
+        "total_goals": "总进球数",
+        "correct_score": "比分",
+        "half_full": "半全场",
+    }.get(pt, pt)
+
+
+# ═══════════════════════════════════════════════════════════════
+# 兼容性别名 (dashboard.py / audit 引用)
+# ═══════════════════════════════════════════════════════════════
+
+# filter_value_bets 保留名义供 audit 引用, 内部不再使用
+def filter_value_bets(classified: list) -> list:
+    """正EV筛选 (v5.0兼容, v6.0已内置在generate_all_opportunities)"""
+    for c in classified:
+        val = compute_value(c["match_id"], c["direction"], c["dir_prob"])
+        c["value"] = val
+        c["is_value"] = val["is_value"]
+        c["ev_score"] = val["ev"]
+    value_bets = [c for c in classified if c.get("is_value")]
+    value_bets.sort(key=lambda x: x.get("ev_score", 0), reverse=True)
+    return value_bets

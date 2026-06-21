@@ -396,37 +396,61 @@ for bdate in sorted_dates:
         try:
             plan = generate_plan(match_ids)
             plan_text = format_lottery(plan).replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
+            # v6.0: 兼容新旧存档格式
+            is_v6_archive = isinstance(plan_archive, dict) and "version" in plan_archive
+            old_text = ""
+            if is_v6_archive:
+                old_entry = plan_archive.get("plans", {}).get(bdate, {})
+                old_text = old_entry.get("text_output", "") if isinstance(old_entry, dict) else old_entry if isinstance(old_entry, str) else ""
+            else:
+                old_text = plan_archive.get(bdate, "")
             # 对比旧方案, 生成变更标注
             diff_note = ""
-            old_text = plan_archive.get(bdate, "")
             if old_text and old_text != plan_text:
                 import re
-                old_ev = re.search(r'平均edge: ([+\-\d.]+%)', old_text)
-                new_ev = re.search(r'平均edge: ([+\-\d.]+%)', plan_text)
+                old_portfolio_ev = re.search(r'组合期望: EV\+([+\-\d.]+)%', old_text)
+                new_portfolio_ev = re.search(r'组合期望: EV\+([+\-\d.]+)%', plan_text)
                 ev_note = ""
-                if old_ev and new_ev:
-                    ev_note = f" EV: {old_ev.group(1)} → {new_ev.group(1)}"
-                # 比对推荐方向行
+                if old_portfolio_ev and new_portfolio_ev:
+                    ev_note = f" 组合EV: {old_portfolio_ev.group(1)}% → {new_portfolio_ev.group(1)}%"
+                elif re.search(r'Edge: ([+\-\d.]+)pp', old_text):
+                    old_ev = re.search(r'Edge: ([+\-\d.]+)pp', old_text)
+                    new_ev_m = re.search(r'Edge: ([+\-\d.]+)pp', plan_text)
+                    if old_ev and new_ev_m:
+                        ev_note = f" Edge: {old_ev.group(1)} → {new_ev_m.group(1)}"
                 old_picks = set()
                 new_picks = set()
                 for line in old_text.split('\n'):
-                    if '→' in line and ('胜' in line or '平局' in line):
+                    if ('#' in line and '·' in line) or ('→' in line and ('胜' in line or '平局' in line)):
                         old_picks.add(line.strip()[:80])
                 for line in plan_text.split('\n'):
-                    if '→' in line and ('胜' in line or '平局' in line):
+                    if ('#' in line and '·' in line) or ('→' in line and ('胜' in line or '平局' in line)):
                         new_picks.add(line.strip()[:80])
                 changed = old_picks - new_picks
                 if changed or ev_note:
                     import datetime
                     now_str = datetime.datetime.now().strftime('%m/%d %H:%M')
                     diff_note = f'<div class="plan-diff">📝 更新 {now_str}: {len(changed)}项调整{ev_note}</div>'
-            # 更新存档
-            plan_archive[bdate] = plan_text
+            # 更新存档 (v6.0结构化格式)
+            if is_v6_archive:
+                plan_archive.setdefault("plans", {})[bdate] = {
+                    "generated_at": datetime.datetime.now().isoformat(),
+                    "text_output": plan_text,
+                }
+            else:
+                plan_archive[bdate] = plan_text
             json.dump(plan_archive, open(PLAN_ARCHIVE, "w"), indent=2, ensure_ascii=False)
             # 把变更标注加到方案前面
             plan_text = diff_note + plan_text
         except:
-            plan_text = plan_archive.get(bdate, "方案生成中...")
+            plan_text = ""
+            if isinstance(plan_archive, dict):
+                if "plans" in plan_archive:
+                    plan_text = plan_archive["plans"].get(bdate, {}).get("text_output", "方案生成中...")
+                elif bdate in plan_archive:
+                    plan_text = plan_archive.get(bdate, "方案生成中...")
+            if not plan_text:
+                plan_text = "方案生成中..."
 
     for bmid, bkickoff in bmatches:
         home, away = bmid.split("-")
