@@ -162,7 +162,25 @@ for sdate in sorted(schedule_by_date.keys(), key=lambda x: (int(x.split('/')[0])
     <div class="matchday-header"><span class="matchday-date">{sdate}</span><span class="matchday-badge">{label}</span><span class="matchday-count">{played_count}/{total_count}</span></div>"""
 
     for match_id, kickoff in matches:
-        home, away = match_id.split("-")
+        parts = match_id.split("-")
+        if len(parts) != 2:
+            # 淘汰赛占位 (R32-1, R16-1, QF-1, SF-1, BRONZE, FINAL 等)
+            if match_id == "BRONZE":
+                hn, an = "季军赛", "TBD"
+            elif match_id == "FINAL":
+                hn, an = "决赛", "TBD"
+            elif match_id.startswith("SF-"):
+                hn, an = f"半决赛{match_id.split('-')[1]}", "TBD"
+            elif match_id.startswith("QF-"):
+                hn, an = f"1/4决赛{match_id.split('-')[1]}", "TBD"
+            elif match_id.startswith("R16-"):
+                hn, an = f"1/8决赛{match_id.split('-')[1]}", "TBD"
+            elif match_id.startswith("R32-"):
+                hn, an = f"1/16决赛{match_id.split('-')[1]}", "TBD"
+            else:
+                continue  # 跳过无法识别的ID
+        else:
+            home, away = parts
         hn = teams.get(home,{}).get("name",home)
         an = teams.get(away,{}).get("name",away)
 
@@ -453,7 +471,10 @@ for bdate in sorted_dates:
                 plan_text = "方案生成中..."
 
     for bmid, bkickoff in bmatches:
-        home, away = bmid.split("-")
+        parts = bmid.split("-")
+        if len(parts) != 2:
+            continue  # 跳过淘汰赛占位符 (无可预测队伍)
+        home, away = parts
         hn = teams.get(home,{}).get("name",home)
         an = teams.get(away,{}).get("name",away)
         played_match = bmid in played_map
@@ -651,7 +672,10 @@ else:
     if upcoming:
         live_now_html = '<div class="hl-card upcoming-hl-card"><div class="hl-card-title">⏰ 即将开赛</div>'
         for mid, d, t in upcoming:
-            home, away = mid.split("-")
+            parts = mid.split("-")
+            if len(parts) != 2:
+                continue  # 跳过淘汰赛占位符
+            home, away = parts
             hn = teams.get(home,{}).get("name",home)
             an = teams.get(away,{}).get("name",away)
             vinfo = venue_tz.get(mid, (-5, ""))
