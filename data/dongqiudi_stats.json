@@ -1,11 +1,11 @@
 {
   "source": "懂球帝 pc.dongqiudi.com",
   "tournament": "2026世界杯",
-  "updated": "2026-06-21",
+  "updated": "2026-06-21T17:10:00",
   "teams": {
     "CAN": {
-      "shots": 32,
-      "shots_on_target": 10,
+      "shots": 45,
+      "shots_on_target": 14,
       "key_passes": 23,
       "errors_lead_goal": 0,
       "box_saves": 1,
@@ -15,7 +15,7 @@
       "offsides": 2
     },
     "SUI": {
-      "shots": 28,
+      "shots": 39,
       "shots_on_target": 14,
       "key_passes": 23,
       "errors_lead_goal": 0,
@@ -26,8 +26,8 @@
       "offsides": 4
     },
     "TUR": {
-      "shots": 26,
-      "shots_on_target": 7,
+      "shots": 62,
+      "shots_on_target": 13,
       "key_passes": 15,
       "errors_lead_goal": 0,
       "box_saves": 2,
@@ -37,8 +37,8 @@
       "offsides": 5
     },
     "ENG": {
-      "shots": 21,
-      "shots_on_target": 8,
+      "shots": 22,
+      "shots_on_target": 11,
       "key_passes": 15,
       "errors_lead_goal": 0,
       "box_saves": 1,
@@ -48,8 +48,8 @@
       "offsides": 0
     },
     "MEX": {
-      "shots": 21,
-      "shots_on_target": 9,
+      "shots": 24,
+      "shots_on_target": 8,
       "key_passes": 12,
       "errors_lead_goal": 0,
       "box_saves": 2,
@@ -59,8 +59,8 @@
       "offsides": 4
     },
     "KOR": {
-      "shots": 21,
-      "shots_on_target": 6,
+      "shots": 24,
+      "shots_on_target": 8,
       "key_passes": 14,
       "errors_lead_goal": 1,
       "box_saves": 4,
@@ -70,8 +70,8 @@
       "offsides": 8
     },
     "GER": {
-      "shots": 20,
-      "shots_on_target": 9,
+      "shots": 42,
+      "shots_on_target": 19,
       "key_passes": 12,
       "errors_lead_goal": 0,
       "box_saves": 0,
@@ -81,7 +81,7 @@
       "offsides": 0
     },
     "ARG": {
-      "shots": 17,
+      "shots": 10,
       "shots_on_target": 6,
       "key_passes": 6,
       "errors_lead_goal": 0,
@@ -92,8 +92,8 @@
       "offsides": 3
     },
     "CZE": {
-      "shots": 16,
-      "shots_on_target": 8,
+      "shots": 21,
+      "shots_on_target": 7,
       "key_passes": 12,
       "errors_lead_goal": 0,
       "box_saves": 5,
@@ -103,8 +103,8 @@
       "offsides": 4
     },
     "IRN": {
-      "shots": 16,
-      "shots_on_target": 5,
+      "shots": 17,
+      "shots_on_target": 4,
       "key_passes": 9,
       "errors_lead_goal": 0,
       "box_saves": 3,
@@ -114,8 +114,8 @@
       "offsides": 2
     },
     "URU": {
-      "shots": 16,
-      "shots_on_target": 6,
+      "shots": 27,
+      "shots_on_target": 10,
       "key_passes": 12,
       "errors_lead_goal": 1,
       "box_saves": 2,
@@ -125,8 +125,8 @@
       "offsides": 6
     },
     "SWE": {
-      "shots": 16,
-      "shots_on_target": 7,
+      "shots": 29,
+      "shots_on_target": 15,
       "key_passes": 10,
       "errors_lead_goal": 0,
       "box_saves": 0,
@@ -136,8 +136,8 @@
       "offsides": 6
     },
     "ESP": {
-      "shots": 15,
-      "shots_on_target": 6,
+      "shots": 27,
+      "shots_on_target": 7,
       "key_passes": 12,
       "errors_lead_goal": 0,
       "box_saves": 1,
@@ -147,8 +147,8 @@
       "offsides": 2
     },
     "MAR": {
-      "shots": 15,
-      "shots_on_target": 4,
+      "shots": 26,
+      "shots_on_target": 5,
       "key_passes": 9,
       "errors_lead_goal": 0,
       "box_saves": 4,
@@ -158,8 +158,8 @@
       "offsides": 1
     },
     "CIV": {
-      "shots": 14,
-      "shots_on_target": 5,
+      "shots": 24,
+      "shots_on_target": 6,
       "key_passes": 12,
       "errors_lead_goal": 0,
       "box_saves": 0,
@@ -169,8 +169,8 @@
       "offsides": 1
     },
     "COL": {
-      "shots": 14,
-      "shots_on_target": 6,
+      "shots": 15,
+      "shots_on_target": 4,
       "key_passes": 9,
       "errors_lead_goal": 1,
       "box_saves": 1,
@@ -180,7 +180,7 @@
       "offsides": 3
     },
     "FRA": {
-      "shots": 13,
+      "shots": 11,
       "shots_on_target": 8,
       "key_passes": 7,
       "errors_lead_goal": 0,
@@ -191,8 +191,8 @@
       "offsides": 1
     },
     "AUT": {
-      "shots": 13,
-      "shots_on_target": 3,
+      "shots": 11,
+      "shots_on_target": 4,
       "key_passes": 2,
       "errors_lead_goal": 0,
       "box_saves": 1,
@@ -202,8 +202,8 @@
       "offsides": 3
     },
     "USA": {
-      "shots": 12,
-      "shots_on_target": 5,
+      "shots": 26,
+      "shots_on_target": 8,
       "key_passes": 9,
       "errors_lead_goal": 0,
       "box_saves": 0,
@@ -213,8 +213,8 @@
       "offsides": 3
     },
     "EGY": {
-      "shots": 12,
-      "shots_on_target": 4,
+      "shots": 14,
+      "shots_on_target": 3,
       "key_passes": 8,
       "errors_lead_goal": 0,
       "box_saves": 3,
@@ -224,8 +224,8 @@
       "offsides": 1
     },
     "JPN": {
-      "shots": 12,
-      "shots_on_target": 4,
+      "shots": 21,
+      "shots_on_target": 8,
       "key_passes": 9,
       "errors_lead_goal": 0,
       "box_saves": 4,
@@ -235,8 +235,8 @@
       "offsides": 1
     },
     "NZL": {
-      "shots": 12,
-      "shots_on_target": 5,
+      "shots": 14,
+      "shots_on_target": 8,
       "key_passes": 7,
       "errors_lead_goal": 0,
       "box_saves": 1,
@@ -246,8 +246,8 @@
       "offsides": 0
     },
     "ECU": {
-      "shots": 12,
-      "shots_on_target": 3,
+      "shots": 39,
+      "shots_on_target": 16,
       "key_passes": 8,
       "errors_lead_goal": 0,
       "box_saves": 1,
@@ -257,8 +257,8 @@
       "offsides": 1
     },
     "NED": {
-      "shots": 11,
-      "shots_on_target": 6,
+      "shots": 20,
+      "shots_on_target": 13,
       "key_passes": 10,
       "errors_lead_goal": 0,
       "box_saves": 1,
@@ -279,8 +279,8 @@
       "offsides": 0
     },
     "BRA": {
-      "shots": 10,
-      "shots_on_target": 5,
+      "shots": 20,
+      "shots_on_target": 10,
       "key_passes": 9,
       "errors_lead_goal": 0,
       "box_saves": 2,
@@ -290,8 +290,8 @@
       "offsides": 8
     },
     "HAI": {
-      "shots": 10,
-      "shots_on_target": 3,
+      "shots": 22,
+      "shots_on_target": 5,
       "key_passes": 6,
       "errors_lead_goal": 0,
       "box_saves": 1,
@@ -313,7 +313,7 @@
     },
     "CRC": {
       "shots": 10,
-      "shots_on_target": 3,
+      "shots_on_target": 5,
       "key_passes": 6,
       "errors_lead_goal": 0,
       "box_saves": 7,
@@ -323,8 +323,8 @@
       "offsides": 1
     },
     "POR": {
-      "shots": 9,
-      "shots_on_target": 3,
+      "shots": 7,
+      "shots_on_target": 1,
       "key_passes": 6,
       "errors_lead_goal": 0,
       "box_saves": 0,
@@ -334,8 +334,8 @@
       "offsides": 3
     },
     "BIH": {
-      "shots": 9,
-      "shots_on_target": 4,
+      "shots": 13,
+      "shots_on_target": 6,
       "key_passes": 11,
       "errors_lead_goal": 0,
       "box_saves": 2,
@@ -345,8 +345,8 @@
       "offsides": 1
     },
     "PAR": {
-      "shots": 9,
-      "shots_on_target": 2,
+      "shots": 16,
+      "shots_on_target": 3,
       "key_passes": 3,
       "errors_lead_goal": 0,
       "box_saves": 3,
@@ -356,8 +356,8 @@
       "offsides": 4
     },
     "QAT": {
-      "shots": 9,
-      "shots_on_target": 4,
+      "shots": 8,
+      "shots_on_target": 3,
       "key_passes": 5,
       "errors_lead_goal": 2,
       "box_saves": 9,
@@ -367,8 +367,8 @@
       "offsides": 1
     },
     "RSA": {
-      "shots": 9,
-      "shots_on_target": 4,
+      "shots": 20,
+      "shots_on_target": 6,
       "key_passes": 10,
       "errors_lead_goal": 1,
       "box_saves": 2,
@@ -378,8 +378,8 @@
       "offsides": 4
     },
     "TUN": {
-      "shots": 9,
-      "shots_on_target": 3,
+      "shots": 8,
+      "shots_on_target": 2,
       "key_passes": 5,
       "errors_lead_goal": 3,
       "box_saves": 1,
@@ -389,7 +389,7 @@
       "offsides": 7
     },
     "NOR": {
-      "shots": 8,
+      "shots": 12,
       "shots_on_target": 5,
       "key_passes": 4,
       "errors_lead_goal": 0,
@@ -400,8 +400,8 @@
       "offsides": 0
     },
     "CPV": {
-      "shots": 8,
-      "shots_on_target": 2,
+      "shots": 6,
+      "shots_on_target": 1,
       "key_passes": 5,
       "errors_lead_goal": 0,
       "box_saves": 6,
@@ -423,7 +423,7 @@
     },
     "UZB": {
       "shots": 8,
-      "shots_on_target": 3,
+      "shots_on_target": 2,
       "key_passes": 3,
       "errors_lead_goal": 1,
       "box_saves": 0,
@@ -433,8 +433,8 @@
       "offsides": 0
     },
     "IRQ": {
-      "shots": 8,
-      "shots_on_target": 2,
+      "shots": 11,
+      "shots_on_target": 1,
       "key_passes": 5,
       "errors_lead_goal": 1,
       "box_saves": 2,
@@ -444,7 +444,7 @@
       "offsides": 1
     },
     "PAN": {
-      "shots": 7,
+      "shots": 11,
       "shots_on_target": 4,
       "key_passes": 5,
       "errors_lead_goal": 0,
@@ -466,7 +466,7 @@
       "offsides": 1
     },
     "GHA": {
-      "shots": 7,
+      "shots": 8,
       "shots_on_target": 2,
       "key_passes": 3,
       "errors_lead_goal": 0,
@@ -477,8 +477,8 @@
       "offsides": 4
     },
     "JOR": {
-      "shots": 7,
-      "shots_on_target": 2,
+      "shots": 11,
+      "shots_on_target": 4,
       "key_passes": 5,
       "errors_lead_goal": 0,
       "box_saves": 1,
@@ -488,8 +488,8 @@
       "offsides": 1
     },
     "AUS": {
-      "shots": 6,
-      "shots_on_target": 2,
+      "shots": 14,
+      "shots_on_target": 6,
       "key_passes": 3,
       "errors_lead_goal": 0,
       "box_saves": 3,
@@ -499,8 +499,8 @@
       "offsides": 1
     },
     "CUW": {
-      "shots": 6,
-      "shots_on_target": 2,
+      "shots": 18,
+      "shots_on_target": 5,
       "key_passes": 4,
       "errors_lead_goal": 1,
       "box_saves": 4,
@@ -521,8 +521,8 @@
       "offsides": 0
     },
     "SEN": {
-      "shots": 5,
-      "shots_on_target": 3,
+      "shots": 6,
+      "shots_on_target": 2,
       "key_passes": 4,
       "errors_lead_goal": 0,
       "box_saves": 4,
@@ -530,6 +530,10 @@
       "saves": 5,
       "pass_accuracy": 85,
       "offsides": 3
+    },
+    "SCO": {
+      "shots": 15,
+      "shots_on_target": 2
     }
   },
   "top_players": {
