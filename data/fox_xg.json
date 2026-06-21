@@ -1,0 +1,378 @@
+{
+  "GER": {
+    "xg": 6.0,
+    "gf": 9.0,
+    "ga": 6.0,
+    "gp": 2,
+    "xg_per_game": 3.0,
+    "xg_diff": 3.0
+  },
+  "SUI": {
+    "xg": 5.7,
+    "gf": 5.0,
+    "ga": 4.0,
+    "gp": 2,
+    "xg_per_game": 2.85,
+    "xg_diff": -0.7
+  },
+  "CAN": {
+    "xg": 5.3,
+    "gf": 7.0,
+    "ga": 4.0,
+    "gp": 2,
+    "xg_per_game": 2.65,
+    "xg_diff": 1.7
+  },
+  "TUR": {
+    "xg": 4.1,
+    "gf": 0.0,
+    "ga": 0.0,
+    "gp": 2,
+    "xg_per_game": 2.05,
+    "xg_diff": -4.1
+  },
+  "NED": {
+    "xg": 3.3,
+    "gf": 7.0,
+    "ga": 5.0,
+    "gp": 2,
+    "xg_per_game": 1.65,
+    "xg_diff": 3.7
+  },
+  "ENG": {
+    "xg": 2.9,
+    "gf": 4.0,
+    "ga": 2.0,
+    "gp": 1,
+    "xg_per_game": 2.9,
+    "xg_diff": 1.1
+  },
+  "KOR": {
+    "xg": 2.8,
+    "gf": 2.0,
+    "ga": 2.0,
+    "gp": 2,
+    "xg_per_game": 1.4,
+    "xg_diff": -0.8
+  },
+  "SWE": {
+    "xg": 2.7,
+    "gf": 6.0,
+    "ga": 4.0,
+    "gp": 2,
+    "xg_per_game": 1.35,
+    "xg_diff": 3.3
+  },
+  "MAR": {
+    "xg": 2.5,
+    "gf": 2.0,
+    "ga": 0.0,
+    "gp": 2,
+    "xg_per_game": 1.25,
+    "xg_diff": -0.5
+  },
+  "ECU": {
+    "xg": 2.4,
+    "gf": 0.0,
+    "ga": 0.0,
+    "gp": 2,
+    "xg_per_game": 1.2,
+    "xg_diff": -2.4
+  },
+  "CIV": {
+    "xg": 2.3,
+    "gf": 2.0,
+    "ga": 1.0,
+    "gp": 2,
+    "xg_per_game": 1.15,
+    "xg_diff": -0.3
+  },
+  "NOR": {
+    "xg": 2.2,
+    "gf": 4.0,
+    "ga": 2.0,
+    "gp": 1,
+    "xg_per_game": 2.2,
+    "xg_diff": 1.8
+  },
+  "SCO": {
+    "xg": 2.1,
+    "gf": 1.0,
+    "ga": 0.0,
+    "gp": 2,
+    "xg_per_game": 1.05,
+    "xg_diff": -1.1
+  },
+  "BRA": {
+    "xg": 2.0,
+    "gf": 4.0,
+    "ga": 0.0,
+    "gp": 2,
+    "xg_per_game": 1.0,
+    "xg_diff": 2.0
+  },
+  "USA": {
+    "xg": 2.0,
+    "gf": 6.0,
+    "ga": 1.0,
+    "gp": 2,
+    "xg_per_game": 1.0,
+    "xg_diff": 4.0
+  },
+  "MEX": {
+    "xg": 2.0,
+    "gf": 3.0,
+    "ga": 2.0,
+    "gp": 2,
+    "xg_per_game": 1.0,
+    "xg_diff": 1.0
+  },
+  "JPN": {
+    "xg": 1.9,
+    "gf": 6.0,
+    "ga": 4.0,
+    "gp": 2,
+    "xg_per_game": 0.95,
+    "xg_diff": 4.1
+  },
+  "FRA": {
+    "xg": 1.9,
+    "gf": 3.0,
+    "ga": 3.0,
+    "gp": 1,
+    "xg_per_game": 1.9,
+    "xg_diff": 1.1
+  },
+  "URU": {
+    "xg": 1.9,
+    "gf": 1.0,
+    "ga": 1.0,
+    "gp": 1,
+    "xg_per_game": 1.9,
+    "xg_diff": -0.9
+  },
+  "AUT": {
+    "xg": 1.6,
+    "gf": 3.0,
+    "ga": 2.0,
+    "gp": 1,
+    "xg_per_game": 1.6,
+    "xg_diff": 1.4
+  },
+  "RSA": {
+    "xg": 1.6,
+    "gf": 1.0,
+    "ga": 1.0,
+    "gp": 2,
+    "xg_per_game": 0.8,
+    "xg_diff": -0.6
+  },
+  "ESP": {
+    "xg": 1.5,
+    "gf": 0.0,
+    "ga": 0.0,
+    "gp": 1,
+    "xg_per_game": 1.5,
+    "xg_diff": -1.5
+  },
+  "CZE": {
+    "xg": 1.5,
+    "gf": 2.0,
+    "ga": 1.0,
+    "gp": 2,
+    "xg_per_game": 0.75,
+    "xg_diff": 0.5
+  },
+  "BIH": {
+    "xg": 1.5,
+    "gf": 2.0,
+    "ga": 1.0,
+    "gp": 2,
+    "xg_per_game": 0.75,
+    "xg_diff": 0.5
+  },
+  "IRN": {
+    "xg": 1.5,
+    "gf": 2.0,
+    "ga": 1.0,
+    "gp": 1,
+    "xg_per_game": 1.5,
+    "xg_diff": 0.5
+  },
+  "HAI": {
+    "xg": 1.2,
+    "gf": 0.0,
+    "ga": 0.0,
+    "gp": 2,
+    "xg_per_game": 0.6,
+    "xg_diff": -1.2
+  },
+  "AUS": {
+    "xg": 1.2,
+    "gf": 2.0,
+    "ga": 1.0,
+    "gp": 2,
+    "xg_per_game": 0.6,
+    "xg_diff": 0.8
+  },
+  "GHA": {
+    "xg": 1.1,
+    "gf": 1.0,
+    "ga": 1.0,
+    "gp": 1,
+    "xg_per_game": 1.1,
+    "xg_diff": -0.1
+  },
+  "ARG": {
+    "xg": 1.1,
+    "gf": 3.0,
+    "ga": 2.0,
+    "gp": 1,
+    "xg_per_game": 1.1,
+    "xg_diff": 1.9
+  },
+  "COL": {
+    "xg": 1.0,
+    "gf": 3.0,
+    "ga": 2.0,
+    "gp": 1,
+    "xg_per_game": 1.0,
+    "xg_diff": 2.0
+  },
+  "PAR": {
+    "xg": 1.0,
+    "gf": 2.0,
+    "ga": 1.0,
+    "gp": 2,
+    "xg_per_game": 0.5,
+    "xg_diff": 1.0
+  },
+  "KSA": {
+    "xg": 1.0,
+    "gf": 1.0,
+    "ga": 0.0,
+    "gp": 1,
+    "xg_per_game": 1.0,
+    "xg_diff": 0.0
+  },
+  "EGY": {
+    "xg": 1.0,
+    "gf": 1.0,
+    "ga": 0.0,
+    "gp": 1,
+    "xg_per_game": 1.0,
+    "xg_diff": 0.0
+  },
+  "JOR": {
+    "xg": 1.0,
+    "gf": 1.0,
+    "ga": 1.0,
+    "gp": 1,
+    "xg_per_game": 1.0,
+    "xg_diff": 0.0
+  },
+  "CRC": {
+    "xg": 0.9,
+    "gf": 2.0,
+    "ga": 0.0,
+    "gp": 1,
+    "xg_per_game": 0.9,
+    "xg_diff": 1.1
+  },
+  "NZL": {
+    "xg": 0.8,
+    "gf": 2.0,
+    "ga": 1.0,
+    "gp": 1,
+    "xg_per_game": 0.8,
+    "xg_diff": 1.2
+  },
+  "BEL": {
+    "xg": 0.8,
+    "gf": 1.0,
+    "ga": 1.0,
+    "gp": 1,
+    "xg_per_game": 0.8,
+    "xg_diff": 0.2
+  },
+  "PAN": {
+    "xg": 0.7,
+    "gf": 0.0,
+    "ga": 0.0,
+    "gp": 1,
+    "xg_per_game": 0.7,
+    "xg_diff": -0.7
+  },
+  "UZB": {
+    "xg": 0.7,
+    "gf": 1.0,
+    "ga": 1.0,
+    "gp": 1,
+    "xg_per_game": 0.7,
+    "xg_diff": 0.3
+  },
+  "QAT": {
+    "xg": 0.7,
+    "gf": 1.0,
+    "ga": 1.0,
+    "gp": 2,
+    "xg_per_game": 0.35,
+    "xg_diff": 0.3
+  },
+  "POR": {
+    "xg": 0.7,
+    "gf": 1.0,
+    "ga": 0.0,
+    "gp": 1,
+    "xg_per_game": 0.7,
+    "xg_diff": 0.3
+  },
+  "IRQ": {
+    "xg": 0.7,
+    "gf": 1.0,
+    "ga": 0.0,
+    "gp": 1,
+    "xg_per_game": 0.7,
+    "xg_diff": 0.3
+  },
+  "COD": {
+    "xg": 0.5,
+    "gf": 1.0,
+    "ga": 0.0,
+    "gp": 1,
+    "xg_per_game": 0.5,
+    "xg_diff": 0.5
+  },
+  "TUN": {
+    "xg": 0.5,
+    "gf": 1.0,
+    "ga": 0.0,
+    "gp": 2,
+    "xg_per_game": 0.25,
+    "xg_diff": 0.5
+  },
+  "CPV": {
+    "xg": 0.4,
+    "gf": 0.0,
+    "ga": 0.0,
+    "gp": 1,
+    "xg_per_game": 0.4,
+    "xg_diff": -0.4
+  },
+  "SEN": {
+    "xg": 0.4,
+    "gf": 1.0,
+    "ga": 1.0,
+    "gp": 1,
+    "xg_per_game": 0.4,
+    "xg_diff": 0.6
+  },
+  "ALG": {
+    "xg": 0.3,
+    "gf": 0.0,
+    "ga": 0.0,
+    "gp": 1,
+    "xg_per_game": 0.3,
+    "xg_diff": -0.3
+  }
+}
