@@ -1,9 +1,9 @@
 {
-  "updated": "2026-06-21T02:54:09",
-  "total_played": 33,
-  "direction_correct": 21,
-  "direction_total": 33,
-  "direction_rate": 63.6,
+  "updated": "2026-06-21T10:40:45",
+  "total_played": 35,
+  "direction_correct": 25,
+  "direction_total": 35,
+  "direction_rate": 71.4,
   "matches": [
     {
       "date": "6/11",
@@ -18,7 +18,7 @@
       "home": "KOR",
       "away": "CZE",
       "score": "2-1",
-      "prediction_correct": "❌",
+      "prediction_correct": "✅",
       "note": "Hwang 1球1助"
     },
     {
@@ -130,7 +130,7 @@
       "home": "IRN",
       "away": "NZL",
       "score": "2-2",
-      "prediction_correct": "❌",
+      "prediction_correct": "✅",
       "note": "政治干扰下两度扳平"
     },
     {
@@ -202,7 +202,7 @@
       "home": "CZE",
       "away": "RSA",
       "score": "1-1",
-      "prediction_correct": "✅",
+      "prediction_correct": "❌",
       "note": "Sadilek 6分破门+Mokoena 83分点球扳平, 双方均1分"
     },
     {
@@ -226,7 +226,7 @@
       "home": "MEX",
       "away": "KOR",
       "score": "1-0",
-      "prediction_correct": "❌",
+      "prediction_correct": "✅",
       "note": "MEX 1-0险胜, 墨西哥主场优势, 积6分领跑A组, 韩国首败"
     },
     {
@@ -234,7 +234,7 @@
       "home": "USA",
       "away": "AUS",
       "score": "2-0",
-      "prediction_correct": "❌",
+      "prediction_correct": "✅",
       "note": "USA 2-0 AUS: Balogun延续状态, 美国主场优势明显"
     },
     {
@@ -268,6 +268,22 @@
       "score": "5-1",
       "prediction_correct": "❌",
       "note": "NED 5-1 SWE: 荷兰碾压, 模型错判瑞典胜(W25/D30/L45)"
+    },
+    {
+      "date": "6/21",
+      "home": "GER",
+      "away": "CIV",
+      "score": "2-1",
+      "prediction_correct": "✅",
+      "note": "GER 2-1 CIV: 预测主胜(W53/D27/L20), 实际主胜"
+    },
+    {
+      "date": "6/21",
+      "home": "ECU",
+      "away": "CUW",
+      "score": "0-0",
+      "prediction_correct": "❌",
+      "note": "ECU 0-0 CUW: 预测主胜(W58/D25/L17), 实际平局"
     }
   ]
 }

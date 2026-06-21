@@ -90,7 +90,7 @@ def calibrate(verbose=True):
     if goal_ratio > 1.20:
         factor = min(1.20, goal_ratio * 0.85 + 0.15)
         old_xg = calib.get("baseline_xg", SRC_XG)
-        new_xg = round(SRC_XG * factor, 2)
+        new_xg = round(min(2.0, SRC_XG * factor), 2)
         calib["baseline_xg"] = new_xg
         adjustments.append({
             "param": "BASELINE_XG", "old": old_xg, "new": new_xg,
@@ -99,7 +99,7 @@ def calibrate(verbose=True):
     elif goal_ratio < 0.80:
         factor = max(0.85, goal_ratio)
         old_xg = calib.get("baseline_xg", SRC_XG)
-        new_xg = round(SRC_XG * factor, 2)
+        new_xg = round(min(2.0, SRC_XG * factor), 2)
         calib["baseline_xg"] = new_xg
         adjustments.append({
             "param": "BASELINE_XG", "old": old_xg, "new": new_xg,
