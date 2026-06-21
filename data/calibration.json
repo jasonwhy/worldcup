@@ -1,0 +1,10 @@
+{
+  "baseline_xg": 2.0,
+  "draw_bonus": {
+    "group_1": 1.8,
+    "group_2": 1.42
+  },
+  "thresholds": {
+    "conservative_min_delta": 8
+  }
+}
