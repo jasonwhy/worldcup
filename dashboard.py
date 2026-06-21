@@ -86,9 +86,8 @@ for tid in teams:
 rankings.sort(key=lambda x: x[2], reverse=True)
 
 # ============================================================
-# PANEL 1: 赛程总览 (Schedule)
+# PANEL 1: 赛程晋级图 (Tournament Bracket)
 # ============================================================
-# Build live score map
 live_map = {}
 for lm in live_scores.get("matches_in_progress", []):
     live_map[lm["match_id"]] = lm
@@ -97,7 +96,79 @@ played_map = {}
 for m in results["matches"]:
     played_map[f"{m['home']}-{m['away']}"] = m
 
-# Group all scheduled matches by date
+# ── 小组赛12组积分表 ──
+def flag_team(tid):
+    name = teams.get(tid,{}).get("name",tid)
+    for k in F:
+        if name == k: return f"{F[k]} {name}"
+    return f"🏳️ {name}"
+
+groups_html = ""
+for gid in sorted(groups.keys()):
+    g = groups[gid]
+    st = sorted(g["standings"].items(), key=lambda x: (-x[1]["p"], -x[1]["gd"], -x[1]["gf"]))
+    rows = ""
+    for i, (tid, s) in enumerate(st):
+        cls = "advance" if i < 2 else ("third" if i == 2 else "out")
+        gp = s.get("p",0)
+        gd_val = s.get("gd",0)
+        rows += f'<tr><td class="{cls}">{i+1}</td><td class="{cls}">{flag_team(tid)}</td><td>{gp}分</td><td>{gd_val:+d}</td></tr>'
+    groups_html += f"""<div class="group-mini">
+    <h4>Group {gid}</h4>
+    <table><thead><tr><th>#</th><th>球队</th><th>分</th><th>GD</th></tr></thead><tbody>{rows}</tbody></table>
+    </div>"""
+
+# ── 淘汰赛 bracket ──
+# R32 slots: 根据FIFA官方对阵表
+R32_SLOTS = [
+    ("M73","2A vs 2B"), ("M74","1E vs 3A/B/C/D/F"), ("M75","1F vs 2C"), ("M76","1C vs 2F"),
+    ("M77","1I vs 3C/D/F/G/H"), ("M78","2E vs 2I"), ("M79","1A vs 3C/E/F/H/I"), ("M80","1L vs 3E/H/I/J/K"),
+    ("M81","1D vs 3B/E/F/I/J"), ("M82","1G vs 3A/E/H/I/J"), ("M83","2K vs 2L"), ("M84","1H vs 2J"),
+    ("M85","1B vs 3E/F/G/I/J"), ("M86","1J vs 2H"), ("M87","1K vs 3D/E/I/J/L"), ("M88","2D vs 2G"),
+]
+
+# 各轮次定义
+ROUNDS = [
+    ("R32", "1/16决赛", R32_SLOTS),
+    ("R16", "1/8决赛", [("M89","W74 vs W77"),("M90","W73 vs W75"),("M91","W76 vs W78"),("M92","W79 vs W80"),
+                         ("M93","W83 vs W84"),("M94","W81 vs W82"),("M95","W86 vs W88"),("M96","W85 vs W87")]),
+    ("QF", "1/4决赛", [("M97","W89 vs W90"),("M98","W93 vs W94"),("M99","W91 vs W92"),("M100","W95 vs W96")]),
+    ("SF", "半决赛", [("M101","W97 vs W98"),("M102","W99 vs W100")]),
+    ("F", "决赛/季军", [("FINAL","W101 vs W102"),("BRONZE","L101 vs L102")]),
+]
+
+bracket_html = ""
+for round_key, round_name, slots in ROUNDS:
+    cls_w = f"br-{round_key.lower()}" if round_key in ("R32","R16","QF","SF") else "br-f"
+    col = f'<div class="bracket-round {cls_w}"><div class="bracket-round-title">{round_name}</div>'
+    for slot_id, slot_label in slots:
+        # Check if played or live
+        if slot_id in played_map:
+            m = played_map[slot_id]
+            sc = m["score"]
+            home_n = teams.get(m["home"],{}).get("name", m["home"])
+            away_n = teams.get(m["away"],{}).get("name", m["away"])
+            hg, ag = sc.split("-")
+            h_cls = "b-winner" if int(hg) > int(ag) else ""
+            a_cls = "b-winner" if int(ag) > int(hg) else ""
+            col += f"""<div class="bracket-match played">
+            <div class="b-team"><span class="{h_cls}">{F.get(home_n,'')} {home_n}</span><span class="b-score">{hg}</span></div>
+            <div class="b-team"><span class="{a_cls}">{F.get(away_n,'')} {away_n}</span><span class="b-score">{ag}</span></div>
+            <div class="b-time">#{slot_id}</div></div>"""
+        elif slot_id in live_map:
+            lm = live_map[slot_id]
+            col += f"""<div class="bracket-match live">
+            <div class="b-team">{F.get(teams.get(lm.get('home',''),{}).get('name',''),'')} {teams.get(lm.get('home',''),{}).get('name','?')} <span class="b-score">{lm.get('home_goals',0)}</span></div>
+            <div class="b-team">{F.get(teams.get(lm.get('away',''),{}).get('name',''),'')} {teams.get(lm.get('away',''),{}).get('name','?')} <span class="b-score">{lm.get('away_goals',0)}</span></div>
+            <div class="b-time">🔴 {lm.get('minute','')}'</div></div>"""
+        else:
+            col += f"""<div class="bracket-match">
+            <div class="b-vs">{slot_label}</div>
+            <div class="b-time">#{slot_id}</div></div>"""
+    col += "</div>"
+    bracket_html += col
+
+# ── 按日期赛程列表 (折叠, 放在bracket下方) ──
 venue_tz = {
     # Match: (UTC_offset_in_June, venue_city)
     "MEX-RSA": (-6, "Mexico City"), "KOR-CZE": (-6, "Mexico City"),
@@ -791,6 +862,34 @@ a{color:var(--blue);text-decoration:none}
 .pred-item.lose{background:var(--red-bg);color:var(--red)}
 .pred-score{font-size:12px;font-weight:700;color:var(--accent);margin-left:auto}
 
+/* ── Tournament Bracket ── */
+.bracket-scroll{overflow-x:auto;padding-bottom:16px;-webkit-overflow-scrolling:touch}
+.bracket-container{display:flex;gap:8px;min-width:900px;padding:8px 0}
+.bracket-round{display:flex;flex-direction:column;gap:4px;min-width:130px;flex-shrink:0}
+.bracket-round-title{font-size:10px;font-weight:700;color:var(--accent);text-align:center;padding:4px 0;white-space:nowrap}
+.bracket-match{background:var(--bg-card);border-radius:6px;padding:6px 8px;border-left:3px solid var(--border);font-size:10px;position:relative;min-height:44px;display:flex;flex-direction:column;justify-content:center}
+.bracket-match.played{border-left-color:var(--green)}
+.bracket-match.live{border-left-color:var(--red);animation:live-glow 2s infinite}
+.bracket-match .b-team{display:flex;align-items:center;gap:3px;padding:1px 0}
+.bracket-match .b-score{font-weight:800;color:var(--accent);font-family:var(--font-mono);margin-left:auto;font-size:11px}
+.bracket-match .b-winner{color:var(--green);font-weight:700}
+.bracket-match .b-vs{color:var(--text-muted);font-size:8px;text-align:center}
+.bracket-match .b-time{font-size:8px;color:var(--text-muted)}
+.bracket-match .b-pred{font-size:9px;color:var(--blue)}
+/* Round-specific widths */
+.br-r32{min-width:135px}.br-r16{min-width:130px}.br-qf{min-width:120px}.br-sf{min-width:110px}.br-f{min-width:105px}
+
+/* Group Stage Grid */
+.groups-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:16px}
+.group-mini{background:var(--bg-card);border-radius:8px;padding:10px 12px;border-top:3px solid var(--accent)}
+.group-mini h4{font-size:12px;color:var(--accent);margin:0 0 6px 0}
+.group-mini table{width:100%;font-size:10px;border-collapse:collapse}
+.group-mini th{color:var(--text-muted);font-weight:500;font-size:9px;padding:2px 4px;text-align:left}
+.group-mini td{padding:2px 4px;border-bottom:1px solid var(--border)}
+.group-mini .advance{color:var(--green);font-weight:700}
+.group-mini .third{color:var(--amber)}
+.group-mini .out{color:var(--text-muted)}
+
 /* Tables */
 .data-table{width:100%;border-collapse:collapse;font-size:11px;margin:6px 0}
 .data-table th{background:var(--bg-secondary);padding:8px 6px;text-align:left;color:var(--text-secondary);font-weight:600;border-bottom:2px solid var(--border);white-space:nowrap;font-size:10px;text-transform:uppercase;letter-spacing:.5px}
@@ -989,13 +1088,26 @@ html = f"""<!DOCTYPE html><html lang="zh"><head><meta charset="UTF-8"><meta name
   </div>
 </div>
 
-<!-- PANEL 1: 赛程总览 -->
+<!-- PANEL 1: 赛程晋级图 -->
 <div id="schedule" class="panel">
   <div style="margin-bottom:12px">
-    <h2 style="font-size:16px;color:var(--accent);margin-bottom:4px">🏟️ 赛程总览</h2>
-    <p style="font-size:10px;color:var(--text-secondary)">已完赛显示比分+预测对错 · 待赛显示AI预测 · 实时更新</p>
+    <h2 style="font-size:16px;color:var(--accent);margin-bottom:4px">🏟️ 赛程晋级图</h2>
+    <p style="font-size:10px;color:var(--text-secondary)">小组赛积分 → 淘汰赛对阵 · 实时更新 · 横向滚动查看完整赛程</p>
   </div>
-  {schedule_rows}
+  <!-- 小组赛积分 -->
+  <h3 style="font-size:13px;color:var(--accent);margin:16px 0 8px 0">📋 小组赛积分</h3>
+  <div class="groups-grid">{groups_html}</div>
+  <!-- 淘汰赛对阵 -->
+  <h3 style="font-size:13px;color:var(--accent);margin:16px 0 8px 0">🏆 淘汰赛对阵</h3>
+  <div class="bracket-scroll">
+    <div class="bracket-container">{bracket_html}</div>
+  </div>
+  <p style="font-size:9px;color:var(--text-muted);margin-top:4px">每组前2名+8个最佳第3名晋级32强 · 绿色=已赛 · 红色=直播中</p>
+  <!-- 按日期赛程(折叠) -->
+  <details style="margin-top:20px">
+    <summary style="cursor:pointer;font-size:12px;color:var(--blue);font-weight:600">📅 按日期查看完整赛程</summary>
+    <div style="margin-top:8px">{schedule_rows}</div>
+  </details>
 </div>
 
 <!-- PANEL 2: 赛果回测 -->

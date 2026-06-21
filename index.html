@@ -83,6 +83,34 @@ a{color:var(--blue);text-decoration:none}
 .pred-item.lose{background:var(--red-bg);color:var(--red)}
 .pred-score{font-size:12px;font-weight:700;color:var(--accent);margin-left:auto}
 
+/* ── Tournament Bracket ── */
+.bracket-scroll{overflow-x:auto;padding-bottom:16px;-webkit-overflow-scrolling:touch}
+.bracket-container{display:flex;gap:8px;min-width:900px;padding:8px 0}
+.bracket-round{display:flex;flex-direction:column;gap:4px;min-width:130px;flex-shrink:0}
+.bracket-round-title{font-size:10px;font-weight:700;color:var(--accent);text-align:center;padding:4px 0;white-space:nowrap}
+.bracket-match{background:var(--bg-card);border-radius:6px;padding:6px 8px;border-left:3px solid var(--border);font-size:10px;position:relative;min-height:44px;display:flex;flex-direction:column;justify-content:center}
+.bracket-match.played{border-left-color:var(--green)}
+.bracket-match.live{border-left-color:var(--red);animation:live-glow 2s infinite}
+.bracket-match .b-team{display:flex;align-items:center;gap:3px;padding:1px 0}
+.bracket-match .b-score{font-weight:800;color:var(--accent);font-family:var(--font-mono);margin-left:auto;font-size:11px}
+.bracket-match .b-winner{color:var(--green);font-weight:700}
+.bracket-match .b-vs{color:var(--text-muted);font-size:8px;text-align:center}
+.bracket-match .b-time{font-size:8px;color:var(--text-muted)}
+.bracket-match .b-pred{font-size:9px;color:var(--blue)}
+/* Round-specific widths */
+.br-r32{min-width:135px}.br-r16{min-width:130px}.br-qf{min-width:120px}.br-sf{min-width:110px}.br-f{min-width:105px}
+
+/* Group Stage Grid */
+.groups-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:16px}
+.group-mini{background:var(--bg-card);border-radius:8px;padding:10px 12px;border-top:3px solid var(--accent)}
+.group-mini h4{font-size:12px;color:var(--accent);margin:0 0 6px 0}
+.group-mini table{width:100%;font-size:10px;border-collapse:collapse}
+.group-mini th{color:var(--text-muted);font-weight:500;font-size:9px;padding:2px 4px;text-align:left}
+.group-mini td{padding:2px 4px;border-bottom:1px solid var(--border)}
+.group-mini .advance{color:var(--green);font-weight:700}
+.group-mini .third{color:var(--amber)}
+.group-mini .out{color:var(--text-muted)}
+
 /* Tables */
 .data-table{width:100%;border-collapse:collapse;font-size:11px;margin:6px 0}
 .data-table th{background:var(--bg-secondary);padding:8px 6px;text-align:left;color:var(--text-secondary);font-weight:600;border-bottom:2px solid var(--border);white-space:nowrap;font-size:10px;text-transform:uppercase;letter-spacing:.5px}
@@ -369,13 +397,125 @@ a{color:var(--blue);text-decoration:none}
   </div>
 </div>
 
-<!-- PANEL 1: 赛程总览 -->
+<!-- PANEL 1: 赛程晋级图 -->
 <div id="schedule" class="panel">
   <div style="margin-bottom:12px">
-    <h2 style="font-size:16px;color:var(--accent);margin-bottom:4px">🏟️ 赛程总览</h2>
-    <p style="font-size:10px;color:var(--text-secondary)">已完赛显示比分+预测对错 · 待赛显示AI预测 · 实时更新</p>
+    <h2 style="font-size:16px;color:var(--accent);margin-bottom:4px">🏟️ 赛程晋级图</h2>
+    <p style="font-size:10px;color:var(--text-secondary)">小组赛积分 → 淘汰赛对阵 · 实时更新 · 横向滚动查看完整赛程</p>
   </div>
-  <div class="matchday-group">
+  <!-- 小组赛积分 -->
+  <h3 style="font-size:13px;color:var(--accent);margin:16px 0 8px 0">📋 小组赛积分</h3>
+  <div class="groups-grid"><div class="group-mini">
+    <h4>Group A</h4>
+    <table><thead><tr><th>#</th><th>球队</th><th>分</th><th>GD</th></tr></thead><tbody><tr><td class="advance">1</td><td class="advance">🇲🇽 Mexico</td><td>6分</td><td>+3</td></tr><tr><td class="advance">2</td><td class="advance">🇰🇷 South Korea</td><td>3分</td><td>+0</td></tr><tr><td class="third">3</td><td class="third">🇨🇿 Czechia</td><td>1分</td><td>+0</td></tr><tr><td class="out">4</td><td class="out">🇿🇦 South Africa</td><td>1分</td><td>-2</td></tr></tbody></table>
+    </div><div class="group-mini">
+    <h4>Group B</h4>
+    <table><thead><tr><th>#</th><th>球队</th><th>分</th><th>GD</th></tr></thead><tbody><tr><td class="advance">1</td><td class="advance">🇨🇦 Canada</td><td>4分</td><td>+6</td></tr><tr><td class="advance">2</td><td class="advance">🇨🇭 Switzerland</td><td>4分</td><td>+3</td></tr><tr><td class="third">3</td><td class="third">🇧🇦 Bosnia-Herzegovina</td><td>1分</td><td>-3</td></tr><tr><td class="out">4</td><td class="out">🇶🇦 Qatar</td><td>1分</td><td>-6</td></tr></tbody></table>
+    </div><div class="group-mini">
+    <h4>Group C</h4>
+    <table><thead><tr><th>#</th><th>球队</th><th>分</th><th>GD</th></tr></thead><tbody><tr><td class="advance">1</td><td class="advance">🇧🇷 Brazil</td><td>4分</td><td>+3</td></tr><tr><td class="advance">2</td><td class="advance">🇲🇦 Morocco</td><td>3分</td><td>+1</td></tr><tr><td class="third">3</td><td class="third">🏴 Scotland</td><td>2分</td><td>+0</td></tr><tr><td class="out">4</td><td class="out">🇭🇹 Haiti</td><td>0分</td><td>-4</td></tr></tbody></table>
+    </div><div class="group-mini">
+    <h4>Group D</h4>
+    <table><thead><tr><th>#</th><th>球队</th><th>分</th><th>GD</th></tr></thead><tbody><tr><td class="advance">1</td><td class="advance">🇺🇸 United States</td><td>6分</td><td>+5</td></tr><tr><td class="advance">2</td><td class="advance">🇦🇺 Australia</td><td>3分</td><td>+0</td></tr><tr><td class="third">3</td><td class="third">🇵🇾 Paraguay</td><td>3分</td><td>-2</td></tr><tr><td class="out">4</td><td class="out">🇹🇷 Türkiye</td><td>0分</td><td>-3</td></tr></tbody></table>
+    </div><div class="group-mini">
+    <h4>Group E</h4>
+    <table><thead><tr><th>#</th><th>球队</th><th>分</th><th>GD</th></tr></thead><tbody><tr><td class="advance">1</td><td class="advance">🇩🇪 Germany</td><td>6分</td><td>+7</td></tr><tr><td class="advance">2</td><td class="advance">🇨🇮 Ivory Coast</td><td>3分</td><td>+0</td></tr><tr><td class="third">3</td><td class="third">🇪🇨 Ecuador</td><td>1分</td><td>-1</td></tr><tr><td class="out">4</td><td class="out">🇨🇼 Curaçao</td><td>1分</td><td>-6</td></tr></tbody></table>
+    </div><div class="group-mini">
+    <h4>Group F</h4>
+    <table><thead><tr><th>#</th><th>球队</th><th>分</th><th>GD</th></tr></thead><tbody><tr><td class="advance">1</td><td class="advance">🇳🇱 Netherlands</td><td>4分</td><td>+4</td></tr><tr><td class="advance">2</td><td class="advance">🇯🇵 Japan</td><td>4分</td><td>+4</td></tr><tr><td class="third">3</td><td class="third">🇸🇪 Sweden</td><td>3分</td><td>+0</td></tr><tr><td class="out">4</td><td class="out">🇹🇳 Tunisia</td><td>0分</td><td>-8</td></tr></tbody></table>
+    </div><div class="group-mini">
+    <h4>Group G</h4>
+    <table><thead><tr><th>#</th><th>球队</th><th>分</th><th>GD</th></tr></thead><tbody><tr><td class="advance">1</td><td class="advance">🇮🇷 Iran</td><td>1分</td><td>+0</td></tr><tr><td class="advance">2</td><td class="advance">🇳🇿 New Zealand</td><td>1分</td><td>+0</td></tr><tr><td class="third">3</td><td class="third">🇧🇪 Belgium</td><td>1分</td><td>+0</td></tr><tr><td class="out">4</td><td class="out">🇪🇬 Egypt</td><td>1分</td><td>+0</td></tr></tbody></table>
+    </div><div class="group-mini">
+    <h4>Group H</h4>
+    <table><thead><tr><th>#</th><th>球队</th><th>分</th><th>GD</th></tr></thead><tbody><tr><td class="advance">1</td><td class="advance">🇸🇦 Saudi Arabia</td><td>1分</td><td>+0</td></tr><tr><td class="advance">2</td><td class="advance">🇺🇾 Uruguay</td><td>1分</td><td>+0</td></tr><tr><td class="third">3</td><td class="third">🇪🇸 Spain</td><td>1分</td><td>+0</td></tr><tr><td class="out">4</td><td class="out">🇨🇻 Cape Verde</td><td>1分</td><td>+0</td></tr></tbody></table>
+    </div><div class="group-mini">
+    <h4>Group I</h4>
+    <table><thead><tr><th>#</th><th>球队</th><th>分</th><th>GD</th></tr></thead><tbody><tr><td class="advance">1</td><td class="advance">🇳🇴 Norway</td><td>3分</td><td>+3</td></tr><tr><td class="advance">2</td><td class="advance">🇫🇷 France</td><td>3分</td><td>+2</td></tr><tr><td class="third">3</td><td class="third">🇸🇳 Senegal</td><td>0分</td><td>-2</td></tr><tr><td class="out">4</td><td class="out">🇮🇶 Iraq</td><td>0分</td><td>-3</td></tr></tbody></table>
+    </div><div class="group-mini">
+    <h4>Group J</h4>
+    <table><thead><tr><th>#</th><th>球队</th><th>分</th><th>GD</th></tr></thead><tbody><tr><td class="advance">1</td><td class="advance">🇦🇷 Argentina</td><td>3分</td><td>+3</td></tr><tr><td class="advance">2</td><td class="advance">🇦🇹 Austria</td><td>3分</td><td>+2</td></tr><tr><td class="third">3</td><td class="third">🇯🇴 Jordan</td><td>0分</td><td>-2</td></tr><tr><td class="out">4</td><td class="out">🇩🇿 Algeria</td><td>0分</td><td>-3</td></tr></tbody></table>
+    </div><div class="group-mini">
+    <h4>Group K</h4>
+    <table><thead><tr><th>#</th><th>球队</th><th>分</th><th>GD</th></tr></thead><tbody><tr><td class="advance">1</td><td class="advance">🇨🇴 Colombia</td><td>3分</td><td>+2</td></tr><tr><td class="advance">2</td><td class="advance">🇵🇹 Portugal</td><td>1分</td><td>+0</td></tr><tr><td class="third">3</td><td class="third">🇨🇩 DR Congo</td><td>1分</td><td>+0</td></tr><tr><td class="out">4</td><td class="out">🇺🇿 Uzbekistan</td><td>0分</td><td>-2</td></tr></tbody></table>
+    </div><div class="group-mini">
+    <h4>Group L</h4>
+    <table><thead><tr><th>#</th><th>球队</th><th>分</th><th>GD</th></tr></thead><tbody><tr><td class="advance">1</td><td class="advance">🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</td><td>3分</td><td>+2</td></tr><tr><td class="advance">2</td><td class="advance">🇬🇭 Ghana</td><td>3分</td><td>+1</td></tr><tr><td class="third">3</td><td class="third">🇵🇦 Panama</td><td>0分</td><td>-1</td></tr><tr><td class="out">4</td><td class="out">🇭🇷 Croatia</td><td>0分</td><td>-2</td></tr></tbody></table>
+    </div></div>
+  <!-- 淘汰赛对阵 -->
+  <h3 style="font-size:13px;color:var(--accent);margin:16px 0 8px 0">🏆 淘汰赛对阵</h3>
+  <div class="bracket-scroll">
+    <div class="bracket-container"><div class="bracket-round br-r32"><div class="bracket-round-title">1/16决赛</div><div class="bracket-match">
+            <div class="b-vs">2A vs 2B</div>
+            <div class="b-time">#M73</div></div><div class="bracket-match">
+            <div class="b-vs">1E vs 3A/B/C/D/F</div>
+            <div class="b-time">#M74</div></div><div class="bracket-match">
+            <div class="b-vs">1F vs 2C</div>
+            <div class="b-time">#M75</div></div><div class="bracket-match">
+            <div class="b-vs">1C vs 2F</div>
+            <div class="b-time">#M76</div></div><div class="bracket-match">
+            <div class="b-vs">1I vs 3C/D/F/G/H</div>
+            <div class="b-time">#M77</div></div><div class="bracket-match">
+            <div class="b-vs">2E vs 2I</div>
+            <div class="b-time">#M78</div></div><div class="bracket-match">
+            <div class="b-vs">1A vs 3C/E/F/H/I</div>
+            <div class="b-time">#M79</div></div><div class="bracket-match">
+            <div class="b-vs">1L vs 3E/H/I/J/K</div>
+            <div class="b-time">#M80</div></div><div class="bracket-match">
+            <div class="b-vs">1D vs 3B/E/F/I/J</div>
+            <div class="b-time">#M81</div></div><div class="bracket-match">
+            <div class="b-vs">1G vs 3A/E/H/I/J</div>
+            <div class="b-time">#M82</div></div><div class="bracket-match">
+            <div class="b-vs">2K vs 2L</div>
+            <div class="b-time">#M83</div></div><div class="bracket-match">
+            <div class="b-vs">1H vs 2J</div>
+            <div class="b-time">#M84</div></div><div class="bracket-match">
+            <div class="b-vs">1B vs 3E/F/G/I/J</div>
+            <div class="b-time">#M85</div></div><div class="bracket-match">
+            <div class="b-vs">1J vs 2H</div>
+            <div class="b-time">#M86</div></div><div class="bracket-match">
+            <div class="b-vs">1K vs 3D/E/I/J/L</div>
+            <div class="b-time">#M87</div></div><div class="bracket-match">
+            <div class="b-vs">2D vs 2G</div>
+            <div class="b-time">#M88</div></div></div><div class="bracket-round br-r16"><div class="bracket-round-title">1/8决赛</div><div class="bracket-match">
+            <div class="b-vs">W74 vs W77</div>
+            <div class="b-time">#M89</div></div><div class="bracket-match">
+            <div class="b-vs">W73 vs W75</div>
+            <div class="b-time">#M90</div></div><div class="bracket-match">
+            <div class="b-vs">W76 vs W78</div>
+            <div class="b-time">#M91</div></div><div class="bracket-match">
+            <div class="b-vs">W79 vs W80</div>
+            <div class="b-time">#M92</div></div><div class="bracket-match">
+            <div class="b-vs">W83 vs W84</div>
+            <div class="b-time">#M93</div></div><div class="bracket-match">
+            <div class="b-vs">W81 vs W82</div>
+            <div class="b-time">#M94</div></div><div class="bracket-match">
+            <div class="b-vs">W86 vs W88</div>
+            <div class="b-time">#M95</div></div><div class="bracket-match">
+            <div class="b-vs">W85 vs W87</div>
+            <div class="b-time">#M96</div></div></div><div class="bracket-round br-qf"><div class="bracket-round-title">1/4决赛</div><div class="bracket-match">
+            <div class="b-vs">W89 vs W90</div>
+            <div class="b-time">#M97</div></div><div class="bracket-match">
+            <div class="b-vs">W93 vs W94</div>
+            <div class="b-time">#M98</div></div><div class="bracket-match">
+            <div class="b-vs">W91 vs W92</div>
+            <div class="b-time">#M99</div></div><div class="bracket-match">
+            <div class="b-vs">W95 vs W96</div>
+            <div class="b-time">#M100</div></div></div><div class="bracket-round br-sf"><div class="bracket-round-title">半决赛</div><div class="bracket-match">
+            <div class="b-vs">W97 vs W98</div>
+            <div class="b-time">#M101</div></div><div class="bracket-match">
+            <div class="b-vs">W99 vs W100</div>
+            <div class="b-time">#M102</div></div></div><div class="bracket-round br-f"><div class="bracket-round-title">决赛/季军</div><div class="bracket-match">
+            <div class="b-vs">W101 vs W102</div>
+            <div class="b-time">#FINAL</div></div><div class="bracket-match">
+            <div class="b-vs">L101 vs L102</div>
+            <div class="b-time">#BRONZE</div></div></div></div>
+  </div>
+  <p style="font-size:9px;color:var(--text-muted);margin-top:4px">每组前2名+8个最佳第3名晋级32强 · 绿色=已赛 · 红色=直播中</p>
+  <!-- 按日期赛程(折叠) -->
+  <details style="margin-top:20px">
+    <summary style="cursor:pointer;font-size:12px;color:var(--blue);font-weight:600">📅 按日期查看完整赛程</summary>
+    <div style="margin-top:8px"><div class="matchday-group">
     <div class="matchday-header"><span class="matchday-date">6/11</span><span class="matchday-badge">✅ 已完赛</span><span class="matchday-count">1/1</span></div><div class="match-card played result-win">
             <div class="match-time">🏟 Mexico City 当地 6/11 09:00 | 🇨🇳 北京 6/11 23:00</div>
             <div class="match-teams">🇲🇽 Mexico <span class="match-score">2-0</span> 🇿🇦 South Africa</div>
@@ -806,7 +946,8 @@ a{color:var(--blue);text-decoration:none}
     <div class="matchday-header"><span class="matchday-date">7/15</span><span class="matchday-badge">📅 待赛</span><span class="matchday-count">0/1</span></div><div class="match-card upcoming"><div class="match-teams">🏳️ SF vs 🏳️ 1</div></div></div><div class="matchday-group">
     <div class="matchday-header"><span class="matchday-date">7/16</span><span class="matchday-badge">📅 待赛</span><span class="matchday-count">0/1</span></div><div class="match-card upcoming"><div class="match-teams">🏳️ SF vs 🏳️ 2</div></div></div><div class="matchday-group">
     <div class="matchday-header"><span class="matchday-date">7/19</span><span class="matchday-badge">📅 待赛</span><span class="matchday-count">0/1</span></div><div class="match-card upcoming"><div class="match-teams">🏳️ SF vs 🏳️ 2</div></div></div><div class="matchday-group">
-    <div class="matchday-header"><span class="matchday-date">7/20</span><span class="matchday-badge">📅 待赛</span><span class="matchday-count">0/1</span></div><div class="match-card upcoming"><div class="match-teams">🏳️ SF vs 🏳️ 2</div></div></div>
+    <div class="matchday-header"><span class="matchday-date">7/20</span><span class="matchday-badge">📅 待赛</span><span class="matchday-count">0/1</span></div><div class="match-card upcoming"><div class="match-teams">🏳️ SF vs 🏳️ 2</div></div></div></div>
+  </details>
 </div>
 
 <!-- PANEL 2: 赛果回测 -->
@@ -1576,9 +1717,9 @@ a{color:var(--blue);text-decoration:none}
                 </div></div></div>
     <div class="bet-plan-section">
       <div class="bet-plan-header">📋 6/22 购彩方案 · 200元预算</div>
-      <div class="betting-plan">════════════════════════════════════════════════════════════════════
+      <div class="betting-plan"><div class="plan-diff">📝 更新 06/21 23:39: 0项调整 组合EV: 59.4% → 59.4%</div>════════════════════════════════════════════════════════════════════
   竞彩方案 v6.0 · 2026世界杯 · 最优投资组合
-  生成时间: 2026-06-21 23:34  |  预算上限: 200元
+  生成时间: 2026-06-21 23:39  |  预算上限: 200元
   策略: 正EV精选 + 1/4 Kelly仓位 | 机会驱动·非均衡分配
 ════════════════════════════════════════════════════════════════════
 
@@ -1628,7 +1769,7 @@ a{color:var(--blue);text-decoration:none}
     总进球: 总进球2球            赔率4.5
 
 ════════════════════════════════════════════════════════════════════
-📐 竞彩方案 v6.0 (2026-06-21 23:34) | 正EV+Kelly+组合优化 | 竞彩90分钟赛果为准 | 仅作参考</div>
+📐 竞彩方案 v6.0 (2026-06-21 23:39) | 正EV+Kelly+组合优化 | 竞彩90分钟赛果为准 | 仅作参考</div>
     </div></div><div id="bet-6-23" class="bet-date-panel" style="display:none">
     
     <div class="bet-matches-grid"><div class="bet-card">
@@ -1698,9 +1839,9 @@ a{color:var(--blue);text-decoration:none}
                 </div></div></div>
     <div class="bet-plan-section">
       <div class="bet-plan-header">📋 6/23 购彩方案 · 200元预算</div>
-      <div class="betting-plan">════════════════════════════════════════════════════════════════════
+      <div class="betting-plan"><div class="plan-diff">📝 更新 06/21 23:39: 0项调整 组合EV: 8.2% → 8.2%</div>════════════════════════════════════════════════════════════════════
   竞彩方案 v6.0 · 2026世界杯 · 最优投资组合
-  生成时间: 2026-06-21 23:34  |  预算上限: 200元
+  生成时间: 2026-06-21 23:39  |  预算上限: 200元
   策略: 正EV精选 + 1/4 Kelly仓位 | 机会驱动·非均衡分配
 ════════════════════════════════════════════════════════════════════
 
@@ -1737,7 +1878,7 @@ a{color:var(--blue);text-decoration:none}
     总进球: 总进球2球            赔率3.35
 
 ════════════════════════════════════════════════════════════════════
-📐 竞彩方案 v6.0 (2026-06-21 23:34) | 正EV+Kelly+组合优化 | 竞彩90分钟赛果为准 | 仅作参考</div>
+📐 竞彩方案 v6.0 (2026-06-21 23:39) | 正EV+Kelly+组合优化 | 竞彩90分钟赛果为准 | 仅作参考</div>
     </div></div><div id="bet-6-24" class="bet-date-panel" style="display:none">
     
     <div class="bet-matches-grid"><div class="bet-card">
@@ -1807,9 +1948,9 @@ a{color:var(--blue);text-decoration:none}
                 </div></div></div>
     <div class="bet-plan-section">
       <div class="bet-plan-header">📋 6/24 购彩方案 · 200元预算</div>
-      <div class="betting-plan">════════════════════════════════════════════════════════════════════
+      <div class="betting-plan"><div class="plan-diff">📝 更新 06/21 23:39: 0项调整 组合EV: 0.0% → 0.0%</div>════════════════════════════════════════════════════════════════════
   竞彩方案 v6.0 · 2026世界杯 · 最优投资组合
-  生成时间: 2026-06-21 23:34  |  预算上限: 200元
+  生成时间: 2026-06-21 23:39  |  预算上限: 200元
   策略: 正EV精选 + 1/4 Kelly仓位 | 机会驱动·非均衡分配
 ════════════════════════════════════════════════════════════════════
 
@@ -1831,7 +1972,7 @@ a{color:var(--blue);text-decoration:none}
   · 保留金: 200元 — 无正EV机会
 
 ════════════════════════════════════════════════════════════════════
-📐 竞彩方案 v6.0 (2026-06-21 23:34) | 正EV+Kelly+组合优化 | 竞彩90分钟赛果为准 | 仅作参考</div>
+📐 竞彩方案 v6.0 (2026-06-21 23:39) | 正EV+Kelly+组合优化 | 竞彩90分钟赛果为准 | 仅作参考</div>
     </div></div><div id="bet-6-25" class="bet-date-panel" style="display:none">
     
     <div class="bet-matches-grid"><div class="bet-card">
@@ -1933,9 +2074,9 @@ a{color:var(--blue);text-decoration:none}
                 </div></div></div>
     <div class="bet-plan-section">
       <div class="bet-plan-header">📋 6/25 购彩方案 · 200元预算</div>
-      <div class="betting-plan">════════════════════════════════════════════════════════════════════
+      <div class="betting-plan"><div class="plan-diff">📝 更新 06/21 23:39: 0项调整 组合EV: 0.0% → 0.0%</div>════════════════════════════════════════════════════════════════════
   竞彩方案 v6.0 · 2026世界杯 · 最优投资组合
-  生成时间: 2026-06-21 23:34  |  预算上限: 200元
+  生成时间: 2026-06-21 23:39  |  预算上限: 200元
   策略: 正EV精选 + 1/4 Kelly仓位 | 机会驱动·非均衡分配
 ════════════════════════════════════════════════════════════════════
 
@@ -1960,7 +2101,7 @@ a{color:var(--blue);text-decoration:none}
   • 排除 🇧🇦 波黑 vs 🇶🇦 卡塔尔: 低——建议观望
 
 ════════════════════════════════════════════════════════════════════
-📐 竞彩方案 v6.0 (2026-06-21 23:34) | 正EV+Kelly+组合优化 | 竞彩90分钟赛果为准 | 仅作参考</div>
+📐 竞彩方案 v6.0 (2026-06-21 23:39) | 正EV+Kelly+组合优化 | 竞彩90分钟赛果为准 | 仅作参考</div>
     </div></div><div id="bet-6-26" class="bet-date-panel" style="display:none">
     
     <div class="bet-matches-grid"><div class="bet-card">
@@ -2062,9 +2203,9 @@ a{color:var(--blue);text-decoration:none}
                 </div></div></div>
     <div class="bet-plan-section">
       <div class="bet-plan-header">📋 6/26 购彩方案 · 200元预算</div>
-      <div class="betting-plan">════════════════════════════════════════════════════════════════════
+      <div class="betting-plan"><div class="plan-diff">📝 更新 06/21 23:39: 0项调整 组合EV: 0.0% → 0.0%</div>════════════════════════════════════════════════════════════════════
   竞彩方案 v6.0 · 2026世界杯 · 最优投资组合
-  生成时间: 2026-06-21 23:34  |  预算上限: 200元
+  生成时间: 2026-06-21 23:39  |  预算上限: 200元
   策略: 正EV精选 + 1/4 Kelly仓位 | 机会驱动·非均衡分配
 ════════════════════════════════════════════════════════════════════
 
@@ -2086,7 +2227,7 @@ a{color:var(--blue);text-decoration:none}
   · 保留金: 200元 — 无正EV机会
 
 ════════════════════════════════════════════════════════════════════
-📐 竞彩方案 v6.0 (2026-06-21 23:34) | 正EV+Kelly+组合优化 | 竞彩90分钟赛果为准 | 仅作参考</div>
+📐 竞彩方案 v6.0 (2026-06-21 23:39) | 正EV+Kelly+组合优化 | 竞彩90分钟赛果为准 | 仅作参考</div>
     </div></div><div id="bet-6-27" class="bet-date-panel" style="display:none">
     
     <div class="bet-matches-grid"><div class="bet-card">
@@ -2188,9 +2329,9 @@ a{color:var(--blue);text-decoration:none}
                 </div></div></div>
     <div class="bet-plan-section">
       <div class="bet-plan-header">📋 6/27 购彩方案 · 200元预算</div>
-      <div class="betting-plan">════════════════════════════════════════════════════════════════════
+      <div class="betting-plan"><div class="plan-diff">📝 更新 06/21 23:39: 0项调整 组合EV: 0.0% → 0.0%</div>════════════════════════════════════════════════════════════════════
   竞彩方案 v6.0 · 2026世界杯 · 最优投资组合
-  生成时间: 2026-06-21 23:34  |  预算上限: 200元
+  生成时间: 2026-06-21 23:39  |  预算上限: 200元
   策略: 正EV精选 + 1/4 Kelly仓位 | 机会驱动·非均衡分配
 ════════════════════════════════════════════════════════════════════
 
@@ -2215,7 +2356,7 @@ a{color:var(--blue);text-decoration:none}
   • 排除 🇪🇬 埃及 vs 🇮🇷 伊朗: 低——建议观望
 
 ════════════════════════════════════════════════════════════════════
-📐 竞彩方案 v6.0 (2026-06-21 23:34) | 正EV+Kelly+组合优化 | 竞彩90分钟赛果为准 | 仅作参考</div>
+📐 竞彩方案 v6.0 (2026-06-21 23:39) | 正EV+Kelly+组合优化 | 竞彩90分钟赛果为准 | 仅作参考</div>
     </div></div><div id="bet-6-28" class="bet-date-panel" style="display:none">
     
     <div class="bet-matches-grid"><div class="bet-card">
@@ -2317,9 +2458,9 @@ a{color:var(--blue);text-decoration:none}
                 </div></div></div>
     <div class="bet-plan-section">
       <div class="bet-plan-header">📋 6/28 购彩方案 · 200元预算</div>
-      <div class="betting-plan">════════════════════════════════════════════════════════════════════
+      <div class="betting-plan"><div class="plan-diff">📝 更新 06/21 23:39: 0项调整 组合EV: 0.0% → 0.0%</div>════════════════════════════════════════════════════════════════════
   竞彩方案 v6.0 · 2026世界杯 · 最优投资组合
-  生成时间: 2026-06-21 23:34  |  预算上限: 200元
+  生成时间: 2026-06-21 23:39  |  预算上限: 200元
   策略: 正EV精选 + 1/4 Kelly仓位 | 机会驱动·非均衡分配
 ════════════════════════════════════════════════════════════════════
 
@@ -2345,7 +2486,7 @@ a{color:var(--blue);text-decoration:none}
   • 排除 🇨🇴 哥伦比亚 vs 🇵🇹 葡萄牙: 低——建议观望
 
 ════════════════════════════════════════════════════════════════════
-📐 竞彩方案 v6.0 (2026-06-21 23:34) | 正EV+Kelly+组合优化 | 竞彩90分钟赛果为准 | 仅作参考</div>
+📐 竞彩方案 v6.0 (2026-06-21 23:39) | 正EV+Kelly+组合优化 | 竞彩90分钟赛果为准 | 仅作参考</div>
     </div></div><div id="bet-6-29" class="bet-date-panel" style="display:none">
     
     <div class="bet-matches-grid"></div>
