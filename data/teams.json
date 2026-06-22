@@ -1,8 +1,8 @@
 {
   "FRA": {
     "name": "France",
-    "fifa_rank": 2,
-    "elo_rating": 1950,
+    "fifa_rank": 3,
+    "elo_rating": 2084,
     "confederation": "UEFA",
     "market_value_eur": 1100000000,
     "recent_10": {
@@ -53,8 +53,8 @@
   },
   "ESP": {
     "name": "Spain",
-    "fifa_rank": 1,
-    "elo_rating": 1979,
+    "fifa_rank": 2,
+    "elo_rating": 2134,
     "confederation": "UEFA",
     "market_value_eur": 1050000000,
     "recent_10": {
@@ -105,8 +105,8 @@
   },
   "ARG": {
     "name": "Argentina",
-    "fifa_rank": 3,
-    "elo_rating": 1920,
+    "fifa_rank": 1,
+    "elo_rating": 2128,
     "confederation": "CONMEBOL",
     "market_value_eur": 850000000,
     "recent_10": {
@@ -158,7 +158,7 @@
   "ENG": {
     "name": "England",
     "fifa_rank": 4,
-    "elo_rating": 1886,
+    "elo_rating": 2055,
     "confederation": "UEFA",
     "market_value_eur": 1200000000,
     "recent_10": {
@@ -210,7 +210,7 @@
   "BRA": {
     "name": "Brazil",
     "fifa_rank": 6,
-    "elo_rating": 1880,
+    "elo_rating": 1986,
     "confederation": "CONMEBOL",
     "market_value_eur": 950000000,
     "recent_10": {
@@ -262,7 +262,7 @@
   "POR": {
     "name": "Portugal",
     "fifa_rank": 5,
-    "elo_rating": 1900,
+    "elo_rating": 1967,
     "confederation": "UEFA",
     "market_value_eur": 900000000,
     "recent_10": {
@@ -314,7 +314,7 @@
   "GER": {
     "name": "Germany",
     "fifa_rank": 10,
-    "elo_rating": 1867,
+    "elo_rating": 1954,
     "confederation": "UEFA",
     "market_value_eur": 850000000,
     "recent_10": {
@@ -366,8 +366,8 @@
   },
   "NED": {
     "name": "Netherlands",
-    "fifa_rank": 7,
-    "elo_rating": 1840,
+    "fifa_rank": 8,
+    "elo_rating": 1972,
     "confederation": "UEFA",
     "market_value_eur": 750000000,
     "recent_10": {
@@ -419,7 +419,7 @@
   "BEL": {
     "name": "Belgium",
     "fifa_rank": 9,
-    "elo_rating": 1820,
+    "elo_rating": 1869,
     "confederation": "UEFA",
     "market_value_eur": 500000000,
     "recent_10": {
@@ -471,7 +471,7 @@
   "NOR": {
     "name": "Norway",
     "fifa_rank": 31,
-    "elo_rating": 1800,
+    "elo_rating": 1929,
     "confederation": "UEFA",
     "market_value_eur": 500000000,
     "recent_10": {
@@ -522,8 +522,8 @@
   },
   "MAR": {
     "name": "Morocco",
-    "fifa_rank": 12,
-    "elo_rating": 1780,
+    "fifa_rank": 7,
+    "elo_rating": 1866,
     "confederation": "CAF",
     "market_value_eur": 350000000,
     "recent_10": {
@@ -574,8 +574,8 @@
   },
   "COL": {
     "name": "Colombia",
-    "fifa_rank": 14,
-    "elo_rating": 1790,
+    "fifa_rank": 13,
+    "elo_rating": 1998,
     "confederation": "CONMEBOL",
     "market_value_eur": 350000000,
     "recent_10": {
@@ -626,8 +626,8 @@
   },
   "SEN": {
     "name": "Senegal",
-    "fifa_rank": 20,
-    "elo_rating": 1750,
+    "fifa_rank": 15,
+    "elo_rating": 1839,
     "confederation": "CAF",
     "market_value_eur": 300000000,
     "tournament_exp": 4,
@@ -678,8 +678,8 @@
   },
   "URU": {
     "name": "Uruguay",
-    "fifa_rank": 13,
-    "elo_rating": 1803,
+    "fifa_rank": 16,
+    "elo_rating": 1870,
     "confederation": "CONMEBOL",
     "market_value_eur": 400000000,
     "tournament_exp": 8,
@@ -730,8 +730,8 @@
   },
   "AUT": {
     "name": "Austria",
-    "fifa_rank": 22,
-    "elo_rating": 1770,
+    "fifa_rank": 24,
+    "elo_rating": 1857,
     "confederation": "UEFA",
     "market_value_eur": 280000000,
     "tournament_exp": 0,
@@ -783,7 +783,7 @@
   "JPN": {
     "name": "Japan",
     "fifa_rank": 18,
-    "elo_rating": 1760,
+    "elo_rating": 1925,
     "confederation": "AFC",
     "market_value_eur": 280000000,
     "tournament_exp": 4,
@@ -834,8 +834,8 @@
   },
   "USA": {
     "name": "United States",
-    "fifa_rank": 16,
-    "elo_rating": 1765,
+    "fifa_rank": 17,
+    "elo_rating": 1820,
     "confederation": "CONCACAF",
     "market_value_eur": 350000000,
     "tournament_exp": 2,
@@ -887,8 +887,8 @@
   },
   "MEX": {
     "name": "Mexico",
-    "fifa_rank": 15,
-    "elo_rating": 1775,
+    "fifa_rank": 14,
+    "elo_rating": 1896,
     "confederation": "CONCACAF",
     "market_value_eur": 250000000,
     "tournament_exp": 10,
@@ -939,8 +939,8 @@
   },
   "KOR": {
     "name": "South Korea",
-    "fifa_rank": 30,
-    "elo_rating": 1720,
+    "fifa_rank": 25,
+    "elo_rating": 1771,
     "confederation": "AFC",
     "market_value_eur": 200000000,
     "tournament_exp": 4,
@@ -991,8 +991,8 @@
   },
   "RSA": {
     "name": "South Africa",
-    "fifa_rank": 55,
-    "elo_rating": 1580,
+    "fifa_rank": 60,
+    "elo_rating": 1527,
     "confederation": "CAF",
     "market_value_eur": 80000000,
     "tournament_exp": 2,
@@ -1043,8 +1043,8 @@
   },
   "CZE": {
     "name": "Czechia",
-    "fifa_rank": 35,
-    "elo_rating": 1680,
+    "fifa_rank": 40,
+    "elo_rating": 1696,
     "confederation": "UEFA",
     "market_value_eur": 150000000,
     "tournament_exp": 2,
@@ -1096,7 +1096,7 @@
   "CAN": {
     "name": "Canada",
     "fifa_rank": 30,
-    "elo_rating": 1730,
+    "elo_rating": 1777,
     "confederation": "CONCACAF",
     "market_value_eur": 250000000,
     "tournament_exp": 2,
@@ -1147,8 +1147,8 @@
   },
   "SUI": {
     "name": "Switzerland",
-    "fifa_rank": 11,
-    "elo_rating": 1810,
+    "fifa_rank": 19,
+    "elo_rating": 1885,
     "confederation": "UEFA",
     "market_value_eur": 300000000,
     "tournament_exp": 6,
@@ -1199,8 +1199,8 @@
   },
   "QAT": {
     "name": "Qatar",
-    "fifa_rank": 45,
-    "elo_rating": 1550,
+    "fifa_rank": 56,
+    "elo_rating": 1437,
     "confederation": "AFC",
     "market_value_eur": 50000000,
     "tournament_exp": 2,
@@ -1251,8 +1251,8 @@
   },
   "BIH": {
     "name": "Bosnia-Herzegovina",
-    "fifa_rank": 40,
-    "elo_rating": 1620,
+    "fifa_rank": 64,
+    "elo_rating": 1596,
     "confederation": "UEFA",
     "market_value_eur": 100000000,
     "tournament_exp": 2,
@@ -1303,8 +1303,8 @@
   },
   "SCO": {
     "name": "Scotland",
-    "fifa_rank": 28,
-    "elo_rating": 1700,
+    "fifa_rank": 42,
+    "elo_rating": 1768,
     "confederation": "UEFA",
     "market_value_eur": 180000000,
     "tournament_exp": 2,
@@ -1355,8 +1355,8 @@
   },
   "HAI": {
     "name": "Haiti",
-    "fifa_rank": 80,
-    "elo_rating": 1450,
+    "fifa_rank": 82,
+    "elo_rating": 1528,
     "confederation": "CONCACAF",
     "market_value_eur": 15000000,
     "tournament_exp": 2,
@@ -1407,8 +1407,8 @@
   },
   "AUS": {
     "name": "Australia",
-    "fifa_rank": 25,
-    "elo_rating": 1747,
+    "fifa_rank": 27,
+    "elo_rating": 1799,
     "confederation": "AFC",
     "market_value_eur": 120000000,
     "tournament_exp": 4,
@@ -1460,8 +1460,8 @@
   },
   "TUR": {
     "name": "Türkiye",
-    "fifa_rank": 32,
-    "elo_rating": 1771,
+    "fifa_rank": 22,
+    "elo_rating": 1813,
     "confederation": "UEFA",
     "market_value_eur": 300000000,
     "tournament_exp": 2,
@@ -1512,8 +1512,8 @@
   },
   "PAR": {
     "name": "Paraguay",
-    "fifa_rank": 50,
-    "elo_rating": 1706,
+    "fifa_rank": 41,
+    "elo_rating": 1816,
     "confederation": "CONMEBOL",
     "market_value_eur": 120000000,
     "tournament_exp": 4,
@@ -1564,8 +1564,8 @@
   },
   "CIV": {
     "name": "Ivory Coast",
-    "fifa_rank": 38,
-    "elo_rating": 1618,
+    "fifa_rank": 33,
+    "elo_rating": 1728,
     "confederation": "CAF",
     "market_value_eur": 250000000,
     "tournament_exp": 2,
@@ -1616,8 +1616,8 @@
   },
   "ECU": {
     "name": "Ecuador",
-    "fifa_rank": 24,
-    "elo_rating": 1793,
+    "fifa_rank": 23,
+    "elo_rating": 1864,
     "confederation": "CONMEBOL",
     "market_value_eur": 220000000,
     "tournament_exp": 4,
@@ -1668,8 +1668,8 @@
   },
   "CUW": {
     "name": "Curaçao",
-    "fifa_rank": 70,
-    "elo_rating": 1520,
+    "fifa_rank": 83,
+    "elo_rating": 1453,
     "confederation": "CONCACAF",
     "market_value_eur": 20000000,
     "tournament_exp": 0,
@@ -1720,8 +1720,8 @@
   },
   "SWE": {
     "name": "Sweden",
-    "fifa_rank": 27,
-    "elo_rating": 1750,
+    "fifa_rank": 38,
+    "elo_rating": 1727,
     "confederation": "UEFA",
     "market_value_eur": 280000000,
     "tournament_exp": 6,
@@ -1772,8 +1772,8 @@
   },
   "TUN": {
     "name": "Tunisia",
-    "fifa_rank": 35,
-    "elo_rating": 1630,
+    "fifa_rank": 45,
+    "elo_rating": 1570,
     "confederation": "CAF",
     "market_value_eur": 80000000,
     "tournament_exp": 4,
@@ -1824,8 +1824,8 @@
   },
   "EGY": {
     "name": "Egypt",
-    "fifa_rank": 32,
-    "elo_rating": 1670,
+    "fifa_rank": 29,
+    "elo_rating": 1711,
     "confederation": "CAF",
     "market_value_eur": 200000000,
     "tournament_exp": 2,
@@ -1877,7 +1877,7 @@
   "IRN": {
     "name": "Iran",
     "fifa_rank": 20,
-    "elo_rating": 1700,
+    "elo_rating": 1766,
     "confederation": "AFC",
     "market_value_eur": 80000000,
     "tournament_exp": 4,
@@ -1928,8 +1928,8 @@
   },
   "NZL": {
     "name": "New Zealand",
-    "fifa_rank": 95,
-    "elo_rating": 1480,
+    "fifa_rank": 85,
+    "elo_rating": 1578,
     "confederation": "OFC",
     "market_value_eur": 20000000,
     "tournament_exp": 2,
@@ -1980,8 +1980,8 @@
   },
   "KSA": {
     "name": "Saudi Arabia",
-    "fifa_rank": 50,
-    "elo_rating": 1616,
+    "fifa_rank": 61,
+    "elo_rating": 1593,
     "confederation": "AFC",
     "market_value_eur": 40000000,
     "tournament_exp": 4,
@@ -2033,7 +2033,7 @@
   "CPV": {
     "name": "Cape Verde",
     "fifa_rank": 67,
-    "elo_rating": 1489,
+    "elo_rating": 1606,
     "confederation": "CAF",
     "market_value_eur": 25000000,
     "tournament_exp": 0,
@@ -2084,8 +2084,8 @@
   },
   "IRQ": {
     "name": "Iraq",
-    "fifa_rank": 55,
-    "elo_rating": 1550,
+    "fifa_rank": 57,
+    "elo_rating": 1592,
     "confederation": "AFC",
     "market_value_eur": 30000000,
     "tournament_exp": 2,
@@ -2136,8 +2136,8 @@
   },
   "ALG": {
     "name": "Algeria",
-    "fifa_rank": 30,
-    "elo_rating": 1680,
+    "fifa_rank": 28,
+    "elo_rating": 1759,
     "confederation": "CAF",
     "market_value_eur": 150000000,
     "tournament_exp": 4,
@@ -2188,8 +2188,8 @@
   },
   "JOR": {
     "name": "Jordan",
-    "fifa_rank": 65,
-    "elo_rating": 1520,
+    "fifa_rank": 63,
+    "elo_rating": 1653,
     "confederation": "AFC",
     "market_value_eur": 15000000,
     "tournament_exp": 0,
@@ -2240,8 +2240,8 @@
   },
   "UZB": {
     "name": "Uzbekistan",
-    "fifa_rank": 60,
-    "elo_rating": 1550,
+    "fifa_rank": 50,
+    "elo_rating": 1698,
     "confederation": "AFC",
     "market_value_eur": 30000000,
     "tournament_exp": 0,
@@ -2292,8 +2292,8 @@
   },
   "COD": {
     "name": "DR Congo",
-    "fifa_rank": 58,
-    "elo_rating": 1560,
+    "fifa_rank": 46,
+    "elo_rating": 1674,
     "confederation": "CAF",
     "market_value_eur": 80000000,
     "tournament_exp": 2,
@@ -2344,8 +2344,8 @@
   },
   "CRO": {
     "name": "Croatia",
-    "fifa_rank": 12,
-    "elo_rating": 1821,
+    "fifa_rank": 11,
+    "elo_rating": 1881,
     "confederation": "UEFA",
     "market_value_eur": 350000000,
     "tournament_exp": 12,
@@ -2396,8 +2396,8 @@
   },
   "GHA": {
     "name": "Ghana",
-    "fifa_rank": 48,
-    "elo_rating": 1478,
+    "fifa_rank": 73,
+    "elo_rating": 1557,
     "confederation": "CAF",
     "market_value_eur": 150000000,
     "tournament_exp": 6,
@@ -2448,8 +2448,8 @@
   },
   "PAN": {
     "name": "Panama",
-    "fifa_rank": 55,
-    "elo_rating": 1699,
+    "fifa_rank": 34,
+    "elo_rating": 1683,
     "confederation": "CONCACAF",
     "market_value_eur": 30000000,
     "tournament_exp": 2,
