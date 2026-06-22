@@ -635,28 +635,54 @@ def generate_all_opportunities(classified: list, config: PortfolioConfig = None)
         conf = c["confidence"]
         xg_total = c["total_xg"]
 
-        # ── SPF (胜平负) ──
-        spf_val = compute_value(mid, c["direction"], c["dir_prob"])
-        if spf_val["is_value"] and spf_val["ev"] > 0:
-            opportunities.append(BetOpportunity(
-                match_id=mid, match_name=mn, kickoff=ko,
-                play_type="spf", pick=c["dir_name"], pick_short="SPF-"+c["direction"],
-                model_prob=c["dir_prob"], odds=spf_val["odds"],
-                edge_pct=spf_val["edge"], ev=spf_val["ev"],
-                kelly_full_pct=0, stake=0,
-                confidence=conf, delta=delta,
-                market_implied=spf_val.get("market_prob", 0),
-                note=f"WDL={c.get('wdl','')}",
-            ))
+        # ── SPF (胜平负) — 所有三个方向, 有正EV就入选 ──
+        wdl = c.get("wdl", "0/0/0")
+        parts_wdl = [float(x) for x in wdl.split("/")]
+        probs = {
+            "home": (parts_wdl[0] if len(parts_wdl) > 0 else 0, c.get("dir_name", "主胜")),
+            "draw": (parts_wdl[1] if len(parts_wdl) > 1 else 0, "平局"),
+            "away": (parts_wdl[2] if len(parts_wdl) > 2 else 0, c.get("dir_name", "客胜")),
+        }
+        # 修正away的pick name
+        if "away" in probs:
+            away_name = c["match_name"].split(" vs ")
+            away_team = away_name[1] if len(away_name) > 1 else ""
+            probs["away"] = (probs["away"][0], f"{away_team}胜" if away_team else "客胜")
+
+        for direction, (prob, pick_name) in probs.items():
+            if prob <= 0:
+                continue
+            spf_val = compute_value(mid, direction, prob)
+            if spf_val["is_value"] and spf_val["ev"] > 0:
+                flag_name = pick_name
+                if direction == "draw":
+                    flag_name = "平局"
+                opportunities.append(BetOpportunity(
+                    match_id=mid, match_name=mn, kickoff=ko,
+                    play_type="spf", pick=flag_name, pick_short=f"SPF-{direction}",
+                    model_prob=prob, odds=spf_val["odds"],
+                    edge_pct=spf_val["edge"], ev=spf_val["ev"],
+                    kelly_full_pct=0, stake=0,
+                    confidence=conf, delta=delta,
+                    market_implied=spf_val.get("market_prob", 0),
+                    note=f"WDL={wdl}",
+                ))
 
         # ── RQSPF (让球胜平负) ──
         rq = c.get("rqspf")
         if rq and rq.get("odds", 0) > 1.0:
             rq_odds = rq["odds"]
             market_imp = 1.0 / rq_odds * 100 if rq_odds > 1.0 else 0
-            # RQSPF概率: 调整后xG差映射
-            adj = abs(rq.get("adjusted_diff", 0))
-            rq_prob = min(70, max(30, 30 + adj * 20))
+            # RQSPF概率: 基于调整后xG差 + 方向
+            adj = rq.get("adjusted_diff", 0)  # 正=主队让球后仍优势
+            rq_dir = rq.get("direction", "")
+            # 更精准的概率映射
+            if rq_dir == "home":
+                rq_prob = min(75, max(32, 45 + adj * 15))
+            elif rq_dir == "away":
+                rq_prob = min(75, max(32, 45 + abs(adj) * 15))
+            else:  # draw/push
+                rq_prob = min(55, max(25, 35 - abs(adj) * 10))
             rq_edge = rq_prob - market_imp
             rq_ev = (rq_prob / 100) * rq_odds - 1.0
             if rq_ev > 0:
