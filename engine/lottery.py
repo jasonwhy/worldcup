@@ -580,6 +580,21 @@ def compute_value(match_id: str, direction: str, model_prob: float) -> dict:
 
 
 
+def _handicap_note(match_id: str) -> tuple:
+    """让球盘信息: (line, rqspf_pick, rqspf_odds)"""
+    hsp = _match_handicap_sp(match_id)
+    if not hsp or hsp.get("line") is None:
+        sp = _match_sp(match_id)
+        if sp and sp.get("handicap") is not None:
+            hsp = {"line": sp["handicap"]}
+        else:
+            return (0, "", 0)
+    line = hsp["line"]
+    pick = "让球主胜" if line < 0 else ("让球客胜" if line > 0 else "平手")
+    odds = hsp.get("home", 0) or hsp.get("away", 0) or 0
+    return (line, pick, odds)
+
+
 # ═══════════════════════════════════════════════════════════════
 # 竞彩方案 v6.0 — 收益最大化投资组合引擎
 # ═══════════════════════════════════════════════════════════════
@@ -657,6 +672,8 @@ def generate_all_opportunities(classified: list, config: PortfolioConfig = None)
                 flag_name = pick_name
                 if direction == "draw":
                     flag_name = "平局"
+                # 让球盘信息
+                hcap_note = _handicap_note(mid)
                 opportunities.append(BetOpportunity(
                     match_id=mid, match_name=mn, kickoff=ko,
                     play_type="spf", pick=flag_name, pick_short=f"SPF-{direction}",
@@ -665,6 +682,7 @@ def generate_all_opportunities(classified: list, config: PortfolioConfig = None)
                     kelly_full_pct=0, stake=0,
                     confidence=conf, delta=delta,
                     market_implied=spf_val.get("market_prob", 0),
+                    handicap_line=hcap_note[0] if hcap_note else 0,
                     note=f"WDL={wdl}",
                 ))
 
@@ -832,6 +850,19 @@ def generate_parlay_opportunities(single_ops: list, config: PortfolioConfig) -> 
                 kickoff = max(op.kickoff for op in selected)
                 conf = "高" if all(op.confidence == "高" for op in selected) else "中"
 
+                # 串关让球信息汇总
+                hcap_parts = []
+                for op in selected:
+                    h, _, _ = _handicap_note(op.match_id)
+                    if h and h != 0:
+                        label = f"让{abs(h)}球" if h < 0 else f"受{h}球"
+                        hcap_parts.append(f"{op.match_id}({label})")
+                hcap_note_str = " | ".join(hcap_parts) if hcap_parts else ""
+                odds_str = "×".join(str(op.odds) for op in selected)
+                note_str = f"{type_label} {odds_str}={combined_odds}"
+                if hcap_note_str:
+                    note_str += f" [{hcap_note_str}]"
+
                 results.append(BetOpportunity(
                     match_id="+".join(op.match_id for op in selected),
                     match_name=match_name, kickoff=kickoff,
@@ -845,7 +876,7 @@ def generate_parlay_opportunities(single_ops: list, config: PortfolioConfig) -> 
                     kelly_full_pct=0, stake=0,
                     confidence=conf, delta=0,
                     market_implied=round(mkt_imp * 100, 1),
-                    note=f"{type_label} {'×'.join(str(op.odds) for op in selected)}={combined_odds}",
+                    note=note_str,
                 ))
 
             if len(selected) >= parlay_name:  # 达到目标串数
@@ -1318,7 +1349,12 @@ def format_lottery(plan: dict) -> str:
             medal = medals[i] if i < len(medals) else f"  {i+1}."
             L.append("")
             L.append(f"{medal} #{i+1} {_play_type_name(bet.play_type)} · {bet.match_name}")
-            L.append(f"   方向: {bet.pick:<24} 赔率: {bet.odds:.2f}")
+            # 让球盘信息
+            hcap_str = ""
+            if bet.handicap_line and bet.handicap_line != 0:
+                hcap_label = f"让{abs(bet.handicap_line)}球" if bet.handicap_line < 0 else f"受{bet.handicap_line}球"
+                hcap_str = f"  |  让球盘: {hcap_label}"
+            L.append(f"   方向: {bet.pick:<24} 赔率: {bet.odds:.2f}{hcap_str}")
             L.append(f"   模型概率: {bet.model_prob}%  |  市场隐含: {bet.market_implied}%  |  Edge: {bet.edge_pct:+.1f}pp")
             L.append(f"   EV: {bet.ev:+.1%}  |  凯利仓位: {bet.stake:.0f}元 (1/{1/RULE['kelly_fraction']:.0f}凯利)")
             if bet.note:
