@@ -450,21 +450,25 @@ for bdate, bmatches in all_dates.items():
             except: pass
     date_scores[bdate] = round(total_max_pct / max(1, count), 1) if count > 0 else 0
 
-# Sort chronologically
+# Sort chronologically, filter: 只显示今天及未来的日期
 sorted_dates = sorted(all_dates.keys(), key=lambda x: (int(x.split('/')[0]), int(x.split('/')[1])))
-# Default to today or nearest upcoming
-default_date = None
+# 只保留今天及以后、且有未赛场次的日期
+upcoming_dates = []
 for d in sorted_dates:
-    if d >= today_approx:
-        default_date = d
-        break
-if not default_date: default_date = sorted_dates[0] if sorted_dates else None
-# Hot date: highest score among upcoming dates
-upcoming_dates_hot = {d: s for d, s in date_scores.items() if d >= today_approx}
+    bms = all_dates[d]
+    mids = [m[0] for m in bms]
+    unplayed = sum(1 for m in mids if m not in played_map)
+    if d >= today_approx and unplayed > 0:
+        upcoming_dates.append(d)
+
+# Default to today or nearest upcoming
+default_date = upcoming_dates[0] if upcoming_dates else (sorted_dates[0] if sorted_dates else None)
+# Hot date: highest average max probability
+upcoming_dates_hot = {d: s for d, s in date_scores.items() if d in upcoming_dates}
 hot_date = max(upcoming_dates_hot, key=upcoming_dates_hot.get) if upcoming_dates_hot else (default_date or "")
 
 first_panel = True
-for bdate in sorted_dates:
+for bdate in upcoming_dates:
     bmatches = all_dates[bdate]
     match_ids = [m[0] for m in bmatches]
     unplayed_count = sum(1 for m in match_ids if m not in played_map)
@@ -475,8 +479,8 @@ for bdate in sorted_dates:
     active_cls = "active" if bdate == default_date else ""
     bet_date_tabs += f'<button class="bet-date-tab {active_cls}" onclick="showBetDate(\'bet-{bdate_safe}\',this)">{date_label}{hot_tag}</button>'
 
-    # Determine if this date is past/expired
-    is_expired = bdate < today_approx or unplayed_count == 0
+    # Past dates already filtered out above
+    is_expired = False
 
     plan_text = ""
     match_cards = ""
@@ -588,9 +592,7 @@ for bdate in sorted_dates:
             match_cards += f"""<div class="bet-card"><div class="bet-teams">{flag(hn)} vs {flag(an)}</div></div>"""
 
     active_panel = 'style="display:block"' if bdate == default_date else 'style="display:none"'
-    expired_banner = '<div class="expired-banner">⏰ 已截止投注</div>' if is_expired else ''
     bet_date_panels += f"""<div id="bet-{bdate_safe}" class="bet-date-panel" {active_panel}>
-    {expired_banner}
     <div class="bet-matches-grid">{match_cards}</div>
     <div class="bet-plan-section">
       <div class="bet-plan-header">📋 {bdate} 购彩方案 · 200元预算</div>
