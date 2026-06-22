@@ -253,6 +253,22 @@ def tournament_momentum(team_id: str) -> float:
     return round(min(5, max(-5, bonus)), 1)
 
 
+def _worldcup_goal_stats(team_id: str) -> tuple:
+    """世界杯正赛进球/失球场均 (0,0 if no matches)"""
+    results = load_json("results.json")
+    gf = ga = games = 0
+    for m in results["matches"]:
+        if m["home"] == team_id:
+            hg, ag = map(int, m["score"].split("-"))
+            gf += hg; ga += ag; games += 1
+        elif m["away"] == team_id:
+            ag, hg = map(int, m["score"].split("-"))
+            gf += hg; ga += ag; games += 1
+    if games == 0:
+        return 0.0, 0.0
+    return gf / games, ga / games
+
+
 def hard_data_score(team_id: str, opponent_id: str = None) -> dict:
     """硬数据层总分 (0-100), opponent_id传入时计算对位加成"""
     teams = load_json("teams.json")
@@ -283,14 +299,20 @@ def hard_data_score(team_id: str, opponent_id: str = None) -> dict:
         except Exception:
             pass
 
-    # 归一化: 基础+状态+伤病+赛事动量+轮次+对位
+    # 归一化: 基础+状态+伤病+世界杯表现+轮次+对位
     injury_score = max(0, 100 - injury * 10)
     momentum_score = 50 + momentum * 10  # 动量-5~+5 → 0~100
+
+    # 世界杯正赛表现综合评分: 动量(累积全部已赛) + 进球效率
+    goals_pg, conceded_pg = _worldcup_goal_stats(team_id)
+    goal_efficiency = min(100, max(0, 50 + (goals_pg - conceded_pg) * 15))
+    worldcup_score = round(momentum_score * 0.5 + goal_efficiency * 0.5, 1)
+
     round_score = 50 + round_bonus * 3   # 轮次动力±3 → 0~100
 
-    # [v3.0] 基础:36% 状态:31% 伤病:10% 动量:6% 轮次:8% 对位:9%
-    final = (base * 0.36 + form * 0.31 + injury_score * 0.10 +
-            momentum_score * 0.06 + round_score * 0.08 + (50 + matchup_bonus * 5) * 0.09)
+    # [v3.1] 世界杯正赛表现核心权重: 基础28% 状态24% 伤病10% 世界杯18% 轮次8% 对位12%
+    final = (base * 0.28 + form * 0.24 + injury_score * 0.10 +
+            worldcup_score * 0.18 + round_score * 0.08 + (50 + matchup_bonus * 5) * 0.12)
     return {
         "score": round(final, 1),
         "detail": {
@@ -299,6 +321,9 @@ def hard_data_score(team_id: str, opponent_id: str = None) -> dict:
             "injury_penalty": round(injury, 1),
             "injury_score": round(injury_score, 1),
             "tournament_momentum": momentum,
+            "worldcup_score": round(worldcup_score, 1),
+            "goal_efficiency": round(goal_efficiency, 1),
+            "goals_per_game": round(goals_pg, 1),
             "matchup_bonus": round(matchup_bonus, 1)
         }
     }
