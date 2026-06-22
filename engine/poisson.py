@@ -234,8 +234,12 @@ def build_prob_matrix(xg_a: float, xg_b: float, max_goals: int = 8,
         else:
             strength = 1.0   # 势均力敌, 完整加成
 
-        # [v2.2] 实力差感知: 差距越大平局越不可能, 降低加成避免概率压缩
-        if score_gap > 25:
+        # [v3.6] 实力差感知 + 近战保护
+        # 若原始平局率已达30-45%, 说明是真实接近比赛 → 不降权
+        close_match_protection = (0.30 <= draw_prob <= 0.45)
+        if close_match_protection and score_gap < 20:
+            strength *= 1.0  # 保留完整加成
+        elif score_gap > 25:
             strength *= 0.5
         elif score_gap > 18:
             strength *= 0.7

@@ -182,11 +182,13 @@ def tournament_momentum(team_id: str) -> float:
         else:
             opp_quality = 0.7   # 弱队
 
-        # 基础动量（对手强度加权）
-        if gd >= 3:
-            bonus = (3 + (gd - 3) * 0.5) * opp_quality
+        # 基础动量（对手强度加权 + 净胜球连续映射）
+        if gd >= 5:
+            bonus = (4 + (gd - 5) * 0.8) * opp_quality   # 大屠杀(5-1荷兰) → 高动量
+        elif gd >= 3:
+            bonus = (2 + (gd - 2) * 0.6) * opp_quality
         elif gd >= 1:
-            bonus = (1 + gd * 0.5) * opp_quality
+            bonus = (0.5 + gd * 0.5) * opp_quality
         elif gd == 0:
             if fifa_rank <= 15 and opp_rank >= 30:
                 bonus = -1.5
