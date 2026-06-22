@@ -379,12 +379,12 @@
       "opponent_avg_rank": 20
     },
     "recent_5": {
-      "w": 2,
+      "w": 3,
       "d": 2,
-      "l": 1,
-      "gf": 9,
-      "ga": 5,
-      "opponent_avg_rank": 18
+      "l": 0,
+      "gf": 14,
+      "ga": 6,
+      "opponent_avg_rank": 22
     },
     "tournament_exp": 8,
     "top5_league_starters": 7,

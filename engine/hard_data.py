@@ -147,54 +147,71 @@ def injury_penalty(team_id: str) -> float:
 
 
 def tournament_momentum(team_id: str) -> float:
-    """2.4 赛事动量 — R1正赛表现(含对手强度+球员状态) (-5~+5)"""
+    """2.4 赛事动量 — 全部已赛正赛表现(含对手强度+球员状态) (-5~+5)"""
     results = load_json("results.json")
     teams = load_json("teams.json")
+    team = teams.get(team_id, {})
+    fifa_rank = team.get("fifa_rank", 48)
 
-    gf = ga = opp_id = None
-    found = False
+    total_bonus = 0.0
+    games_found = 0
+
     for m in results["matches"]:
         if m["home"] == team_id:
             gf, ga = map(int, m["score"].split("-"))
-            opp_id = m["away"]; found = True; break
+            opp_id = m["away"]
         elif m["away"] == team_id:
             ga, gf = map(int, m["score"].split("-"))
-            opp_id = m["home"]; found = True; break
+            opp_id = m["home"]
+        else:
+            continue
 
-    if not found:
+        games_found += 1
+        gd = gf - ga
+        opp = teams.get(opp_id, {})
+        opp_rank = opp.get("fifa_rank", 48)
+
+        # 对手强度系数 (基于Elo, 更准确反映当下实力)
+        opp_elo = opp.get("elo_rating", 1500)
+        if opp_elo >= 1900:
+            opp_quality = 1.5   # 顶级 (Elo≥1900)
+        elif opp_elo >= 1700:
+            opp_quality = 1.2   # 强队 (Elo 1700-1900, 含瑞典等)
+        elif opp_elo >= 1550:
+            opp_quality = 1.0   # 中游
+        else:
+            opp_quality = 0.7   # 弱队
+
+        # 基础动量（对手强度加权）
+        if gd >= 3:
+            bonus = (3 + (gd - 3) * 0.5) * opp_quality
+        elif gd >= 1:
+            bonus = (1 + gd * 0.5) * opp_quality
+        elif gd == 0:
+            if fifa_rank <= 15 and opp_rank >= 30:
+                bonus = -1.5
+            elif fifa_rank >= 35 and opp_rank <= 15:
+                bonus = 3.0
+            elif fifa_rank >= 40:
+                bonus = 1.5
+            elif fifa_rank <= 20:
+                bonus = -1.0
+            else:
+                bonus = 0
+        elif gd >= -1:
+            bonus = -1.5 if opp_rank >= 35 else -1.0
+        else:
+            bonus = max(-5, (-3 + (gd + 3) * 0.5) * opp_quality)
+
+        # 最近比赛权重更高 (exp decay: 最近×1.0, 往前×0.7)
+        weight = 1.0 if games_found == 1 else 0.7
+        total_bonus += bonus * weight
+
+    if games_found == 0:
         return 0.0
 
-    gd = gf - ga
-    team = teams.get(team_id, {})
-    fifa_rank = team.get("fifa_rank", 48)
-    opp = teams.get(opp_id, {})
-    opp_rank = opp.get("fifa_rank", 48)
-
-    # === 对手强度系数 ===
-    # 强敌(rank<=15): 1.5x, 中游(16-35): 1.0x, 弱队(36-48): 0.5x
-    opp_quality = 1.5 if opp_rank <= 15 else (1.0 if opp_rank <= 35 else 0.5)
-
-    # === 基础动量（对手强度加权） ===
-    if gd >= 3:
-        bonus = (3 + (gd - 3) * 0.5) * opp_quality
-    elif gd >= 1:
-        bonus = (1 + gd * 0.5) * opp_quality
-    elif gd == 0:
-        # 强队平弱队→扣分, 弱队平强队→加分
-        if fifa_rank <= 15 and opp_rank >= 30:
-            bonus = -1.5
-        elif fifa_rank >= 35 and opp_rank <= 15:
-            bonus = 3.0  # 超级爆冷
-        elif fifa_rank >= 40:
-            bonus = 1.5
-        elif fifa_rank <= 20:
-            bonus = -1.0
-        else:
-            bonus = 0
-    elif gd >= -1:
-        bonus = -1.5 if opp_rank >= 35 else -1.0
-    else:
-        bonus = max(-5, (-3 + (gd + 3) * 0.5) * opp_quality)
+    # 均值 + 边界
+    return max(-5.0, min(5.0, total_bonus / max(1, games_found)))
 
     # 进球/零封加成
     if gf >= 3:
