@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-21T23:54:26.674932",
+  "updated": "2026-06-22T13:12:48.671824",
   "source": "500.com + nowscore",
   "matches": {
     "POR-COD": {
@@ -236,51 +236,87 @@
       "single": false
     },
     "ARG-AUT": {
-      "home": 1.4,
-      "draw": 3.98,
-      "away": 6.1,
+      "home": 1.32,
+      "draw": 4.17,
+      "away": 7.6,
       "single": false
     },
     "FRA-IRQ": {
-      "home": 2.61,
-      "draw": 4.5,
-      "away": 1.91,
+      "home": 2.41,
+      "draw": 4.28,
+      "away": 2.08,
       "single": false
     },
     "NOR-SEN": {
-      "home": 1.95,
-      "draw": 3.3,
-      "away": 3.2,
+      "home": 1.88,
+      "draw": 3.44,
+      "away": 3.26,
       "single": false
     },
     "JOR-ALG": {
-      "home": 5.82,
-      "draw": 3.8,
-      "away": 1.44,
+      "home": 6.1,
+      "draw": 4.0,
+      "away": 1.4,
       "single": false
     },
     "POR-UZB": {
-      "home": 2.39,
-      "draw": 3.9,
-      "away": 2.2,
+      "home": 2.33,
+      "draw": 3.95,
+      "away": 2.24,
       "single": false
     },
     "ENG-GHA": {
-      "home": 2.49,
+      "home": 2.43,
       "draw": 3.9,
-      "away": 2.12,
+      "away": 2.17,
       "single": false
     },
     "PAN-CRO": {
-      "home": 6.0,
+      "home": 6.38,
       "draw": 3.95,
-      "away": 1.41,
+      "away": 1.39,
       "single": false
     },
     "COL-COD": {
       "home": 1.36,
       "draw": 3.85,
       "away": 7.5,
+      "single": false
+    },
+    "SUI-CAN": {
+      "home": 2.3,
+      "draw": 2.62,
+      "away": 3.2,
+      "single": false
+    },
+    "BIH-QAT": {
+      "home": 1.38,
+      "draw": 4.45,
+      "away": 5.55,
+      "single": false
+    },
+    "SCO-BRA": {
+      "home": 7.85,
+      "draw": 4.8,
+      "away": 1.26,
+      "single": false
+    },
+    "MAR-HAI": {
+      "home": 2.3,
+      "draw": 3.85,
+      "away": 2.3,
+      "single": false
+    },
+    "RSA-KOR": {
+      "home": 4.65,
+      "draw": 3.28,
+      "away": 1.64,
+      "single": false
+    },
+    "CZE-MEX": {
+      "home": 3.35,
+      "draw": 3.25,
+      "away": 1.91,
       "single": false
     }
   },
@@ -416,6 +452,24 @@
     },
     "COL-COD": {
       "line": -1
+    },
+    "SUI-CAN": {
+      "line": -1
+    },
+    "BIH-QAT": {
+      "line": -1
+    },
+    "SCO-BRA": {
+      "line": 1
+    },
+    "MAR-HAI": {
+      "line": -2
+    },
+    "RSA-KOR": {
+      "line": 1
+    },
+    "CZE-MEX": {
+      "line": 1
     }
   },
   "total_goals": {

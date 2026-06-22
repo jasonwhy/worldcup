@@ -1,9 +1,9 @@
 {
   "updated": "2026-06-21T15:29:13",
-  "total_played": 36,
-  "direction_correct": 25,
-  "direction_total": 36,
-  "direction_rate": 69.4,
+  "total_played": 40,
+  "direction_correct": 28,
+  "direction_total": 40,
+  "direction_rate": "70%",
   "matches": [
     {
       "date": "6/11",
@@ -292,6 +292,38 @@
       "score": "4-0",
       "prediction_correct": "✅",
       "note": "TUN 0-4 JPN: 预测客胜(W18/D28/L53), 实际客胜"
+    },
+    {
+      "home": "BEL",
+      "away": "IRN",
+      "score": "0-0",
+      "date": "6/22",
+      "prediction_correct": "❌",
+      "note": "模型预测: 42/35/23% 实际: draw"
+    },
+    {
+      "home": "EGY",
+      "away": "NZL",
+      "score": "3-1",
+      "date": "6/22",
+      "prediction_correct": "✅",
+      "note": "模型预测: 50/32/19% 实际: home"
+    },
+    {
+      "home": "ESP",
+      "away": "KSA",
+      "score": "4-0",
+      "date": "6/22",
+      "prediction_correct": "✅",
+      "note": "模型预测: 68/22/10% 实际: home"
+    },
+    {
+      "home": "CPV",
+      "away": "URU",
+      "score": "2-2",
+      "date": "6/22",
+      "prediction_correct": "✅",
+      "note": "模型预测: 21/43/36% 实际: draw"
     }
   ]
 }

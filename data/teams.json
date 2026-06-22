@@ -67,9 +67,9 @@
     },
     "recent_5": {
       "w": 4,
-      "d": 1,
+      "d": 0,
       "l": 0,
-      "gf": 12,
+      "gf": 16,
       "ga": 2,
       "opponent_avg_rank": 25
     },
@@ -431,9 +431,9 @@
       "opponent_avg_rank": 28
     },
     "recent_5": {
-      "w": 2,
+      "w": 1,
       "d": 2,
-      "l": 1,
+      "l": 0,
       "gf": 6,
       "ga": 3,
       "opponent_avg_rank": 30
@@ -693,11 +693,11 @@
       "opponent_avg_rank": 20
     },
     "recent_5": {
-      "w": 3,
+      "w": 2,
       "d": 1,
-      "l": 1,
-      "gf": 7,
-      "ga": 4,
+      "l": 0,
+      "gf": 9,
+      "ga": 6,
       "opponent_avg_rank": 22
     },
     "key_players": {
@@ -1840,10 +1840,10 @@
     },
     "recent_5": {
       "w": 3,
-      "d": 2,
+      "d": 1,
       "l": 0,
-      "gf": 8,
-      "ga": 3,
+      "gf": 11,
+      "ga": 4,
       "opponent_avg_rank": 30
     },
     "key_players": {
@@ -1891,9 +1891,9 @@
       "opponent_avg_rank": 35
     },
     "recent_5": {
-      "w": 3,
+      "w": 2,
       "d": 1,
-      "l": 1,
+      "l": 0,
       "gf": 8,
       "ga": 5,
       "opponent_avg_rank": 32
@@ -1943,11 +1943,11 @@
       "opponent_avg_rank": 50
     },
     "recent_5": {
-      "w": 2,
-      "d": 1,
+      "w": 1,
+      "d": 0,
       "l": 2,
-      "gf": 6,
-      "ga": 8,
+      "gf": 7,
+      "ga": 11,
       "opponent_avg_rank": 48
     },
     "key_players": {
@@ -1995,11 +1995,11 @@
       "opponent_avg_rank": 35
     },
     "recent_5": {
-      "w": 1,
-      "d": 2,
+      "w": 0,
+      "d": 1,
       "l": 2,
       "gf": 5,
-      "ga": 8,
+      "ga": 12,
       "opponent_avg_rank": 30
     },
     "key_players": {
@@ -2047,11 +2047,11 @@
       "opponent_avg_rank": 40
     },
     "recent_5": {
-      "w": 2,
+      "w": 1,
       "d": 2,
-      "l": 1,
-      "gf": 4,
-      "ga": 3,
+      "l": 0,
+      "gf": 6,
+      "ga": 5,
       "opponent_avg_rank": 38
     },
     "key_players": {
