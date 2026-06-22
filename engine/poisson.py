@@ -72,6 +72,70 @@ def poisson_prob(lmbda: float, k: int) -> float:
     return (lmbda ** k * math.exp(-lmbda)) / math.factorial(k)
 
 
+def neg_binom_prob(lmbda: float, k: int, dispersion: float = 0.3) -> float:
+    """
+    负二项分布(泊松-伽马混合): 比泊松更分散, 更好拟合足球比分的超额方差
+    dispersion: 0=泊松, 越大越分散 (推荐0.2-0.4)
+    """
+    if lmbda <= 0:
+        return 1.0 if k == 0 else 0.0
+    if dispersion <= 0.01:
+        return poisson_prob(lmbda, k)
+    # Gamma-Poisson (Negative Binomial)
+    r = 1.0 / dispersion  # 形状参数
+    p = r / (r + lmbda)
+    # NB(k; r, p) = C(k+r-1, k) * p^r * (1-p)^k
+    from math import lgamma
+    log_prob = lgamma(k + r) - lgamma(r) - lgamma(k + 1) + r * math.log(p) + k * math.log(1 - p)
+    return math.exp(log_prob)
+
+
+def dixon_coles_adjust(prob_matrix: dict, xg_home: float, xg_away: float,
+                       rho: float = -0.08) -> dict:
+    """
+    Dixon-Coles低比分修正: 调整0-0/1-0/0-1/1-1的实际概率
+
+    标准泊松高估低比分平局概率, Dixon-Coles用ρ参数修正
+    ρ < 0: 降低0-0/1-1概率 (足球实际比泊松独立假设更少低分平局)
+
+    论文: Dixon & Coles (1997) "Modelling Association Football Scores"
+    """
+    adjusted = dict(prob_matrix)
+    total_adjustment = 0.0
+
+    # 只修正低比分 (0-0, 0-1, 1-0, 1-1)
+    for (i, j) in [(0, 0), (0, 1), (1, 0), (1, 1)]:
+        if (i, j) not in prob_matrix:
+            continue
+        orig = prob_matrix[(i, j)]
+        # Dixon-Coles: λ_ij = 1 + ρ * (指标)
+        if i == j:
+            # 平局修正: 通常降低
+            factor = 1.0 + rho * 0.5
+        else:
+            # 1球差分修正: 通常微升
+            factor = 1.0 + rho * 0.3
+        adjusted[(i, j)] = orig * factor
+        total_adjustment += orig * factor - orig
+
+    # 将修正量均匀分布到其他比分
+    if abs(total_adjustment) > 0.0001:
+        other_count = len(adjusted) - 4
+        if other_count > 0:
+            per_other = -total_adjustment / other_count
+            for key in adjusted:
+                if key not in [(0, 0), (0, 1), (1, 0), (1, 1)]:
+                    adjusted[key] = max(0.0, adjusted[key] + per_other)
+
+    # 重归一化
+    total = sum(adjusted.values())
+    if total > 0:
+        for key in adjusted:
+            adjusted[key] /= total
+
+    return adjusted
+
+
 def build_prob_matrix(xg_a: float, xg_b: float, max_goals: int = 8,
                      match_round: str = "group_1", temperature: float = 25.0,
                      score_gap: float = 0.0, team_draw_factor: float = 1.0) -> Dict:
@@ -92,39 +156,51 @@ def build_prob_matrix(xg_a: float, xg_b: float, max_goals: int = 8,
     else:
         actual_max = max_goals
 
-    prob_a = {k: poisson_prob(xg_a, k) for k in range(actual_max + 1)}
-    prob_b = {k: poisson_prob(xg_b, k) for k in range(actual_max + 1)}
+    # [v3.5] 负二项分布: 比泊松更分散, 更好拟合足球超额方差
+    # dispersion: 基于score_gap调节 (接近比赛用低分散, 碾压局用高分散)
+    use_dispersion = 0.25 if score_gap > 20 else (0.18 if score_gap > 10 else 0.12)
+    prob_a = {k: neg_binom_prob(xg_a, k, use_dispersion) for k in range(actual_max + 1)}
+    prob_b = {k: neg_binom_prob(xg_b, k, use_dispersion) for k in range(actual_max + 1)}
+
+    # 基础概率矩阵
+    raw_probs = {}
+    for a in range(actual_max + 1):
+        for b in range(actual_max + 1):
+            p = prob_a[a] * prob_b[b]
+            raw_probs[(a, b)] = p
+
+    # Dixon-Coles 低比分修正 (降低泊松对0-0/1-1的高估)
+    # ρ参数: 差距越大ρ越负 (接近比赛用更轻的修正)
+    dc_rho = -0.10 if score_gap > 15 else (-0.06 if score_gap > 8 else -0.03)
+    adjusted_probs = dixon_coles_adjust(raw_probs, xg_a, xg_b, rho=dc_rho)
 
     all_probs = []
     win_prob = 0
     draw_prob = 0
     lose_prob = 0
 
-    for a in range(actual_max + 1):
-        for b in range(actual_max + 1):
-            p = prob_a[a] * prob_b[b]
+    for (a, b), p in adjusted_probs.items():
+        # 屠杀/大比分过滤
+        if slaughter_mode:
+            pass
+        elif score_gap > 30:
+            pass
+        elif (a >= 4 and b >= 4) or (a == 0 and b >= 6) or (b == 0 and a >= 6):
+            p *= 0.85
 
-            # P3: 屠杀模式不过滤, 常规模式大比分压制系数从0.7降到0.85
-            if slaughter_mode:
-                pass  # 屠杀不过滤
-            elif score_gap > 30:
-                pass  # 大差距不过滤
-            elif (a >= 4 and b >= 4) or (a == 0 and b >= 6) or (b == 0 and a >= 6):
-                p *= 0.85  # P3: 从0.7放宽
+        all_probs.append({
+            "score": f"{a}-{b}",
+            "home_goals": a,
+            "away_goals": b,
+            "probability": round(p, 6)
+        })
 
-            all_probs.append({
-                "score": f"{a}-{b}",
-                "home_goals": a,
-                "away_goals": b,
-                "probability": round(p, 6)
-            })
-
-            if a > b:
-                win_prob += p
-            elif a == b:
-                draw_prob += p
-            else:
-                lose_prob += p
+        if a > b:
+            win_prob += p
+        elif a == b:
+            draw_prob += p
+        else:
+            lose_prob += p
 
     # 归一化 (在平局加成之前)
     total = win_prob + draw_prob + lose_prob
