@@ -1,9 +1,9 @@
 {
   "updated": "2026-06-21T15:29:13",
-  "total_played": 40,
-  "direction_correct": 28,
-  "direction_total": 40,
-  "direction_rate": "70%",
+  "total_played": 44,
+  "direction_correct": 32,
+  "direction_total": 44,
+  "direction_rate": "73%",
   "matches": [
     {
       "date": "6/11",
@@ -324,6 +324,38 @@
       "date": "6/22",
       "prediction_correct": "✅",
       "note": "模型预测: 21/43/36% 实际: draw"
+    },
+    {
+      "home": "ARG",
+      "away": "AUT",
+      "score": "2-0",
+      "date": "6/23",
+      "prediction_correct": "✅",
+      "note": "模型: 50/28/21% 实际: home"
+    },
+    {
+      "home": "FRA",
+      "away": "IRQ",
+      "score": "3-0",
+      "date": "6/23",
+      "prediction_correct": "✅",
+      "note": "模型: 61/22/16% 实际: home"
+    },
+    {
+      "home": "NOR",
+      "away": "SEN",
+      "score": "3-2",
+      "date": "6/23",
+      "prediction_correct": "✅",
+      "note": "模型: 42/33/25% 实际: home"
+    },
+    {
+      "home": "JOR",
+      "away": "ALG",
+      "score": "1-2",
+      "date": "6/23",
+      "prediction_correct": "✅",
+      "note": "模型: 20/28/51% 实际: away"
     }
   ]
 }

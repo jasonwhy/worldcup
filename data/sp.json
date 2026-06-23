@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-22T13:12:48.671824",
+  "updated": "2026-06-23T15:40:19.179853",
   "source": "500.com + nowscore",
   "matches": {
     "POR-COD": {
@@ -260,27 +260,27 @@
       "single": false
     },
     "POR-UZB": {
-      "home": 2.33,
-      "draw": 3.95,
-      "away": 2.24,
+      "home": 1.98,
+      "draw": 4.05,
+      "away": 2.65,
       "single": false
     },
     "ENG-GHA": {
-      "home": 2.43,
-      "draw": 3.9,
-      "away": 2.17,
+      "home": 2.25,
+      "draw": 3.85,
+      "away": 2.35,
       "single": false
     },
     "PAN-CRO": {
-      "home": 6.38,
-      "draw": 3.95,
-      "away": 1.39,
+      "home": 6.9,
+      "draw": 4.2,
+      "away": 1.34,
       "single": false
     },
     "COL-COD": {
-      "home": 1.36,
-      "draw": 3.85,
-      "away": 7.5,
+      "home": 1.35,
+      "draw": 3.9,
+      "away": 7.6,
       "single": false
     },
     "SUI-CAN": {
@@ -308,15 +308,51 @@
       "single": false
     },
     "RSA-KOR": {
-      "home": 4.65,
-      "draw": 3.28,
-      "away": 1.64,
+      "home": 4.85,
+      "draw": 3.35,
+      "away": 1.6,
       "single": false
     },
     "CZE-MEX": {
       "home": 3.35,
       "draw": 3.25,
       "away": 1.91,
+      "single": false
+    },
+    "ECU-GER": {
+      "home": 3.62,
+      "draw": 3.6,
+      "away": 1.74,
+      "single": false
+    },
+    "CUW-CIV": {
+      "home": 2.3,
+      "draw": 3.85,
+      "away": 2.3,
+      "single": false
+    },
+    "TUN-NED": {
+      "home": 2.42,
+      "draw": 3.9,
+      "away": 2.18,
+      "single": false
+    },
+    "JPN-SWE": {
+      "home": 1.91,
+      "draw": 3.25,
+      "away": 3.35,
+      "single": false
+    },
+    "PAR-AUS": {
+      "home": 2.54,
+      "draw": 2.05,
+      "away": 4.05,
+      "single": false
+    },
+    "TUR-USA": {
+      "home": 3.1,
+      "draw": 3.4,
+      "away": 1.95,
       "single": false
     }
   },
@@ -469,6 +505,24 @@
       "line": 1
     },
     "CZE-MEX": {
+      "line": 1
+    },
+    "ECU-GER": {
+      "line": 1
+    },
+    "CUW-CIV": {
+      "line": 2
+    },
+    "TUN-NED": {
+      "line": 2
+    },
+    "JPN-SWE": {
+      "line": -1
+    },
+    "PAR-AUS": {
+      "line": -1
+    },
+    "TUR-USA": {
       "line": 1
     }
   },
