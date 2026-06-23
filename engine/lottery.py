@@ -639,6 +639,7 @@ def generate_all_opportunities(classified: list, config: PortfolioConfig = None)
     if config is None:
         config = PortfolioConfig()
     opportunities = []
+    parlay_only_ops = []  # 非单关SPF供串关专用池
 
     for c in classified:
         if c.get("is_excluded"):
@@ -650,7 +651,8 @@ def generate_all_opportunities(classified: list, config: PortfolioConfig = None)
         conf = c["confidence"]
         xg_total = c["total_xg"]
 
-        # ── SPF (胜平负) — 所有三个方向, 有正EV就入选 ──
+        # ── SPF (胜平负) — 仅单关场次可单投, 非单关只用于串关 ──
+        is_single = _is_single_match(mid)
         wdl = c.get("wdl", "0/0/0")
         parts_wdl = [float(x) for x in wdl.split("/")]
         probs = {
@@ -658,33 +660,51 @@ def generate_all_opportunities(classified: list, config: PortfolioConfig = None)
             "draw": (parts_wdl[1] if len(parts_wdl) > 1 else 0, "平局"),
             "away": (parts_wdl[2] if len(parts_wdl) > 2 else 0, c.get("dir_name", "客胜")),
         }
-        # 修正away的pick name
         if "away" in probs:
             away_name = c["match_name"].split(" vs ")
             away_team = away_name[1] if len(away_name) > 1 else ""
             probs["away"] = (probs["away"][0], f"{away_team}胜" if away_team else "客胜")
 
-        for direction, (prob, pick_name) in probs.items():
-            if prob <= 0:
-                continue
-            spf_val = compute_value(mid, direction, prob)
-            if spf_val["is_value"] and spf_val["ev"] > 0:
-                flag_name = pick_name
-                if direction == "draw":
-                    flag_name = "平局"
-                # 让球盘信息
-                hcap_note = _handicap_note(mid)
-                opportunities.append(BetOpportunity(
-                    match_id=mid, match_name=mn, kickoff=ko,
-                    play_type="spf", pick=flag_name, pick_short=f"SPF-{direction}",
-                    model_prob=prob, odds=spf_val["odds"],
-                    edge_pct=spf_val["edge"], ev=spf_val["ev"],
-                    kelly_full_pct=0, stake=0,
-                    confidence=conf, delta=delta,
-                    market_implied=spf_val.get("market_prob", 0),
-                    handicap_line=hcap_note[0] if hcap_note else 0,
-                    note=f"WDL={wdl}",
-                ))
+        # ⚠️ 核心规则: 非单关场次SPF不生成单注, 但仍然生成供串关使用
+        if not is_single:
+            for direction, (prob, pick_name) in probs.items():
+                if prob <= 0: continue
+                spf_val = compute_value(mid, direction, prob)
+                if spf_val["is_value"] and spf_val["ev"] > 0:
+                    flag_name = "平局" if direction == "draw" else pick_name
+                    hcap_note = _handicap_note(mid)
+                    parlay_only_ops.append(BetOpportunity(
+                        match_id=mid, match_name=mn, kickoff=ko,
+                        play_type="spf", pick=flag_name, pick_short=f"SPF-{direction}",
+                        model_prob=prob, odds=spf_val["odds"],
+                        edge_pct=spf_val["edge"], ev=spf_val["ev"],
+                        kelly_full_pct=0, stake=0,
+                        confidence=conf, delta=delta,
+                        market_implied=spf_val.get("market_prob", 0),
+                        handicap_line=hcap_note[0] if hcap_note else 0,
+                        note=f"WDL={wdl}",
+                    ))
+            # 继续处理其他玩法, 然后返回
+            # (TP/TG/RQSPF/HTFT below)
+        else:
+            # 单关场次: 正常生成SPF单注
+            for direction, (prob, pick_name) in probs.items():
+                if prob <= 0: continue
+                spf_val = compute_value(mid, direction, prob)
+                if spf_val["is_value"] and spf_val["ev"] > 0:
+                    flag_name = "平局" if direction == "draw" else pick_name
+                    hcap_note = _handicap_note(mid)
+                    opportunities.append(BetOpportunity(
+                        match_id=mid, match_name=mn, kickoff=ko,
+                        play_type="spf", pick=flag_name, pick_short=f"SPF-{direction}",
+                        model_prob=prob, odds=spf_val["odds"],
+                        edge_pct=spf_val["edge"], ev=spf_val["ev"],
+                        kelly_full_pct=0, stake=0,
+                        confidence=conf, delta=delta,
+                        market_implied=spf_val.get("market_prob", 0),
+                        handicap_line=hcap_note[0] if hcap_note else 0,
+                        note=f"WDL={wdl}",
+                    ))
 
         # ── RQSPF (让球胜平负) ──
         rq = c.get("rqspf")
@@ -788,7 +808,8 @@ def generate_all_opportunities(classified: list, config: PortfolioConfig = None)
                             market_implied=round(s_market_imp, 1),
                         ))
 
-    return opportunities
+    # 返回: (单注机会, 串关专用池)
+    return opportunities, parlay_only_ops
 
 
 def generate_parlay_opportunities(single_ops: list, config: PortfolioConfig) -> list:
@@ -1219,11 +1240,12 @@ def generate_plan(matches: list) -> dict:
             c["is_value"] = val["is_value"]
             c["ev_score"] = val["ev"]
 
-    # ★ 生成所有单注投注机会
-    single_opportunities = generate_all_opportunities(classified, config)
+    # ★ 生成所有单注投注机会 (单关SPF + RQSPF + 总进球 + 半全场)
+    single_opportunities, parlay_only_ops = generate_all_opportunities(classified, config)
 
-    # ★ 生成串关机会 (2串1 + 混合过关)
-    parlay_opportunities = generate_parlay_opportunities(single_opportunities, config)
+    # ★ 生成串关机会: 合并单关SPF + 非单关SPF → 串关池
+    all_for_parlay = single_opportunities + parlay_only_ops
+    parlay_opportunities = generate_parlay_opportunities(all_for_parlay, config)
 
     # ★ 合并: 单注 + 串关 → 统一池
     all_opportunities = single_opportunities + parlay_opportunities
