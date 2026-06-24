@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-24T09:19:20.745100",
+  "updated": "2026-06-24T20:54:28.044328",
   "source": "500.com + nowscore",
   "matches": {
     "POR-COD": {
@@ -284,75 +284,111 @@
       "single": false
     },
     "SUI-CAN": {
-      "home": 2.3,
+      "home": 2.21,
       "draw": 2.62,
-      "away": 3.2,
+      "away": 3.4,
       "single": false
     },
     "BIH-QAT": {
-      "home": 1.38,
-      "draw": 4.45,
-      "away": 5.55,
+      "home": 1.26,
+      "draw": 5.35,
+      "away": 6.7,
       "single": false
     },
     "SCO-BRA": {
-      "home": 7.85,
-      "draw": 4.8,
-      "away": 1.26,
+      "home": 9.6,
+      "draw": 5.4,
+      "away": 1.19,
       "single": false
     },
     "MAR-HAI": {
-      "home": 2.3,
+      "home": 2.15,
       "draw": 3.85,
-      "away": 2.3,
+      "away": 2.48,
       "single": false
     },
     "RSA-KOR": {
-      "home": 5.05,
-      "draw": 3.4,
-      "away": 1.57,
+      "home": 5.65,
+      "draw": 3.87,
+      "away": 1.44,
       "single": false
     },
     "CZE-MEX": {
       "home": 3.4,
-      "draw": 3.3,
-      "away": 1.88,
+      "draw": 3.5,
+      "away": 1.82,
       "single": false
     },
     "ECU-GER": {
-      "home": 3.62,
-      "draw": 3.6,
-      "away": 1.74,
+      "home": 3.7,
+      "draw": 3.65,
+      "away": 1.71,
       "single": false
     },
     "CUW-CIV": {
-      "home": 2.3,
+      "home": 2.4,
       "draw": 3.85,
-      "away": 2.3,
+      "away": 2.21,
       "single": false
     },
     "TUN-NED": {
-      "home": 2.52,
+      "home": 2.6,
       "draw": 3.9,
-      "away": 2.1,
+      "away": 2.05,
       "single": false
     },
     "JPN-SWE": {
-      "home": 1.86,
-      "draw": 3.25,
-      "away": 3.52,
+      "home": 1.83,
+      "draw": 3.3,
+      "away": 3.57,
       "single": false
     },
     "PAR-AUS": {
-      "home": 2.54,
-      "draw": 2.05,
-      "away": 4.05,
+      "home": 2.63,
+      "draw": 2.06,
+      "away": 3.8,
       "single": false
     },
     "TUR-USA": {
-      "home": 3.2,
-      "draw": 3.45,
-      "away": 1.9,
+      "home": 3.3,
+      "draw": 3.5,
+      "away": 1.85,
+      "single": false
+    },
+    "NOR-FRA": {
+      "home": 4.65,
+      "draw": 3.9,
+      "away": 1.52,
+      "single": false
+    },
+    "SEN-IRQ": {
+      "home": 2.6,
+      "draw": 3.96,
+      "away": 2.03,
+      "single": false
+    },
+    "CPV-KSA": {
+      "home": 2.46,
+      "draw": 3.05,
+      "away": 2.53,
+      "single": false
+    },
+    "URU-ESP": {
+      "home": 6.85,
+      "draw": 4.22,
+      "away": 1.34,
+      "single": false
+    },
+    "EGY-IRN": {
+      "home": 2.32,
+      "draw": 2.5,
+      "away": 3.35,
+      "single": false
+    },
+    "NZL-BEL": {
+      "home": 2.23,
+      "draw": 3.9,
+      "away": 2.36,
       "single": false
     }
   },
@@ -524,6 +560,24 @@
     },
     "TUR-USA": {
       "line": 1
+    },
+    "NOR-FRA": {
+      "line": 1
+    },
+    "SEN-IRQ": {
+      "line": -2
+    },
+    "CPV-KSA": {
+      "line": -1
+    },
+    "URU-ESP": {
+      "line": 1
+    },
+    "EGY-IRN": {
+      "line": -1
+    },
+    "NZL-BEL": {
+      "line": 2
     }
   },
   "total_goals": {

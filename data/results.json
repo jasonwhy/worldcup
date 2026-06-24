@@ -1,9 +1,9 @@
 {
   "updated": "2026-06-21T15:29:13",
-  "total_played": 47,
-  "direction_correct": 34,
-  "direction_total": 47,
-  "direction_rate": "72%",
+  "total_played": 48,
+  "direction_correct": 35,
+  "direction_total": 48,
+  "direction_rate": "73%",
   "matches": [
     {
       "date": "6/11",
@@ -380,6 +380,14 @@
       "date": "6/24",
       "prediction_correct": "✅",
       "note": "模型: 26/30/44% 实际: away"
+    },
+    {
+      "home": "COL",
+      "away": "COD",
+      "score": "1-0",
+      "date": "6/24",
+      "prediction_correct": "✅",
+      "note": "模型: 52/29/19% 实际: home"
     }
   ]
 }

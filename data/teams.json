@@ -589,8 +589,8 @@
     "recent_5": {
       "w": 4,
       "d": 0,
-      "l": 1,
-      "gf": 12,
+      "l": 0,
+      "gf": 13,
       "ga": 4,
       "opponent_avg_rank": 42
     },
@@ -2307,11 +2307,11 @@
       "opponent_avg_rank": 35
     },
     "recent_5": {
-      "w": 2,
-      "d": 2,
+      "w": 1,
+      "d": 1,
       "l": 1,
       "gf": 6,
-      "ga": 5,
+      "ga": 6,
       "opponent_avg_rank": 32
     },
     "key_players": {
