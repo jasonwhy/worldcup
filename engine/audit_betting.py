@@ -65,12 +65,15 @@ def audit_phase_a_data() -> list:
                 log("A-数据", f"极端赔率({mid})", False,
                     f"{mid}: 有赔率<1.01 (不可能出现在真实市场)", "MEDIUM")
 
-    # A3: 赛程队伍在teams.json中
-    teams = json.load(open(DATA_DIR / "teams.json"))
+    # A3: 赛程队伍在teams.json中 (跳过淘汰赛占位符)
+    teams_data = json.load(open(DATA_DIR / "teams.json"))
     missing = []
     for mid in MATCH_SCHEDULE:
-        for tid in mid.split("-"):
-            if tid not in teams:
+        parts = mid.split("-")
+        if len(parts) != 2 or mid.startswith(("R","QF","SF")) or mid in ("BRONZE","FINAL"):
+            continue  # 淘汰赛占位符
+        for tid in parts:
+            if tid not in teams_data:
                 missing.append(tid)
     if missing:
         log("A-数据", "队伍代码有效性", False,
@@ -137,11 +140,16 @@ def audit_phase_b_rules(plan: dict, portfolio: PortfolioResult) -> list:
         log("B-规则", f"正Edge({prefix})", bet.edge_pct >= config.min_edge_pct,
             f"edge={bet.edge_pct:+.1f}pp (门槛{config.min_edge_pct}pp)", "HIGH")
 
-        # B2: 反幻觉 — match_id必须在SP数据或赛程中
-        in_sp = bet.match_id in sp.get("matches", {}) or _reverse_key(bet.match_id) in sp.get("matches", {})
-        in_schedule = bet.match_id in MATCH_SCHEDULE
-        log("B-规则", f"数据源({prefix})", in_sp or in_schedule,
-            f"match_id在SP中存在={in_sp}, 在赛程中存在={in_schedule}", "HIGH")
+        # B2: 反幻觉 — match_id或串关各leg必须在SP/赛程中
+        match_parts = bet.match_id.split("+")
+        all_found = True
+        for part in match_parts:
+            in_sp = part in sp.get("matches", {}) or _reverse_key(part) in sp.get("matches", {})
+            in_schedule = part in MATCH_SCHEDULE
+            if not in_sp and not in_schedule:
+                all_found = False
+        log("B-规则", f"数据源({prefix})", all_found,
+            f"match_id={bet.match_id}, 各leg={match_parts}", "HIGH")
 
         # B3: 赔率与SP数据一致
         if in_sp:
@@ -267,6 +275,9 @@ def audit_all(upcoming_matches: list = None) -> dict:
                     upcoming_matches.append(m)
             except:
                 pass
+        # 过滤: 只保留小组赛 (排除淘汰赛占位符)
+        upcoming_matches = [m for m in upcoming_matches if len(m.split("-")) == 2
+                           and not m.startswith("R") and m not in ("BRONZE","FINAL")]
 
     # Phase A
     audit_phase_a_data()
