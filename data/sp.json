@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-23T15:40:19.179853",
+  "updated": "2026-06-24T09:19:20.745100",
   "source": "500.com + nowscore",
   "matches": {
     "POR-COD": {
@@ -308,15 +308,15 @@
       "single": false
     },
     "RSA-KOR": {
-      "home": 4.85,
-      "draw": 3.35,
-      "away": 1.6,
+      "home": 5.05,
+      "draw": 3.4,
+      "away": 1.57,
       "single": false
     },
     "CZE-MEX": {
-      "home": 3.35,
-      "draw": 3.25,
-      "away": 1.91,
+      "home": 3.4,
+      "draw": 3.3,
+      "away": 1.88,
       "single": false
     },
     "ECU-GER": {
@@ -332,15 +332,15 @@
       "single": false
     },
     "TUN-NED": {
-      "home": 2.42,
+      "home": 2.52,
       "draw": 3.9,
-      "away": 2.18,
+      "away": 2.1,
       "single": false
     },
     "JPN-SWE": {
-      "home": 1.91,
+      "home": 1.86,
       "draw": 3.25,
-      "away": 3.35,
+      "away": 3.52,
       "single": false
     },
     "PAR-AUS": {
@@ -350,9 +350,9 @@
       "single": false
     },
     "TUR-USA": {
-      "home": 3.1,
-      "draw": 3.4,
-      "away": 1.95,
+      "home": 3.2,
+      "draw": 3.45,
+      "away": 1.9,
       "single": false
     }
   },

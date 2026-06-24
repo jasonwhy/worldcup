@@ -1,9 +1,9 @@
 {
   "updated": "2026-06-21T15:29:13",
-  "total_played": 44,
-  "direction_correct": 32,
-  "direction_total": 44,
-  "direction_rate": "73%",
+  "total_played": 47,
+  "direction_correct": 34,
+  "direction_total": 47,
+  "direction_rate": "72%",
   "matches": [
     {
       "date": "6/11",
@@ -356,6 +356,30 @@
       "date": "6/23",
       "prediction_correct": "✅",
       "note": "模型: 20/28/51% 实际: away"
+    },
+    {
+      "home": "POR",
+      "away": "UZB",
+      "score": "5-0",
+      "date": "6/24",
+      "prediction_correct": "✅",
+      "note": "模型: 48/30/21% 实际: home"
+    },
+    {
+      "home": "ENG",
+      "away": "GHA",
+      "score": "0-0",
+      "date": "6/24",
+      "prediction_correct": "❌",
+      "note": "模型: 60/25/15% 实际: draw"
+    },
+    {
+      "home": "PAN",
+      "away": "CRO",
+      "score": "0-1",
+      "date": "6/24",
+      "prediction_correct": "✅",
+      "note": "模型: 26/30/44% 实际: away"
     }
   ]
 }
