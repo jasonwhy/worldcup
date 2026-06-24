@@ -195,6 +195,61 @@ def audit_phase_b_rules(plan: dict, portfolio: PortfolioResult) -> list:
         seen.add(key)
     log("B-规则", "无重复投注", not dupes, f"{len(portfolio.bets)}注, {len(seen)}个唯一key", "HIGH")
 
+    # B9: 竞彩玩法合规 — 串关长度限制
+    play_type_limits = {"spf": 8, "rqspf": 8, "total_goals": 6, "correct_score": 4, "half_full": 4}
+    for i, bet in enumerate(portfolio.bets, 1):
+        pt = bet.play_type
+        legs = len(bet.match_id.split("+"))
+        if pt in play_type_limits and legs > play_type_limits[pt]:
+            log("B-规则", f"串关长度({pt}#{i})", False,
+                f"{legs}串 > {pt}上限{play_type_limits[pt]}串", "HIGH")
+        elif "混合过关" in pt:
+            # 混合过关: 以最低上限为准
+            min_limit = min(play_type_limits.values())
+            log("B-规则", f"混合过关上限(#{i})", legs <= min_limit,
+                f"{legs}串 ≤ 混合过关最低上限{min_limit}串", "MEDIUM")
+
+    # B10: Edge可靠性分级 — SPF > RQSPF > Parlay
+    edge_tiers = {"spf": 1, "rqspf": 2, "half_full": 2, "total_goals": 2, "correct_score": 3}
+    tier_count = {1: 0, 2: 0, 3: 0}
+    for bet in portfolio.bets:
+        base_type = bet.play_type.split("-")[0].split("串")[0]
+        tier = 3  # default: parlay
+        for key, t in edge_tiers.items():
+            if key in bet.play_type:
+                tier = t; break
+        tier_count[tier] = tier_count.get(tier, 0) + 1
+    tier1_pct = tier_count[1] / max(1, len(portfolio.bets)) * 100
+    log("B-规则", "Edge可靠性(SPF占比)", tier1_pct >= 10,
+        f"Tier1(SPF单注)={tier_count[1]}注({tier1_pct:.0f}%) Tier2(RQSPF/TG)={tier_count[2]}注 Tier3(串关)={tier_count[3]}注 · 建议Tier1≥10%",
+        "MEDIUM")
+
+    # B11: 投注可执行性 — 非单关场次SPF单注检测
+    illegals = 0
+    for bet in portfolio.bets:
+        if bet.play_type == "spf":
+            is_single = False
+            for mid in bet.match_id.split("+"):
+                from engine.lottery import _is_single_match
+                if _is_single_match(mid):
+                    is_single = True; break
+            if not is_single:
+                illegals += 1
+                log("B-规则", f"不可执行({bet.match_id})", False,
+                    f"SPF单注但非单关场次, 无法投注", "HIGH")
+    if illegals == 0:
+        log("B-规则", "投注可执行性", True, "所有SPF单注均为单关场次", "HIGH")
+
+    # B12: 奖金上限 — 串关组合不超过竞彩奖金上限
+    prize_limits = {2: 200000, 3: 200000, 4: 500000, 5: 500000, 6: 5000000, 7: 5000000, 8: 5000000}
+    for bet in portfolio.bets:
+        legs = len(bet.match_id.split("+"))
+        max_prize = prize_limits.get(legs, 5000000)
+        potential_prize = bet.stake * bet.odds
+        if potential_prize > max_prize:
+            log("B-规则", f"奖金超限({bet.match_id[:20]})", False,
+                f"潜在奖金{potential_prize:.0f}元 > {legs}串上限{max_prize}元", "MEDIUM")
+
     return results_log
 
 

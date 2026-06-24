@@ -1117,10 +1117,16 @@ def select_portfolio(opportunities: list, config: PortfolioConfig = None) -> Por
                     suppressed.extend([o for o in ops if o.play_type == "spf"])
         filtered = [o for o in filtered if o not in suppressed]
 
-    # 3. 排序: 风险调整EV = ev / sqrt(odds-1) (夏普式, 惩罚高波动)
+    # 3. 排序: 风险调整EV × Edge可靠性系数
+    # Edge可靠性: SPF单注(1.0) > RQSPF/TG(0.8) > 串关(0.6)
+    edge_reliability = {"spf": 1.0, "rqspf": 0.8, "total_goals": 0.8, "half_full": 0.7, "correct_score": 0.6}
     def sharpe_ev(op):
         variance_penalty = math.sqrt(max(0.1, op.odds - 1.0))
-        return op.ev / variance_penalty
+        base_type = op.play_type.split("-")[0].split("串")[0]
+        reliability = 0.6  # default: parlay
+        for key, r in edge_reliability.items():
+            if key in op.play_type: reliability = r; break
+        return op.ev / variance_penalty * reliability
     filtered.sort(key=sharpe_ev, reverse=True)
 
     # 3.5 同场对立方向检测: 禁止同一比赛同时押主胜+客胜/让球主胜+让球客胜
