@@ -1,6 +1,6 @@
 {
-  "updated": "2026-06-24T20:54:28.044328",
-  "source": "500.com + nowscore",
+  "updated": "2026-06-25T00:00:00",
+  "source": "500.com (SPF+RQSPF)",
   "matches": {
     "POR-COD": {
       "home": 1.13,
@@ -526,58 +526,103 @@
       "line": -1
     },
     "SUI-CAN": {
-      "line": -1
+      "line": -1,
+      "home": 8.0,
+      "draw": 4.85,
+      "away": 3.0
     },
     "BIH-QAT": {
       "line": -1
     },
     "SCO-BRA": {
-      "line": 1
+      "line": 1,
+      "home": 14.0,
+      "draw": 5.4,
+      "away": 3.8
     },
     "MAR-HAI": {
-      "line": -2
+      "line": -2,
+      "home": 21.0,
+      "draw": 6.8,
+      "away": 4.4
     },
     "RSA-KOR": {
-      "line": 1
+      "line": 1,
+      "home": 10.0,
+      "draw": 4.6,
+      "away": 3.0
     },
     "CZE-MEX": {
-      "line": 1
+      "line": 1,
+      "home": 10.0,
+      "draw": 4.3,
+      "away": 3.15
     },
     "ECU-GER": {
-      "line": 1
+      "line": 1,
+      "home": 13.0,
+      "draw": 4.9,
+      "away": 3.75
     },
     "CUW-CIV": {
       "line": 2
     },
     "TUN-NED": {
-      "line": 2
+      "line": 2,
+      "home": 23.0,
+      "draw": 7.0,
+      "away": 4.4
     },
     "JPN-SWE": {
-      "line": -1
+      "line": -1,
+      "home": 13.0,
+      "draw": 5.5,
+      "away": 3.8
     },
     "PAR-AUS": {
-      "line": -1
+      "line": -1,
+      "home": 4.5,
+      "draw": 4.25,
+      "away": 2.6
     },
     "TUR-USA": {
-      "line": 1
+      "line": 1,
+      "home": 14.0,
+      "draw": 5.5,
+      "away": 3.7
     },
     "NOR-FRA": {
-      "line": 1
+      "line": 1,
+      "home": 16.0,
+      "draw": 6.0,
+      "away": 3.8
     },
     "SEN-IRQ": {
-      "line": -2
+      "line": -2,
+      "home": 24.0,
+      "draw": 6.7,
+      "away": 4.1
     },
     "CPV-KSA": {
       "line": -1
     },
     "URU-ESP": {
-      "line": 1
+      "line": 1,
+      "home": 13.0,
+      "draw": 5.1,
+      "away": 3.5
     },
     "EGY-IRN": {
-      "line": -1
+      "line": -1,
+      "home": 6.0,
+      "draw": 3.6,
+      "away": 2.8
     },
     "NZL-BEL": {
-      "line": 2
+      "line": 2,
+      "home": 23.0,
+      "draw": 7.0,
+      "away": 4.5
     }
   },
   "total_goals": {
