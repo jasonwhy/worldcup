@@ -547,6 +547,8 @@ def classify_match(match_id: str, p: dict) -> dict:
         "tg_pred": tg_pred,
         "htft": htft,
         "cn_home": cn_h, "cn_away": cn_a,
+        # RQSPF概率计算用
+        "score_probs": r["top_scores"],
     }
 
 
@@ -578,6 +580,57 @@ def compute_value(match_id: str, direction: str, model_prob: float) -> dict:
         "odds": odds,
     }
 
+
+
+def _rqspf_raw_poisson_prob(xg_home: float, xg_away: float, handicap_line: int, direction: str) -> float:
+    """
+    用原始Poisson(未经Dixon-Coles/平局加成等调整)计算RQSPF概率
+    返回: 0-100的概率值
+    """
+    import math as _m
+    def _pois(l, k):
+        if l <= 0: return 1.0 if k == 0 else 0.0
+        return (l**k * _m.exp(-l)) / _m.factorial(k)
+
+    prob_h = prob_push = prob_a = 0.0
+    for hg in range(9):
+        for ag in range(9):
+            p = _pois(xg_home, hg) * _pois(xg_away, ag)
+            adj = hg - ag + handicap_line
+            if adj > 0.5: prob_h += p
+            elif adj < -0.5: prob_a += p
+            else: prob_push += p
+
+    total = prob_h + prob_push + prob_a
+    if total <= 0: return 30.0
+
+    if direction == "home":
+        return max(5.0, min(90.0, prob_h / total * 100))
+    elif direction == "away":
+        return max(5.0, min(90.0, prob_a / total * 100))
+    else:
+        return max(5.0, min(60.0, prob_push / total * 100))
+
+
+def _rqspf_real_prob(score_probs: list, handicap_line: int, direction: str) -> float:
+    """
+    用模型预测的比分分布(top_scores)计算真实RQSPF概率 (保留给向后兼容)
+    """
+    prob_cover_home = 0.0
+    prob_push = 0.0
+    prob_cover_away = 0.0
+    for s in score_probs:
+        hg, ag = map(int, s['score'].split('-'))
+        adj = hg - ag + handicap_line
+        p = s['probability']
+        if adj > 0.5: prob_cover_home += p
+        elif adj < -0.5: prob_cover_away += p
+        else: prob_push += p
+    total = prob_cover_home + prob_push + prob_cover_away
+    if total <= 0: return 30.0
+    if direction == "home": return max(5.0, min(90.0, prob_cover_home / total * 100))
+    elif direction == "away": return max(5.0, min(90.0, prob_cover_away / total * 100))
+    else: return max(5.0, min(60.0, prob_push / total * 100))
 
 
 def _handicap_note(match_id: str) -> tuple:
@@ -712,18 +765,15 @@ def generate_all_opportunities(classified: list, config: PortfolioConfig = None)
             rq_odds = rq["odds"]
             market_imp = 1.0 / rq_odds * 100 if rq_odds > 1.0 else 0
             # RQSPF概率: 基于调整后xG差 + 方向
-            adj = rq.get("adjusted_diff", 0)  # 正=主队让球后仍优势
             rq_dir = rq.get("direction", "")
-            # 更精准的概率映射
-            if rq_dir == "home":
-                rq_prob = min(75, max(32, 45 + adj * 15))
-            elif rq_dir == "away":
-                rq_prob = min(75, max(32, 45 + abs(adj) * 15))
-            else:  # draw/push
-                rq_prob = min(55, max(25, 35 - abs(adj) * 10))
+            # ★ 原始Poisson计算RQSPF概率 (不经Dixon-Coles等调整)
+            rq_prob = _rqspf_raw_poisson_prob(c["xg_home"], c["xg_away"],
+                                              rq.get("handicap_line", 0), rq_dir)
             rq_edge = rq_prob - market_imp
             rq_ev = (rq_prob / 100) * rq_odds - 1.0
-            if rq_ev > 0:
+            # RQSPF安全边际: edge门槛5pp (让球盘概率估算误差大)
+            rq_min_edge = 5.0
+            if rq_ev > 0 and rq_edge >= rq_min_edge:
                 opportunities.append(BetOpportunity(
                     match_id=mid, match_name=mn, kickoff=ko,
                     play_type="rqspf", pick=rq.get("pick_short", rq.get("pick", "")),
@@ -1073,6 +1123,36 @@ def select_portfolio(opportunities: list, config: PortfolioConfig = None) -> Por
         return op.ev / variance_penalty
     filtered.sort(key=sharpe_ev, reverse=True)
 
+    # 3.5 同场对立方向检测: 禁止同一比赛同时押主胜+客胜/让球主胜+让球客胜
+    match_directions = {}
+    clean_filtered = []
+    for op in filtered:
+        dir_key = _direction_key(op)
+        prev_dir = match_directions.get(op.match_id, "")
+        # 检测对立: 主胜 vs 客胜, 主胜方向 vs 客胜方向
+        opposing = (("主胜" in dir_key and "客胜" in prev_dir) or
+                    ("客胜" in dir_key and "主胜" in prev_dir))
+        if opposing:
+            continue  # 跳过对立方向的第二注
+        match_directions[op.match_id] = dir_key
+        clean_filtered.append(op)
+    filtered = clean_filtered
+
+    # 3.6 强制锚定: 确保至少2注含强队胜方向
+    # 锚定可以是: SPF单注(赔率1.5-3.0) 或 2串1中含强队胜的串关
+    anchors = []
+    for o in filtered:
+        is_win_dir = ("主胜" in _direction_key(o) or "SPF-home" in o.pick_short or "SPF-away" in o.pick_short)
+        # SPF单注锚定: 赔率1.5-3.0, prob>45%
+        if is_win_dir and o.play_type == "spf" and 1.5 <= o.odds <= 3.0 and o.model_prob > 45:
+            anchors.append(o)
+        # 串关中含强队胜: 赔率3-15, prob>15%
+        elif "串1" in o.play_type and is_win_dir and 3.0 <= o.odds <= 15.0 and o.model_prob > 15:
+            anchors.append(o)
+    # 按edge排序取top2
+    anchors.sort(key=lambda o: o.edge_pct, reverse=True)
+    anchors = anchors[:3]
+
     # 4. 计算Kelly仓位
     for op in filtered:
         stake = kelly_stake(op.edge_pct, op.odds, config.budget, config.kelly_fraction)
@@ -1087,35 +1167,49 @@ def select_portfolio(opportunities: list, config: PortfolioConfig = None) -> Por
         op.stake = round(stake, 1)
         op.kelly_full_pct = round((op.edge_pct / (op.odds - 1.0)) * 100, 1) if op.odds > 1.0 else 0
 
-    # 5. 贪婪填充
+    # 5. 贪婪填充 (锚定优先 + 平局上限)
     selected = []
     match_bet_count = {}
     direction_count = {"主胜": 0, "客胜": 0, "平局": 0, "其他": 0}
+    draw_count = 0
     total_spent = 0
 
+    # 5a. 先选锚定 (强队胜方向, 赔率1.5-2.8)
+    anchor_filled = 0
+    for op in anchors:
+        if anchor_filled >= 2: break
+        if match_bet_count.get(op.match_id, 0) >= config.max_bets_per_match: continue
+        if total_spent + op.stake > config.budget: continue
+        selected.append(op)
+        match_bet_count[op.match_id] = match_bet_count.get(op.match_id, 0) + 1
+        direction_count[_direction_key(op)] = direction_count.get(_direction_key(op), 0) + op.stake
+        total_spent += op.stake
+        anchor_filled += 1
+
+    # 5b. 填充剩余 (平局/冷门不超过40%)
+    max_draws = max(2, int(config.max_portfolio_bets * 0.4))
     for op in filtered:
-        if len(selected) >= config.max_portfolio_bets:
-            break
-        # 比赛集中度
-        if match_bet_count.get(op.match_id, 0) >= config.max_bets_per_match:
-            continue
-        # 方向集中度
+        if op in selected: continue
+        if len(selected) >= config.max_portfolio_bets: break
+        if match_bet_count.get(op.match_id, 0) >= config.max_bets_per_match: continue
+
         dir_key = _direction_key(op)
+        is_draw = ("平局" in dir_key or "draw" in op.pick_short.lower() or "让球平" in op.pick_short)
+        if is_draw and draw_count >= max_draws: continue
+
         dir_current = direction_count.get(dir_key, 0) + op.stake
-        if dir_current / config.budget > config.max_concentration_pct:
-            continue
-        # 预算上限
+        if dir_current / config.budget > config.max_concentration_pct: continue
+
         if total_spent + op.stake > config.budget:
-            # 尝试降低仓位以适应预算
             remaining = config.budget - total_spent
             if remaining >= config.min_stake_per_bet:
                 op.stake = remaining
-            else:
-                continue
+            else: continue
 
         selected.append(op)
         match_bet_count[op.match_id] = match_bet_count.get(op.match_id, 0) + 1
         direction_count[dir_key] = direction_count.get(dir_key, 0) + op.stake
+        if is_draw: draw_count += 1
         total_spent += op.stake
 
     # 6. 保留金
