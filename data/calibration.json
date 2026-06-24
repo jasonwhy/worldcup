@@ -1,10 +1,12 @@
 {
-  "baseline_xg": 2.0,
+  "baseline_xg": 1.92,
   "draw_bonus": {
     "group_1": 1.8,
-    "group_2": 1.5
+    "group_2": 1.6
   },
   "thresholds": {
     "conservative_min_delta": 8
-  }
+  },
+  "direction_rate": "69%",
+  "trained_at": "48 matches"
 }
