@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-24T21:24:54.334789",
+  "updated": "2026-06-25T20:55:54.449323",
   "source": "500.com + nowscore",
   "matches": {
     "POR-COD": {
@@ -320,39 +320,39 @@
       "single": false
     },
     "ECU-GER": {
-      "home": 3.7,
-      "draw": 3.65,
-      "away": 1.71,
+      "home": 5.0,
+      "draw": 4.9,
+      "away": 1.38,
       "single": false
     },
     "CUW-CIV": {
-      "home": 2.4,
-      "draw": 3.85,
-      "away": 2.21,
+      "home": 2.66,
+      "draw": 3.6,
+      "away": 2.1,
       "single": false
     },
     "TUN-NED": {
-      "home": 2.6,
-      "draw": 3.9,
-      "away": 2.05,
+      "home": 3.77,
+      "draw": 4.4,
+      "away": 1.57,
       "single": false
     },
     "JPN-SWE": {
-      "home": 1.83,
-      "draw": 3.3,
-      "away": 3.57,
+      "home": 1.62,
+      "draw": 3.55,
+      "away": 4.35,
       "single": false
     },
     "PAR-AUS": {
-      "home": 2.63,
-      "draw": 2.06,
-      "away": 3.8,
+      "home": 2.64,
+      "draw": 2.15,
+      "away": 3.5,
       "single": false
     },
     "TUR-USA": {
-      "home": 3.3,
-      "draw": 3.5,
-      "away": 1.85,
+      "home": 3.65,
+      "draw": 3.85,
+      "away": 1.68,
       "single": false
     },
     "NOR-FRA": {
@@ -362,15 +362,15 @@
       "single": false
     },
     "SEN-IRQ": {
-      "home": 2.6,
+      "home": 2.54,
       "draw": 3.96,
-      "away": 2.03,
+      "away": 2.07,
       "single": false
     },
     "CPV-KSA": {
-      "home": 2.46,
+      "home": 2.4,
       "draw": 3.05,
-      "away": 2.53,
+      "away": 2.6,
       "single": false
     },
     "URU-ESP": {
@@ -386,9 +386,45 @@
       "single": false
     },
     "NZL-BEL": {
-      "home": 2.23,
+      "home": 2.3,
       "draw": 3.9,
-      "away": 2.36,
+      "away": 2.28,
+      "single": false
+    },
+    "CRO-GHA": {
+      "home": 1.57,
+      "draw": 3.08,
+      "away": 5.95,
+      "single": false
+    },
+    "PAN-ENG": {
+      "home": 2.43,
+      "draw": 3.9,
+      "away": 2.17,
+      "single": false
+    },
+    "COL-POR": {
+      "home": 4.1,
+      "draw": 3.25,
+      "away": 1.73,
+      "single": false
+    },
+    "COD-UZB": {
+      "home": 1.71,
+      "draw": 3.75,
+      "away": 3.6,
+      "single": false
+    },
+    "ALG-AUT": {
+      "home": 3.35,
+      "draw": 2.11,
+      "away": 2.8,
+      "single": false
+    },
+    "JOR-ARG": {
+      "home": 2.22,
+      "draw": 3.85,
+      "away": 2.39,
       "single": false
     }
   },
@@ -577,6 +613,24 @@
       "line": -1
     },
     "NZL-BEL": {
+      "line": 2
+    },
+    "CRO-GHA": {
+      "line": -1
+    },
+    "PAN-ENG": {
+      "line": 2
+    },
+    "COL-POR": {
+      "line": 1
+    },
+    "COD-UZB": {
+      "line": -1
+    },
+    "ALG-AUT": {
+      "line": 1
+    },
+    "JOR-ARG": {
       "line": 2
     }
   },

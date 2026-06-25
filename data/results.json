@@ -1,9 +1,9 @@
 {
   "updated": "2026-06-21T15:29:13",
-  "total_played": 48,
-  "direction_correct": 35,
-  "direction_total": 48,
-  "direction_rate": "73%",
+  "total_played": 54,
+  "direction_correct": 40,
+  "direction_total": 54,
+  "direction_rate": "74%",
   "matches": [
     {
       "date": "6/11",
@@ -388,6 +388,54 @@
       "date": "6/24",
       "prediction_correct": "✅",
       "note": "模型: 52/29/19% 实际: home"
+    },
+    {
+      "home": "SUI",
+      "away": "CAN",
+      "score": "2-1",
+      "date": "6/25",
+      "prediction_correct": "✅",
+      "note": "模型: 40/36/23% 实际: home"
+    },
+    {
+      "home": "BIH",
+      "away": "QAT",
+      "score": "3-1",
+      "date": "6/25",
+      "prediction_correct": "✅",
+      "note": "模型: 43/31/26% 实际: home"
+    },
+    {
+      "home": "SCO",
+      "away": "BRA",
+      "score": "0-3",
+      "date": "6/25",
+      "prediction_correct": "✅",
+      "note": "模型: 26/35/39% 实际: away"
+    },
+    {
+      "home": "MAR",
+      "away": "HAI",
+      "score": "4-2",
+      "date": "6/25",
+      "prediction_correct": "✅",
+      "note": "模型: 52/29/19% 实际: home"
+    },
+    {
+      "home": "CZE",
+      "away": "MEX",
+      "score": "0-3",
+      "date": "6/25",
+      "prediction_correct": "✅",
+      "note": "模型: 20/32/48% 实际: away"
+    },
+    {
+      "home": "RSA",
+      "away": "KOR",
+      "score": "1-0",
+      "date": "6/25",
+      "prediction_correct": "❌",
+      "note": "模型: 21/35/45% 实际: home"
     }
   ]
 }

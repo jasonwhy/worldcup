@@ -37,7 +37,7 @@
   },
   "POR": {
     "locker_room": {
-      "score": -3.7,
+      "score": -3.5,
       "reason": "1-1平后危机: Martinez拒绝换CR7('换最佳射手无意义'), Sutton称'尴尬', CR7仅25触球全队最少, B费明显沮丧, 10场大赛0进球",
       "date": "2026-06-18",
       "original_score": -5
@@ -49,7 +49,7 @@
       "original_score": 0
     },
     "player_off_field": {
-      "score": -2.2,
+      "score": -2.1,
       "reason": "CR7发X:'远未结束', 球迷两极分化; 名宿Clichy:队友潜意识受影响, Rooney:需要传中支援",
       "date": "2026-06-18",
       "original_score": -3
@@ -111,7 +111,7 @@
   },
   "TUN": {
     "locker_room": {
-      "score": -2.1,
+      "score": -2.0,
       "reason": "1-5惨败瑞典后士气崩溃, 主帅Lamouchi预计被解雇→赛前内乱(ESPN); 下一场对日本压力巨大",
       "date": "2026-06-17",
       "original_score": -3
@@ -148,7 +148,7 @@
   },
   "BRA": {
     "locker_room": {
-      "score": -3.0,
+      "score": -2.8,
       "reason": "Neymar仅限健身训练未触球, 小组赛全缺确认, MRI有进展但'即使复出也难达100%', 球迷抗议持续",
       "date": "2026-06-18",
       "original_score": -4
@@ -240,7 +240,7 @@
   },
   "ARG": {
     "locker_room": {
-      "score": -1.4,
+      "score": -1.3,
       "reason": "Messi帽子戏法但疑似红牌未判(ESPN:100%红牌), FIFA被指控保护巨星; Haaland发Snap致敬又引争议",
       "date": "2026-06-17",
       "original_score": -2
@@ -259,7 +259,7 @@
   },
   "ENG": {
     "locker_room": {
-      "score": -1.5,
+      "score": -1.4,
       "reason": "Kane追平Lineker纪录+Tuchel中场逆转+贝林Rashford替补建功, 英格兰士气高涨",
       "date": "2026-06-18",
       "original_score": -2
@@ -333,7 +333,7 @@
   },
   "COD": {
     "locker_room": {
-      "score": 2.2,
+      "score": 2.1,
       "reason": "52年归来即创历史: 首球+首分+首平, 逼平葡萄牙震惊世界, 球队士气爆棚",
       "date": "2026-06-18",
       "original_score": 3
@@ -360,7 +360,7 @@
   },
   "JPN": {
     "locker_room": {
-      "score": -2.2,
+      "score": -2.1,
       "reason": "伤病潮爆发: Mitoma+Minamino+Endo已退+久保最新倒下, 对突尼斯几乎无人可用, 森保一压力巨大",
       "date": "2026-06-18",
       "original_score": -3
@@ -379,7 +379,7 @@
   },
   "COL": {
     "locker_room": {
-      "score": 1.5,
+      "score": 1.4,
       "reason": "3-1强势开门红, Diaz传射成MVP, Campaz替补建功, 更衣室氛围极佳, 目标小组第一",
       "date": "2026-06-18",
       "original_score": 2
@@ -417,7 +417,7 @@
   },
   "MEX": {
     "locker_room": {
-      "score": 1.6,
+      "score": 1.5,
       "reason": "两连胜积6分领跑A组, 主场优势明显, 出线在望, 但Montes红牌缺阵防线受考验",
       "date": "2026-06-19",
       "original_score": 2
@@ -455,7 +455,7 @@
   },
   "QAT": {
     "locker_room": {
-      "score": -2.3,
+      "score": -2.2,
       "reason": "0-6惨败+被罚至9人+Madibo红牌断腿争议, 出线几乎无望, 士气崩溃",
       "date": "2026-06-19",
       "original_score": -3
