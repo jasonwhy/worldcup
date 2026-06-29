@@ -7,6 +7,6 @@
   "thresholds": {
     "conservative_min_delta": 8
   },
-  "direction_rate": "70%",
-  "trained_at": "60 matches"
+  "direction_rate": "74%",
+  "trained_at": "72 matches"
 }

@@ -1,9 +1,9 @@
 {
   "updated": "2026-06-21T15:29:13",
-  "total_played": 60,
-  "direction_correct": 42,
-  "direction_total": 60,
-  "direction_rate": "70%",
+  "total_played": 72,
+  "direction_correct": 51,
+  "direction_total": 72,
+  "direction_rate": "71%",
   "matches": [
     {
       "date": "6/11",
@@ -484,6 +484,102 @@
       "date": "6/26",
       "prediction_correct": "❌",
       "note": "模型: 20/33/47% 实际: draw"
+    },
+    {
+      "home": "EGY",
+      "away": "IRN",
+      "score": "1-1",
+      "date": "6/27",
+      "prediction_correct": "❌",
+      "note": "模型: 39/37/24% 实际: draw"
+    },
+    {
+      "home": "NZL",
+      "away": "BEL",
+      "score": "1-5",
+      "date": "6/27",
+      "prediction_correct": "✅",
+      "note": "模型: 24/32/44% 实际: away"
+    },
+    {
+      "home": "CPV",
+      "away": "KSA",
+      "score": "0-0",
+      "date": "6/27",
+      "prediction_correct": "❌",
+      "note": "模型: 37/37/26% 实际: draw"
+    },
+    {
+      "home": "URU",
+      "away": "ESP",
+      "score": "0-1",
+      "date": "6/27",
+      "prediction_correct": "✅",
+      "note": "模型: 21/28/50% 实际: away"
+    },
+    {
+      "home": "NOR",
+      "away": "FRA",
+      "score": "1-4",
+      "date": "6/27",
+      "prediction_correct": "✅",
+      "note": "模型: 27/25/47% 实际: away"
+    },
+    {
+      "home": "SEN",
+      "away": "IRQ",
+      "score": "5-0",
+      "date": "6/27",
+      "prediction_correct": "✅",
+      "note": "模型: 46/30/24% 实际: home"
+    },
+    {
+      "home": "PAN",
+      "away": "ENG",
+      "score": "0-2",
+      "date": "6/28",
+      "prediction_correct": "✅",
+      "note": "模型: 13/22/64% 实际: away"
+    },
+    {
+      "home": "CRO",
+      "away": "GHA",
+      "score": "2-1",
+      "date": "6/28",
+      "prediction_correct": "✅",
+      "note": "模型: 42/36/22% 实际: home"
+    },
+    {
+      "home": "ALG",
+      "away": "AUT",
+      "score": "3-3",
+      "date": "6/28",
+      "prediction_correct": "✅",
+      "note": "模型: 34/36/31% 实际: draw"
+    },
+    {
+      "home": "JOR",
+      "away": "ARG",
+      "score": "1-3",
+      "date": "6/28",
+      "prediction_correct": "✅",
+      "note": "模型: 14/21/66% 实际: away"
+    },
+    {
+      "home": "COL",
+      "away": "POR",
+      "score": "0-0",
+      "date": "6/28",
+      "prediction_correct": "❌",
+      "note": "模型: 30/32/38% 实际: draw"
+    },
+    {
+      "home": "COD",
+      "away": "UZB",
+      "score": "3-1",
+      "date": "6/28",
+      "prediction_correct": "✅",
+      "note": "模型: 38/36/26% 实际: home"
     }
   ]
 }
