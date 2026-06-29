@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-29T16:22:15.380285",
+  "updated": "2026-06-29T16:47:25.745360",
   "source": "500.com + nowscore",
   "matches": {
     "POR-COD": {
@@ -440,9 +440,9 @@
       "single": false
     },
     "NED-MAR": {
-      "home": 1.97,
-      "draw": 3.0,
-      "away": 3.47,
+      "home": 2.0,
+      "draw": 2.98,
+      "away": 3.4,
       "single": false
     },
     "CIV-NOR": {

@@ -39,7 +39,8 @@
     "locker_room": {
       "score": 25,
       "reason": "CR7球迷攻击队友(Neves/Fernandes/Vitinha)不传球, Martinez怕换CR7, civil war风险 [2026-06-29]",
-      "date": "2026-06-29"
+      "date": "2026-06-29",
+      "original_score": 25
     },
     "political": {
       "level": 0,
@@ -50,7 +51,8 @@
     "player_off_field": {
       "score": 20,
       "reason": "Ronaldo姐妹社交媒体攻击队友, Georgina卷入, 更衣室极度分裂 [2026-06-29]",
-      "date": "2026-06-29"
+      "date": "2026-06-29",
+      "original_score": 20
     }
   },
   "SEN": {
@@ -259,7 +261,8 @@
     "locker_room": {
       "score": 15,
       "reason": "RB位置3人伤缺(James/Quansah/Livramento), Tuchel worried, 仅Spence+Konsa可用 [2026-06-29]",
-      "date": "2026-06-29"
+      "date": "2026-06-29",
+      "original_score": 15
     },
     "political": {
       "level": 1,
@@ -473,9 +476,14 @@
     "locker_room": {
       "score": 18,
       "reason": "Salah hamstring受伤, R32 vs Australia存疑, 教练说\"不严重\"但未确认 [2026-06-29]",
-      "date": "2026-06-29"
+      "date": "2026-06-29",
+      "original_score": 18
     },
-    "political": {},
-    "player_off_field": {}
+    "political": {
+      "original_score": 0
+    },
+    "player_off_field": {
+      "original_score": 0
+    }
   }
 }
