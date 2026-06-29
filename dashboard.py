@@ -522,12 +522,12 @@ for bdate in upcoming_dates:
                 changed = old_picks - new_picks
                 if changed or ev_note:
                     import datetime
-                    now_str = datetime.datetime.now().strftime('%m/%d %H:%M')
+                    now_str = datetime.now().strftime('%m/%d %H:%M')
                     diff_note = f'<div class="plan-diff">📝 更新 {now_str}: {len(changed)}项调整{ev_note}</div>'
             # 更新存档 (v6.0结构化格式)
             if is_v6_archive:
                 plan_archive.setdefault("plans", {})[bdate] = {
-                    "generated_at": datetime.datetime.now().isoformat(),
+                    "generated_at": datetime.now().isoformat(),
                     "text_output": plan_text,
                 }
             else:
@@ -535,8 +535,8 @@ for bdate in upcoming_dates:
             json.dump(plan_archive, open(PLAN_ARCHIVE, "w"), indent=2, ensure_ascii=False)
             # 把变更标注加到方案前面
             plan_text = diff_note + plan_text
-        except:
-            plan_text = ""
+        except Exception as e:
+            plan_text = f'生成失败: {str(e)[:60]}'
             if isinstance(plan_archive, dict):
                 if "plans" in plan_archive:
                     plan_text = plan_archive["plans"].get(bdate, {}).get("text_output", "方案生成中...")
