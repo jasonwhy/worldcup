@@ -37,10 +37,9 @@
   },
   "POR": {
     "locker_room": {
-      "score": -2.9,
-      "reason": "1-1平后危机: Martinez拒绝换CR7('换最佳射手无意义'), Sutton称'尴尬', CR7仅25触球全队最少, B费明显沮丧, 10场大赛0进球",
-      "date": "2026-06-18",
-      "original_score": -5
+      "score": 25,
+      "reason": "CR7球迷攻击队友(Neves/Fernandes/Vitinha)不传球, Martinez怕换CR7, civil war风险 [2026-06-29]",
+      "date": "2026-06-29"
     },
     "political": {
       "level": 0,
@@ -49,10 +48,9 @@
       "original_score": 0
     },
     "player_off_field": {
-      "score": -1.7,
-      "reason": "CR7发X:'远未结束', 球迷两极分化; 名宿Clichy:队友潜意识受影响, Rooney:需要传中支援",
-      "date": "2026-06-18",
-      "original_score": -3
+      "score": 20,
+      "reason": "Ronaldo姐妹社交媒体攻击队友, Georgina卷入, 更衣室极度分裂 [2026-06-29]",
+      "date": "2026-06-29"
     }
   },
   "SEN": {
@@ -259,10 +257,9 @@
   },
   "ENG": {
     "locker_room": {
-      "score": -1.2,
-      "reason": "Kane追平Lineker纪录+Tuchel中场逆转+贝林Rashford替补建功, 英格兰士气高涨",
-      "date": "2026-06-18",
-      "original_score": -2
+      "score": 15,
+      "reason": "RB位置3人伤缺(James/Quansah/Livramento), Tuchel worried, 仅Spence+Konsa可用 [2026-06-29]",
+      "date": "2026-06-29"
     },
     "political": {
       "level": 1,
@@ -471,5 +468,14 @@
       "reason": "",
       "original_score": 0
     }
+  },
+  "EGY": {
+    "locker_room": {
+      "score": 18,
+      "reason": "Salah hamstring受伤, R32 vs Australia存疑, 教练说\"不严重\"但未确认 [2026-06-29]",
+      "date": "2026-06-29"
+    },
+    "political": {},
+    "player_off_field": {}
   }
 }

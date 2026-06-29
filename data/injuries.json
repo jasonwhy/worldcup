@@ -280,6 +280,24 @@
       "date": "2026-06-18",
       "return_date": "2026-06-21",
       "position": "midfielder"
+    },
+    {
+      "player": "Reece James",
+      "status": "doubtful",
+      "position": "right_back",
+      "role": "regular_starter",
+      "irreplaceability": 1.5,
+      "reason": "hamstring injury, tight race for R32 [2026-06-29]",
+      "date": "2026-06-29"
+    },
+    {
+      "player": "Jarell Quansah",
+      "status": "doubtful",
+      "position": "right_back",
+      "role": "regular_starter",
+      "irreplaceability": 1.5,
+      "reason": "ankle twist vs Panama, in pain [2026-06-29]",
+      "date": "2026-06-29"
     }
   ],
   "USA": [
@@ -310,6 +328,15 @@
       "return_date": null,
       "irreplaceability": 1.0,
       "date": "2026-06-17"
+    },
+    {
+      "player": "Chris Richards",
+      "status": "doubtful",
+      "position": "center_back",
+      "role": "defense_leader",
+      "irreplaceability": 1.5,
+      "reason": "ankle injury last month, says ready but fitness unknown [2026-06-29]",
+      "date": "2026-06-29"
     }
   ],
   "CAN": [
@@ -409,6 +436,17 @@
       "date": "2026-06-20",
       "return_date": "2026-06-25",
       "position": "forward"
+    }
+  ],
+  "EGY": [
+    {
+      "player": "Mohamed Salah",
+      "status": "doubtful",
+      "position": "forward",
+      "role": "superstar",
+      "irreplaceability": 2.0,
+      "reason": "hamstring strain vs Iran, 6/28 confirmed. 怀疑缺阵R32 vs Australia",
+      "date": "2026-06-28"
     }
   ]
 }
