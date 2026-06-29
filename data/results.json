@@ -1,9 +1,9 @@
 {
   "updated": "2026-06-21T15:29:13",
-  "total_played": 72,
+  "total_played": 73,
   "direction_correct": 51,
-  "direction_total": 72,
-  "direction_rate": "71%",
+  "direction_total": 73,
+  "direction_rate": "70%",
   "matches": [
     {
       "date": "6/11",
@@ -580,6 +580,14 @@
       "date": "6/28",
       "prediction_correct": "✅",
       "note": "模型: 38/36/26% 实际: home"
+    },
+    {
+      "home": "RSA",
+      "away": "CAN",
+      "score": "0-1",
+      "date": "6/29",
+      "prediction_correct": "❌",
+      "note": "R32: Eustáquio 92分绝杀 加拿大历史首进16强"
     }
   ]
 }
