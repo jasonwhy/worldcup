@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-25T20:59:12.291948",
+  "updated": "2026-06-29T16:10:54.165265",
   "source": "500.com + nowscore",
   "matches": {
     "POR-COD": {
@@ -426,6 +426,60 @@
       "draw": 3.85,
       "away": 2.39,
       "single": false
+    },
+    "BRA-JPN": {
+      "home": 1.49,
+      "draw": 3.72,
+      "away": 5.28,
+      "single": false
+    },
+    "GER-PAR": {
+      "home": 1.22,
+      "draw": 5.0,
+      "away": 9.1,
+      "single": false
+    },
+    "NED-MAR": {
+      "home": 1.97,
+      "draw": 3.0,
+      "away": 3.47,
+      "single": false
+    },
+    "CIV-NOR": {
+      "home": 3.77,
+      "draw": 3.35,
+      "away": 1.77,
+      "single": false
+    },
+    "FRA-SWE": {
+      "home": 1.16,
+      "draw": 5.8,
+      "away": 10.5,
+      "single": false
+    },
+    "MEX-ECU": {
+      "home": 2.0,
+      "draw": 2.7,
+      "away": 3.86,
+      "single": false
+    },
+    "ENG-COD": {
+      "home": 1.17,
+      "draw": 5.25,
+      "away": 12.0,
+      "single": false
+    },
+    "BEL-SEN": {
+      "home": 1.99,
+      "draw": 3.0,
+      "away": 3.42,
+      "single": false
+    },
+    "USA-BIH": {
+      "home": 1.27,
+      "draw": 4.5,
+      "away": 8.4,
+      "single": false
     }
   },
   "handicap": {
@@ -632,6 +686,33 @@
     },
     "JOR-ARG": {
       "line": 2
+    },
+    "BRA-JPN": {
+      "line": -1
+    },
+    "GER-PAR": {
+      "line": -1
+    },
+    "NED-MAR": {
+      "line": -1
+    },
+    "CIV-NOR": {
+      "line": 1
+    },
+    "FRA-SWE": {
+      "line": -1
+    },
+    "MEX-ECU": {
+      "line": -1
+    },
+    "ENG-COD": {
+      "line": -1
+    },
+    "BEL-SEN": {
+      "line": -1
+    },
+    "USA-BIH": {
+      "line": -1
     }
   },
   "total_goals": {

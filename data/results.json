@@ -1,9 +1,9 @@
 {
   "updated": "2026-06-21T15:29:13",
-  "total_played": 54,
-  "direction_correct": 40,
-  "direction_total": 54,
-  "direction_rate": "74%",
+  "total_played": 60,
+  "direction_correct": 42,
+  "direction_total": 60,
+  "direction_rate": "70%",
   "matches": [
     {
       "date": "6/11",
@@ -436,6 +436,54 @@
       "date": "6/25",
       "prediction_correct": "❌",
       "note": "模型: 21/35/45% 实际: home"
+    },
+    {
+      "home": "ECU",
+      "away": "GER",
+      "score": "2-1",
+      "date": "6/26",
+      "prediction_correct": "❌",
+      "note": "模型: 19/27/54% 实际: home"
+    },
+    {
+      "home": "CUW",
+      "away": "CIV",
+      "score": "0-2",
+      "date": "6/26",
+      "prediction_correct": "✅",
+      "note": "模型: 25/22/52% 实际: away"
+    },
+    {
+      "home": "JPN",
+      "away": "SWE",
+      "score": "1-1",
+      "date": "6/26",
+      "prediction_correct": "❌",
+      "note": "模型: 28/27/45% 实际: draw"
+    },
+    {
+      "home": "TUN",
+      "away": "NED",
+      "score": "1-3",
+      "date": "6/26",
+      "prediction_correct": "✅",
+      "note": "模型: 14/20/66% 实际: away"
+    },
+    {
+      "home": "TUR",
+      "away": "USA",
+      "score": "3-2",
+      "date": "6/26",
+      "prediction_correct": "❌",
+      "note": "模型: 20/26/54% 实际: home"
+    },
+    {
+      "home": "PAR",
+      "away": "AUS",
+      "score": "0-0",
+      "date": "6/26",
+      "prediction_correct": "❌",
+      "note": "模型: 20/33/47% 实际: draw"
     }
   ]
 }
