@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-29T16:47:25.745360",
+  "updated": "2026-06-30T14:41:04.405688",
   "source": "500.com + nowscore",
   "matches": {
     "POR-COD": {
@@ -446,9 +446,9 @@
       "single": false
     },
     "CIV-NOR": {
-      "home": 3.77,
-      "draw": 3.35,
-      "away": 1.77,
+      "home": 3.6,
+      "draw": 3.38,
+      "away": 1.8,
       "single": false
     },
     "FRA-SWE": {
@@ -458,9 +458,9 @@
       "single": false
     },
     "MEX-ECU": {
-      "home": 2.0,
+      "home": 1.94,
       "draw": 2.7,
-      "away": 3.86,
+      "away": 4.1,
       "single": false
     },
     "ENG-COD": {
@@ -479,6 +479,24 @@
       "home": 1.27,
       "draw": 4.5,
       "away": 8.4,
+      "single": false
+    },
+    "ESP-AUT": {
+      "home": 1.26,
+      "draw": 4.5,
+      "away": 8.8,
+      "single": false
+    },
+    "POR-CRO": {
+      "home": 1.59,
+      "draw": 3.4,
+      "away": 4.85,
+      "single": false
+    },
+    "SUI-ALG": {
+      "home": 1.85,
+      "draw": 3.0,
+      "away": 3.92,
       "single": false
     }
   },
@@ -712,6 +730,15 @@
       "line": -1
     },
     "USA-BIH": {
+      "line": -1
+    },
+    "ESP-AUT": {
+      "line": -1
+    },
+    "POR-CRO": {
+      "line": -1
+    },
+    "SUI-ALG": {
       "line": -1
     }
   },

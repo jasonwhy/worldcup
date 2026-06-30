@@ -37,7 +37,7 @@
   },
   "POR": {
     "locker_room": {
-      "score": 25,
+      "score": 23.8,
       "reason": "CR7球迷攻击队友(Neves/Fernandes/Vitinha)不传球, Martinez怕换CR7, civil war风险 [2026-06-29]",
       "date": "2026-06-29",
       "original_score": 25
@@ -49,7 +49,7 @@
       "original_score": 0
     },
     "player_off_field": {
-      "score": 20,
+      "score": 19.0,
       "reason": "Ronaldo姐妹社交媒体攻击队友, Georgina卷入, 更衣室极度分裂 [2026-06-29]",
       "date": "2026-06-29",
       "original_score": 20
@@ -148,7 +148,7 @@
   },
   "BRA": {
     "locker_room": {
-      "score": -2.3,
+      "score": -2.2,
       "reason": "Neymar仅限健身训练未触球, 小组赛全缺确认, MRI有进展但'即使复出也难达100%', 球迷抗议持续",
       "date": "2026-06-18",
       "original_score": -4
@@ -185,7 +185,7 @@
   },
   "GHA": {
     "locker_room": {
-      "score": -0.6,
+      "score": -0.5,
       "reason": "Partey签证上诉被加拿大法院驳回, 但Yirenkyi补时绝杀→士气逆转, L组出线有希望",
       "date": "2026-06-18",
       "original_score": -1
@@ -240,7 +240,7 @@
   },
   "ARG": {
     "locker_room": {
-      "score": -1.1,
+      "score": -1.0,
       "reason": "Messi帽子戏法但疑似红牌未判(ESPN:100%红牌), FIFA被指控保护巨星; Haaland发Snap致敬又引争议",
       "date": "2026-06-17",
       "original_score": -2
@@ -259,7 +259,7 @@
   },
   "ENG": {
     "locker_room": {
-      "score": 15,
+      "score": 14.3,
       "reason": "RB位置3人伤缺(James/Quansah/Livramento), Tuchel worried, 仅Spence+Konsa可用 [2026-06-29]",
       "date": "2026-06-29",
       "original_score": 15
@@ -278,7 +278,7 @@
   },
   "CRO": {
     "locker_room": {
-      "score": -0.6,
+      "score": -0.5,
       "reason": "2-4负英格兰暴露老化, Modric 58分被换, Dalic:'无犯错空间', 黄金一代末路",
       "date": "2026-06-18",
       "original_score": -1
@@ -333,7 +333,7 @@
   },
   "COD": {
     "locker_room": {
-      "score": 1.7,
+      "score": 1.6,
       "reason": "52年归来即创历史: 首球+首分+首平, 逼平葡萄牙震惊世界, 球队士气爆棚",
       "date": "2026-06-18",
       "original_score": 3
@@ -360,7 +360,7 @@
   },
   "JPN": {
     "locker_room": {
-      "score": -1.7,
+      "score": -1.6,
       "reason": "伤病潮爆发: Mitoma+Minamino+Endo已退+久保最新倒下, 对突尼斯几乎无人可用, 森保一压力巨大",
       "date": "2026-06-18",
       "original_score": -3
@@ -379,7 +379,7 @@
   },
   "COL": {
     "locker_room": {
-      "score": 1.2,
+      "score": 1.1,
       "reason": "3-1强势开门红, Diaz传射成MVP, Campaz替补建功, 更衣室氛围极佳, 目标小组第一",
       "date": "2026-06-18",
       "original_score": 2
@@ -455,7 +455,7 @@
   },
   "QAT": {
     "locker_room": {
-      "score": -1.8,
+      "score": -1.7,
       "reason": "0-6惨败+被罚至9人+Madibo红牌断腿争议, 出线几乎无望, 士气崩溃",
       "date": "2026-06-19",
       "original_score": -3
@@ -474,7 +474,7 @@
   },
   "EGY": {
     "locker_room": {
-      "score": 18,
+      "score": 17.1,
       "reason": "Salah hamstring受伤, R32 vs Australia存疑, 教练说\"不严重\"但未确认 [2026-06-29]",
       "date": "2026-06-29",
       "original_score": 18
