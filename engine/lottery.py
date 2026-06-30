@@ -778,7 +778,7 @@ def generate_all_opportunities(classified: list, config: PortfolioConfig = None)
             for direction, (prob, pick_name) in probs.items():
                 if prob <= 0: continue
                 spf_val = compute_value(mid, direction, prob)
-                is_anchor = (spf_val["odds"] < 2.5 and prob >= 45)
+                is_anchor = (spf_val["odds"] < 3.0 and prob >= 38)
                 if (spf_val["is_value"] and spf_val["ev"] > 0) or is_anchor:
                     flag_name = "平局" if direction == "draw" else pick_name
                     hcap_note = _handicap_note(mid)
@@ -800,7 +800,7 @@ def generate_all_opportunities(classified: list, config: PortfolioConfig = None)
             for direction, (prob, pick_name) in probs.items():
                 if prob <= 0: continue
                 spf_val = compute_value(mid, direction, prob)
-                is_anchor = (spf_val["odds"] < 2.5 and prob >= 45)
+                is_anchor = (spf_val["odds"] < 3.0 and prob >= 38)
                 if (spf_val["is_value"] and spf_val["ev"] > 0) or is_anchor:
                     flag_name = "平局" if direction == "draw" else pick_name
                     hcap_note = _handicap_note(mid)
@@ -1155,13 +1155,13 @@ def select_portfolio(opportunities: list, config: PortfolioConfig = None) -> Por
             continue
         if op.ev <= 0:
             # 锚定豁免: 高概率低赔率可通过
-            if not (op.model_prob >= 45 and op.odds < 2.5 and op.play_type == "spf"):
+            if not (op.model_prob >= 38 and op.odds < 3.0 and op.play_type == "spf"):
                 continue
         # 标准过滤
         if op.edge_pct >= config.min_edge_pct:
             filtered.append(op)
         # 锚定豁免: model_prob>=45% 且 odds<2.5 的强队胜方向 (即使edge微负)
-        elif op.model_prob >= 45 and op.odds < 2.5 and op.play_type == "spf":
+        elif op.model_prob >= 38 and op.odds < 3.0 and op.play_type == "spf":
             anchors_for_parlay.append(op)
 
     # 2. RQSPF优先: 同一比赛有SPF和RQSPF时, 若RQSPF在黄金区间而SPF不在, 仅保留RQSPF
@@ -1243,56 +1243,55 @@ def select_portfolio(opportunities: list, config: PortfolioConfig = None) -> Por
         op.stake = round(stake, 1)
         op.kelly_full_pct = round((op.edge_pct / (op.odds - 1.0)) * 100, 1) if op.odds > 1.0 else 0
 
-    # 5. 贪婪填充 (锚定优先 + 平局上限)
+    # 5. 概率优先选择: Phase1锚定→Phase2价值→Phase3串关
     selected = []
     match_bet_count = {}
     direction_count = {"主胜": 0, "客胜": 0, "平局": 0, "其他": 0}
-    draw_count = 0
     total_spent = 0
 
-    # 5a. 先选锚定 (高概率胜方向, 包括豁免锚定)
-    anchor_filled = 0
-    # 扩展锚定池: 包含概率≥45%的SPF方向(即使edge微负)
-    extended_anchors = list(anchors) if anchors else []
-    for op in filtered:
-        if op not in extended_anchors and op.play_type == "spf" and op.model_prob >= 45 and op.odds < 3.0:
-            extended_anchors.append(op)
-    extended_anchors.sort(key=lambda o: o.model_prob, reverse=True)
-    for op in extended_anchors:
-        if anchor_filled >= 2: break
+    # Phase 1: 选高概率SPF锚定 (≥35%, 优先取最高概率)
+    spf_pool = sorted([o for o in filtered if o.play_type == "spf"],
+                      key=lambda o: o.model_prob, reverse=True)
+    for op in spf_pool:
+        if len(selected) >= 2: break
+        if op.model_prob < 35: continue
+        if match_bet_count.get(op.match_id, 0) >= 1: continue  # 每场最多1锚
+        selected.append(op)
+        match_bet_count[op.match_id] = 1
+        direction_count[_direction_key(op)] = direction_count.get(_direction_key(op), 0) + op.stake
+        total_spent += op.stake
+
+    # Phase 2: 补充正edge价值注 (半全场/总进球, 每场最多+1)
+    value_pool = sorted([o for o in filtered
+                         if o.play_type in ("half_full","total_goals","rqspf")
+                         and o.model_prob >= 15],
+                        key=lambda o: o.edge_pct, reverse=True)
+    for op in value_pool:
+        if len(selected) >= 5: break
         if match_bet_count.get(op.match_id, 0) >= config.max_bets_per_match: continue
-        if total_spent + op.stake > config.budget: continue
+        if op.odds > 25.0: continue  # 排除纯彩票级
         selected.append(op)
         match_bet_count[op.match_id] = match_bet_count.get(op.match_id, 0) + 1
         direction_count[_direction_key(op)] = direction_count.get(_direction_key(op), 0) + op.stake
         total_spent += op.stake
-        anchor_filled += 1
 
-    # 5b. 填充剩余 (平局/冷门不超过40%)
-    max_draws = max(2, int(config.max_portfolio_bets * 0.4))
-    for op in filtered:
-        if op in selected: continue
+    # Phase 3: 补充串关 (每条串关最多包含1个锚定场)
+    parlay_pool = sorted([o for o in filtered if "串1" in o.play_type and o.odds <= 50.0],
+                         key=lambda o: (o.model_prob if o.model_prob > 15 else 0), reverse=True)
+    for op in parlay_pool:
         if len(selected) >= config.max_portfolio_bets: break
-        if match_bet_count.get(op.match_id, 0) >= config.max_bets_per_match: continue
-
-        dir_key = _direction_key(op)
-        is_draw = ("平局" in dir_key or "draw" in op.pick_short.lower() or "让球平" in op.pick_short)
-        if is_draw and draw_count >= max_draws: continue
-
-        dir_current = direction_count.get(dir_key, 0) + op.stake
-        if dir_current / config.budget > config.max_concentration_pct: continue
-
-        if total_spent + op.stake > config.budget:
-            remaining = config.budget - total_spent
-            if remaining >= config.min_stake_per_bet:
-                op.stake = remaining
-            else: continue
-
+        # 检查串关各腿不违反集中度
+        legs = op.match_id.split("+")
+        leg_ok = all(match_bet_count.get(leg, 0) < config.max_bets_per_match for leg in legs)
+        if not leg_ok: continue
+        if op.model_prob < 5: continue
         selected.append(op)
-        match_bet_count[op.match_id] = match_bet_count.get(op.match_id, 0) + 1
-        direction_count[dir_key] = direction_count.get(dir_key, 0) + op.stake
-        if is_draw: draw_count += 1
+        for leg in legs:
+            match_bet_count[leg] = match_bet_count.get(leg, 0) + 1
+        direction_count[_direction_key(op)] = direction_count.get(_direction_key(op), 0) + op.stake
         total_spent += op.stake
+
+    # 已用Phase 1-3填充, 无需额外步骤
 
     # 6. 保留金
     reserve = config.budget - total_spent
@@ -1419,12 +1418,15 @@ def generate_plan(matches: list) -> dict:
     # ★ 生成所有单注投注机会 (单关SPF + RQSPF + 总进球 + 半全场)
     single_opportunities, parlay_only_ops = generate_all_opportunities(classified, config)
 
+    # ★ 非单关SPF锚定也加入选择池 (供Phase1锚定选择)
+    anchor_ops = [o for o in parlay_only_ops if o.play_type == "spf" and o.model_prob >= 38]
+
     # ★ 生成串关机会: 合并单关SPF + 非单关SPF → 串关池
     all_for_parlay = single_opportunities + parlay_only_ops
     parlay_opportunities = generate_parlay_opportunities(all_for_parlay, config)
 
-    # ★ 合并: 单注 + 串关 → 统一池
-    all_opportunities = single_opportunities + parlay_opportunities
+    # ★ 合并: 单注 + 串关 + 锚定 → 统一池
+    all_opportunities = single_opportunities + anchor_ops + parlay_opportunities
 
     # ★ 投资组合选择
     portfolio = select_portfolio(all_opportunities, config)
