@@ -645,6 +645,49 @@ def _rqspf_real_prob(score_probs: list, handicap_line: int, direction: str) -> f
     else: return max(5.0, min(60.0, prob_push / total * 100))
 
 
+def _htft_poisson_prob(xg_home: float, xg_away: float, htft_pick: str) -> float:
+    """
+    半全场Poisson精确概率 (替代旧公式 dir_prob*0.45)
+    半场xG = 全场xG × 0.45, 下半场xG = 全场xG × 0.55
+    htft_pick: '胜胜','胜平','胜负','平胜','平平','平负','负胜','负平','负负'
+    """
+    import math as _m
+    def _pois(l, k):
+        if l <= 0: return 1.0 if k == 0 else 0.0
+        return (l**k * _m.exp(-l)) / _m.factorial(k)
+
+    h1_home_xg = xg_home * 0.45
+    h1_away_xg = xg_away * 0.45
+    h2_home_xg = xg_home * 0.55
+    h2_away_xg = xg_away * 0.55
+
+    ht_map = {'胜': 0, '平': 1, '负': 2}
+    ft_map = ht_map
+    ht = htft_pick[0]  # 半场
+    ft = htft_pick[1]  # 全场
+
+    prob = 0.0
+    for h1_hg in range(6):
+        for h1_ag in range(6):
+            p_ht = _pois(h1_home_xg, h1_hg) * _pois(h1_away_xg, h1_ag)
+            if p_ht < 0.0002: continue
+            if h1_hg > h1_ag: h1_res = '胜'
+            elif h1_hg == h1_ag: h1_res = '平'
+            else: h1_res = '负'
+            if h1_res != ht: continue
+
+            for h2_hg in range(6):
+                for h2_ag in range(6):
+                    p_2h = _pois(h2_home_xg, h2_hg) * _pois(h2_away_xg, h2_ag)
+                    ft_hg, ft_ag = h1_hg + h2_hg, h1_ag + h2_ag
+                    if ft_hg > ft_ag: ft_res = '胜'
+                    elif ft_hg == ft_ag: ft_res = '平'
+                    else: ft_res = '负'
+                    if ft_res == ft:
+                        prob += p_ht * p_2h
+    return max(1.0, min(90.0, prob * 100))
+
+
 def _handicap_note(match_id: str) -> tuple:
     """让球盘信息: (line, rqspf_pick, rqspf_odds)"""
     hsp = _match_handicap_sp(match_id)
@@ -828,7 +871,8 @@ def generate_all_opportunities(classified: list, config: PortfolioConfig = None)
             ht_odds = ht["odds"]
             market_imp = 1.0 / ht_odds * 100
             # 半全场概率: 基于胜平负概率打折
-            ht_prob = c["dir_prob"] * 0.45  # 半全场≈45%基础方向概率
+            # 半全场Poisson精确概率 (半场xG=全场×0.45)
+            ht_prob = _htft_poisson_prob(c["xg_home"], c["xg_away"], ht['pick'])
             ht_edge = ht_prob - market_imp
             ht_ev = (ht_prob / 100) * ht_odds - 1.0
             if ht_ev > 0 and ht_odds <= config.max_odds:
