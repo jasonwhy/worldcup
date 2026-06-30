@@ -83,22 +83,40 @@ a{color:var(--blue);text-decoration:none}
 .pred-item.lose{background:var(--red-bg);color:var(--red)}
 .pred-score{font-size:12px;font-weight:700;color:var(--accent);margin-left:auto}
 
+/* ── Upcoming Matches ── */
+.upcoming-matches-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.upcoming-card{background:var(--bg-card);border-radius:8px;padding:12px 14px;border-left:4px solid var(--blue);transition:all .2s}
+.upcoming-card:hover{background:var(--bg-card-hover);transform:translateX(2px)}
+.up-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.up-card-time{font-size:11px;color:var(--accent);font-weight:700}
+.up-card-conf{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
+.conf-high{background:var(--green-bg);color:var(--green)}
+.conf-mid{background:var(--bg-card-hover);color:var(--amber)}
+.conf-low{background:var(--red-bg);color:var(--red)}
+.up-card-teams{font-size:14px;font-weight:600;margin-bottom:8px}
+.up-card-vs{font-size:10px;color:var(--text-muted);margin:0 4px}
+.up-card-pred{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.up-dir{font-size:12px;font-weight:700;color:var(--text-primary)}
+.up-score{font-size:11px;color:var(--accent);font-weight:600}
+.up-card-bars{display:flex;height:4px;border-radius:2px;overflow:hidden;gap:2px}
+.up-bar{height:100%;border-radius:1px}.win-bar{background:var(--green)}.draw-bar{background:var(--amber)}.lose-bar{background:var(--red)}
+.upcoming-empty{padding:20px;text-align:center;color:var(--text-muted);font-size:13px}
+
 /* ── Tournament Bracket ── */
 .bracket-scroll{overflow-x:auto;padding-bottom:16px;-webkit-overflow-scrolling:touch}
-.bracket-container{display:flex;gap:8px;min-width:900px;padding:8px 0}
-.bracket-round{display:flex;flex-direction:column;gap:4px;min-width:130px;flex-shrink:0}
-.bracket-round-title{font-size:10px;font-weight:700;color:var(--accent);text-align:center;padding:4px 0;white-space:nowrap}
-.bracket-match{background:var(--bg-card);border-radius:6px;padding:6px 8px;border-left:3px solid var(--border);font-size:10px;position:relative;min-height:44px;display:flex;flex-direction:column;justify-content:center}
+.bracket-container{display:flex;gap:6px;min-width:900px;padding:8px 0}
+.bracket-round{display:flex;flex-direction:column;gap:3px;min-width:135px;flex-shrink:0}
+.bracket-round-title{font-size:11px;font-weight:700;color:var(--accent);text-align:center;padding:6px 0;background:var(--bg-card);border-radius:4px;margin-bottom:2px}
+.bracket-match{background:var(--bg-card);border-radius:6px;padding:6px 8px;border-left:3px solid var(--border);font-size:10px;cursor:pointer;position:relative;min-height:40px;display:flex;flex-direction:column;justify-content:center;transition:all .15s}
+.bracket-match:hover{background:var(--bg-card-hover);border-left-color:var(--accent)}
 .bracket-match.played{border-left-color:var(--green)}
 .bracket-match.live{border-left-color:var(--red);animation:live-glow 2s infinite}
 .bracket-match .b-team{display:flex;align-items:center;gap:3px;padding:1px 0}
 .bracket-match .b-score{font-weight:800;color:var(--accent);font-family:var(--font-mono);margin-left:auto;font-size:11px}
 .bracket-match .b-winner{color:var(--green);font-weight:700}
-.bracket-match .b-vs{color:var(--text-muted);font-size:8px;text-align:center}
-.bracket-match .b-time{font-size:8px;color:var(--text-muted)}
-.bracket-match .b-pred{font-size:9px;color:var(--blue)}
-/* Round-specific widths */
-.br-r32{min-width:135px}.br-r16{min-width:130px}.br-qf{min-width:120px}.br-sf{min-width:110px}.br-f{min-width:105px}
+.bracket-match .b-vs{color:var(--text-muted);font-size:9px;text-align:center}
+.bracket-match .b-pk{font-size:8px;background:var(--amber);color:#000;padding:1px 4px;border-radius:4px;margin-left:auto}
+.br-r32{min-width:140px}.br-r16{min-width:130px}.br-qf{min-width:120px}.br-sf{min-width:110px}.br-f{min-width:100px}
 
 /* Group Stage Grid */
 .groups-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:16px}
@@ -399,13 +417,86 @@ a{color:var(--blue);text-decoration:none}
 
 <!-- PANEL 1: 赛程晋级图 -->
 <div id="schedule" class="panel">
-  <div style="margin-bottom:12px">
-    <h2 style="font-size:16px;color:var(--accent);margin-bottom:4px">🏟️ 赛程晋级图</h2>
-    <p style="font-size:10px;color:var(--text-secondary)">小组赛积分 → 淘汰赛对阵 · 实时更新 · 横向滚动查看完整赛程</p>
+  <!-- ★ 即将开赛 -->
+  <div class="upcoming-section">
+    <h2 style="font-size:16px;color:var(--accent);margin-bottom:12px">⏰ 即将开赛</h2>
+    <div class="upcoming-matches-grid"><div class="upcoming-card">
+        <div class="up-card-header"><span class="up-card-time">27.7 06:00</span><span class="up-card-conf conf-high">高</span></div>
+        <div class="up-card-teams">🇦🇷 Argentina <span class="up-card-vs">vs</span> 🇨🇻 Cape Verde</div>
+        <div class="up-card-pred">
+          <span class="up-dir">Argentina胜 59%</span>
+          <span class="up-score">🏆 1-0</span>
+        </div>
+        <div class="up-card-bars">
+          <span class="up-bar win-bar" style="width:59.0%"></span>
+          <span class="up-bar draw-bar" style="width:27.7%"></span>
+          <span class="up-bar lose-bar" style="width:13.3%"></span>
+        </div></div><div class="upcoming-card">
+        <div class="up-card-header"><span class="up-card-time">37.9 02:00</span><span class="up-card-conf conf-low">低——建议观望</span></div>
+        <div class="up-card-teams">🇦🇺 Australia <span class="up-card-vs">vs</span> 🇪🇬 Egypt</div>
+        <div class="up-card-pred">
+          <span class="up-dir">平局 38%</span>
+          <span class="up-score">🏆 1-1</span>
+        </div>
+        <div class="up-card-bars">
+          <span class="up-bar win-bar" style="width:33.8%"></span>
+          <span class="up-bar draw-bar" style="width:37.9%"></span>
+          <span class="up-bar lose-bar" style="width:28.3%"></span>
+        </div></div><div class="upcoming-card">
+        <div class="up-card-header"><span class="up-card-time">33.1 04:00</span><span class="up-card-conf conf-low">低——建议观望</span></div>
+        <div class="up-card-teams">🇧🇪 Belgium <span class="up-card-vs">vs</span> 🇸🇳 Senegal</div>
+        <div class="up-card-pred">
+          <span class="up-dir">Belgium胜 37%</span>
+          <span class="up-score">🏆 2-1</span>
+        </div>
+        <div class="up-card-bars">
+          <span class="up-bar win-bar" style="width:37.1%"></span>
+          <span class="up-bar draw-bar" style="width:33.1%"></span>
+          <span class="up-bar lose-bar" style="width:29.7%"></span>
+        </div></div><div class="upcoming-card">
+        <div class="up-card-header"><span class="up-card-time">30.6 01:00</span><span class="up-card-conf conf-low">低——建议观望</span></div>
+        <div class="up-card-teams">🇨🇮 Ivory Coast <span class="up-card-vs">vs</span> 🇳🇴 Norway</div>
+        <div class="up-card-pred">
+          <span class="up-dir">Norway胜 36%</span>
+          <span class="up-score">🏆 1-2</span>
+        </div>
+        <div class="up-card-bars">
+          <span class="up-bar win-bar" style="width:33.1%"></span>
+          <span class="up-bar draw-bar" style="width:30.6%"></span>
+          <span class="up-bar lose-bar" style="width:36.2%"></span>
+        </div></div><div class="upcoming-card">
+        <div class="up-card-header"><span class="up-card-time">23.3 09:30</span><span class="up-card-conf conf-high">高</span></div>
+        <div class="up-card-teams">🇨🇴 Colombia <span class="up-card-vs">vs</span> 🇬🇭 Ghana</div>
+        <div class="up-card-pred">
+          <span class="up-dir">Colombia胜 69%</span>
+          <span class="up-score">🏆 2-0</span>
+        </div>
+        <div class="up-card-bars">
+          <span class="up-bar win-bar" style="width:68.7%"></span>
+          <span class="up-bar draw-bar" style="width:23.3%"></span>
+          <span class="up-bar lose-bar" style="width:8.0%"></span>
+        </div></div><div class="upcoming-card">
+        <div class="up-card-header"><span class="up-card-time">26.7 00:00</span><span class="up-card-conf conf-high">高</span></div>
+        <div class="up-card-teams">🏴󠁧󠁢󠁥󠁮󠁧󠁿 England <span class="up-card-vs">vs</span> 🇨🇩 DR Congo</div>
+        <div class="up-card-pred">
+          <span class="up-dir">England胜 56%</span>
+          <span class="up-score">🏆 1-0</span>
+        </div>
+        <div class="up-card-bars">
+          <span class="up-bar win-bar" style="width:55.6%"></span>
+          <span class="up-bar draw-bar" style="width:26.7%"></span>
+          <span class="up-bar lose-bar" style="width:17.7%"></span>
+        </div></div></div>
   </div>
-  <!-- 小组赛积分 -->
-  <h3 style="font-size:13px;color:var(--accent);margin:16px 0 8px 0">📋 小组赛积分</h3>
-  <div class="groups-grid"><div class="group-mini">
+
+  <!-- ★ 淘汰赛对阵 -->
+  <h3 style="font-size:14px;color:var(--accent);margin:24px 0 8px 0">🏆 淘汰赛对阵</h3>
+  <div class="bracket-scroll"><div class="bracket-container"><div class="bracket-round br-r32"><div class="bracket-round-title">1/16决赛</div><div class="bracket-match played"><div class="b-team"><span class="">🇿🇦 South Africa</span><span class="b-score">0</span></div><div class="b-team"><span class="b-winner">🇨🇦 Canada</span><span class="b-score">1</span></div></div><div class="bracket-match played"><div class="b-team"><span class="">🇩🇪 Germany</span><span class="b-score">1</span></div><div class="b-team"><span class="">🇵🇾 Paraguay</span><span class="b-score">1</span></div></div><div class="bracket-match played"><div class="b-team"><span class="">🇳🇱 Netherlands</span><span class="b-score">1</span></div><div class="b-team"><span class="">🇲🇦 Morocco</span><span class="b-score">1</span></div></div><div class="bracket-match played"><div class="b-team"><span class="b-winner">🇧🇷 Brazil</span><span class="b-score">2</span></div><div class="b-team"><span class="">🇯🇵 Japan</span><span class="b-score">1</span></div></div><div class="bracket-match"><div class="b-vs">🇫🇷法国 vs 🇸🇪瑞典</div></div><div class="bracket-match"><div class="b-vs">🇨🇮科特迪瓦 vs 🇳🇴挪威</div></div><div class="bracket-match"><div class="b-vs">🇲🇽墨西哥 vs 🇪🇨厄瓜多尔</div></div><div class="bracket-match"><div class="b-vs">🏴󠁧󠁢󠁥󠁮󠁧󠁿英格兰 vs 🇨🇩刚果(金)</div></div><div class="bracket-match"><div class="b-vs">🇺🇸美国 vs 🇧🇦波黑</div></div><div class="bracket-match"><div class="b-vs">🇧🇪比利时 vs 🇸🇳塞内加尔</div></div><div class="bracket-match"><div class="b-vs">🇵🇹葡萄牙 vs 🇭🇷克罗地亚</div></div><div class="bracket-match"><div class="b-vs">🇪🇸西班牙 vs 🇦🇹奥地利</div></div><div class="bracket-match"><div class="b-vs">🇨🇭瑞士 vs 🇩🇿阿尔及利亚</div></div><div class="bracket-match"><div class="b-vs">🇦🇷阿根廷 vs 🇨🇻佛得角</div></div><div class="bracket-match"><div class="b-vs">🇨🇴哥伦比亚 vs 🇬🇭加纳</div></div><div class="bracket-match"><div class="b-vs">🇦🇺澳大利亚 vs 🇪🇬埃及</div></div></div><div class="bracket-round br-r16"><div class="bracket-round-title">1/8决赛</div><div class="bracket-match"><div class="b-vs">W89 vs W90</div></div><div class="bracket-match"><div class="b-vs">W73 vs W75</div></div><div class="bracket-match"><div class="b-vs">W76 vs W78</div></div><div class="bracket-match"><div class="b-vs">W79 vs W80</div></div><div class="bracket-match"><div class="b-vs">W83 vs W84</div></div><div class="bracket-match"><div class="b-vs">W81 vs W82</div></div><div class="bracket-match"><div class="b-vs">W86 vs W88</div></div><div class="bracket-match"><div class="b-vs">W85 vs W87</div></div></div><div class="bracket-round br-qf"><div class="bracket-round-title">1/4决赛</div><div class="bracket-match"><div class="b-vs">W89 vs W90</div></div><div class="bracket-match"><div class="b-vs">W93 vs W94</div></div><div class="bracket-match"><div class="b-vs">W91 vs W92</div></div><div class="bracket-match"><div class="b-vs">W95 vs W96</div></div></div><div class="bracket-round br-sf"><div class="bracket-round-title">半决赛</div><div class="bracket-match"><div class="b-vs">W97 vs W98</div></div><div class="bracket-match"><div class="b-vs">W99 vs W100</div></div></div><div class="bracket-round br-f"><div class="bracket-round-title">决赛/季军</div><div class="bracket-match"><div class="b-vs">W101 vs W102</div></div><div class="bracket-match"><div class="b-vs">L101 vs L102</div></div></div></div></div>
+
+  <!-- ★ 小组赛积分 (折叠) -->
+  <details style="margin-top:20px">
+    <summary style="cursor:pointer;font-size:13px;color:var(--accent);font-weight:600">📋 小组赛最终积分</summary>
+    <div class="groups-grid" style="margin-top:8px"><div class="group-mini">
     <h4>Group A</h4>
     <table><thead><tr><th>#</th><th>球队</th><th>分</th><th>GD</th></tr></thead><tbody><tr><td class="advance">1</td><td class="advance">🇲🇽 Mexico</td><td>9分</td><td>+6</td></tr><tr><td class="advance">2</td><td class="advance">🇿🇦 South Africa</td><td>4分</td><td>-1</td></tr><tr><td class="third">3</td><td class="third">🇰🇷 South Korea</td><td>3分</td><td>-1</td></tr><tr><td class="out">4</td><td class="out">🇨🇿 Czechia</td><td>1分</td><td>-3</td></tr></tbody></table>
     </div><div class="group-mini">
@@ -442,79 +533,11 @@ a{color:var(--blue);text-decoration:none}
     <h4>Group L</h4>
     <table><thead><tr><th>#</th><th>球队</th><th>分</th><th>GD</th></tr></thead><tbody><tr><td class="advance">1</td><td class="advance">🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</td><td>7分</td><td>+4</td></tr><tr><td class="advance">2</td><td class="advance">🇭🇷 Croatia</td><td>6分</td><td>+0</td></tr><tr><td class="third">3</td><td class="third">🇬🇭 Ghana</td><td>4分</td><td>+0</td></tr><tr><td class="out">4</td><td class="out">🇵🇦 Panama</td><td>0分</td><td>-4</td></tr></tbody></table>
     </div></div>
-  <!-- 淘汰赛对阵 -->
-  <h3 style="font-size:13px;color:var(--accent);margin:16px 0 8px 0">🏆 淘汰赛对阵</h3>
-  <div class="bracket-scroll">
-    <div class="bracket-container"><div class="bracket-round br-r32"><div class="bracket-round-title">1/16决赛</div><div class="bracket-match">
-            <div class="b-vs">2A vs 2B</div>
-            <div class="b-time">#M73</div></div><div class="bracket-match">
-            <div class="b-vs">1E vs 3A/B/C/D/F</div>
-            <div class="b-time">#M74</div></div><div class="bracket-match">
-            <div class="b-vs">1F vs 2C</div>
-            <div class="b-time">#M75</div></div><div class="bracket-match">
-            <div class="b-vs">1C vs 2F</div>
-            <div class="b-time">#M76</div></div><div class="bracket-match">
-            <div class="b-vs">1I vs 3C/D/F/G/H</div>
-            <div class="b-time">#M77</div></div><div class="bracket-match">
-            <div class="b-vs">2E vs 2I</div>
-            <div class="b-time">#M78</div></div><div class="bracket-match">
-            <div class="b-vs">1A vs 3C/E/F/H/I</div>
-            <div class="b-time">#M79</div></div><div class="bracket-match">
-            <div class="b-vs">1L vs 3E/H/I/J/K</div>
-            <div class="b-time">#M80</div></div><div class="bracket-match">
-            <div class="b-vs">1D vs 3B/E/F/I/J</div>
-            <div class="b-time">#M81</div></div><div class="bracket-match">
-            <div class="b-vs">1G vs 3A/E/H/I/J</div>
-            <div class="b-time">#M82</div></div><div class="bracket-match">
-            <div class="b-vs">2K vs 2L</div>
-            <div class="b-time">#M83</div></div><div class="bracket-match">
-            <div class="b-vs">1H vs 2J</div>
-            <div class="b-time">#M84</div></div><div class="bracket-match">
-            <div class="b-vs">1B vs 3E/F/G/I/J</div>
-            <div class="b-time">#M85</div></div><div class="bracket-match">
-            <div class="b-vs">1J vs 2H</div>
-            <div class="b-time">#M86</div></div><div class="bracket-match">
-            <div class="b-vs">1K vs 3D/E/I/J/L</div>
-            <div class="b-time">#M87</div></div><div class="bracket-match">
-            <div class="b-vs">2D vs 2G</div>
-            <div class="b-time">#M88</div></div></div><div class="bracket-round br-r16"><div class="bracket-round-title">1/8决赛</div><div class="bracket-match">
-            <div class="b-vs">W74 vs W77</div>
-            <div class="b-time">#M89</div></div><div class="bracket-match">
-            <div class="b-vs">W73 vs W75</div>
-            <div class="b-time">#M90</div></div><div class="bracket-match">
-            <div class="b-vs">W76 vs W78</div>
-            <div class="b-time">#M91</div></div><div class="bracket-match">
-            <div class="b-vs">W79 vs W80</div>
-            <div class="b-time">#M92</div></div><div class="bracket-match">
-            <div class="b-vs">W83 vs W84</div>
-            <div class="b-time">#M93</div></div><div class="bracket-match">
-            <div class="b-vs">W81 vs W82</div>
-            <div class="b-time">#M94</div></div><div class="bracket-match">
-            <div class="b-vs">W86 vs W88</div>
-            <div class="b-time">#M95</div></div><div class="bracket-match">
-            <div class="b-vs">W85 vs W87</div>
-            <div class="b-time">#M96</div></div></div><div class="bracket-round br-qf"><div class="bracket-round-title">1/4决赛</div><div class="bracket-match">
-            <div class="b-vs">W89 vs W90</div>
-            <div class="b-time">#M97</div></div><div class="bracket-match">
-            <div class="b-vs">W93 vs W94</div>
-            <div class="b-time">#M98</div></div><div class="bracket-match">
-            <div class="b-vs">W91 vs W92</div>
-            <div class="b-time">#M99</div></div><div class="bracket-match">
-            <div class="b-vs">W95 vs W96</div>
-            <div class="b-time">#M100</div></div></div><div class="bracket-round br-sf"><div class="bracket-round-title">半决赛</div><div class="bracket-match">
-            <div class="b-vs">W97 vs W98</div>
-            <div class="b-time">#M101</div></div><div class="bracket-match">
-            <div class="b-vs">W99 vs W100</div>
-            <div class="b-time">#M102</div></div></div><div class="bracket-round br-f"><div class="bracket-round-title">决赛/季军</div><div class="bracket-match">
-            <div class="b-vs">W101 vs W102</div>
-            <div class="b-time">#FINAL</div></div><div class="bracket-match">
-            <div class="b-vs">L101 vs L102</div>
-            <div class="b-time">#BRONZE</div></div></div></div>
-  </div>
-  <p style="font-size:9px;color:var(--text-muted);margin-top:4px">每组前2名+8个最佳第3名晋级32强 · 绿色=已赛 · 红色=直播中</p>
-  <!-- 按日期赛程(折叠) -->
-  <details style="margin-top:20px">
-    <summary style="cursor:pointer;font-size:12px;color:var(--blue);font-weight:600">📅 按日期查看完整赛程</summary>
+  </details>
+
+  <!-- ★ 已赛赛程 (折叠) -->
+  <details style="margin-top:16px">
+    <summary style="cursor:pointer;font-size:13px;color:var(--text-secondary);font-weight:600">📅 已完赛赛程 (按日期查看)</summary>
     <div style="margin-top:8px"><div class="matchday-group">
     <div class="matchday-header"><span class="matchday-date">6/11</span><span class="matchday-badge">✅ 已完赛</span><span class="matchday-count">1/1</span></div><div class="match-card played result-win">
             <div class="match-time">🏟 Mexico City 当地 6/11 09:00 | 🇨🇳 北京 6/11 23:00</div>

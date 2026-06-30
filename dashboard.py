@@ -118,55 +118,123 @@ for gid in sorted(groups.keys()):
     <table><thead><tr><th>#</th><th>球队</th><th>分</th><th>GD</th></tr></thead><tbody>{rows}</tbody></table>
     </div>"""
 
-# ── 淘汰赛 bracket ──
-# R32 slots: 根据FIFA官方对阵表
+# ── 淘汰赛 bracket (实际对阵替换占位符) ──
+# 根据Yahoo Sports完整R32对阵表
 R32_SLOTS = [
-    ("M73","2A vs 2B"), ("M74","1E vs 3A/B/C/D/F"), ("M75","1F vs 2C"), ("M76","1C vs 2F"),
-    ("M77","1I vs 3C/D/F/G/H"), ("M78","2E vs 2I"), ("M79","1A vs 3C/E/F/H/I"), ("M80","1L vs 3E/H/I/J/K"),
-    ("M81","1D vs 3B/E/F/I/J"), ("M82","1G vs 3A/E/H/I/J"), ("M83","2K vs 2L"), ("M84","1H vs 2J"),
-    ("M85","1B vs 3E/F/G/I/J"), ("M86","1J vs 2H"), ("M87","1K vs 3D/E/I/J/L"), ("M88","2D vs 2G"),
+    ("RSA-CAN","🇿🇦南非 vs 🇨🇦加拿大"),  # M73: 0-1 ✅
+    ("GER-PAR","🇩🇪德国 vs 🇵🇾巴拉圭"),   # M74: 1-1(PK)
+    ("NED-MAR","🇳🇱荷兰 vs 🇲🇦摩洛哥"),  # M75: 1-1(PK)
+    ("BRA-JPN","🇧🇷巴西 vs 🇯🇵日本"),     # M76: 2-1 ✅
+    ("FRA-SWE","🇫🇷法国 vs 🇸🇪瑞典"),     # M77
+    ("CIV-NOR","🇨🇮科特迪瓦 vs 🇳🇴挪威"),  # M78
+    ("MEX-ECU","🇲🇽墨西哥 vs 🇪🇨厄瓜多尔"), # M79
+    ("ENG-COD","🏴󠁧󠁢󠁥󠁮󠁧󠁿英格兰 vs 🇨🇩刚果(金)"),  # M80
+    ("USA-BIH","🇺🇸美国 vs 🇧🇦波黑"),      # M81
+    ("BEL-SEN","🇧🇪比利时 vs 🇸🇳塞内加尔"), # M82
+    ("POR-CRO","🇵🇹葡萄牙 vs 🇭🇷克罗地亚"), # M83
+    ("ESP-AUT","🇪🇸西班牙 vs 🇦🇹奥地利"),   # M84
+    ("SUI-ALG","🇨🇭瑞士 vs 🇩🇿阿尔及利亚"), # M85
+    ("ARG-CPV","🇦🇷阿根廷 vs 🇨🇻佛得角"),   # M86
+    ("COL-GHA","🇨🇴哥伦比亚 vs 🇬🇭加纳"),   # M87
+    ("AUS-EGY","🇦🇺澳大利亚 vs 🇪🇬埃及"),   # M88
 ]
+
+R16_SLOTS = [("R16-1","W89 vs W90"),("R16-2","W73 vs W75"),("R16-3","W76 vs W78"),("R16-4","W79 vs W80"),
+             ("R16-5","W83 vs W84"),("R16-6","W81 vs W82"),("R16-7","W86 vs W88"),("R16-8","W85 vs W87")]
 
 # 各轮次定义
 ROUNDS = [
     ("R32", "1/16决赛", R32_SLOTS),
-    ("R16", "1/8决赛", [("M89","W74 vs W77"),("M90","W73 vs W75"),("M91","W76 vs W78"),("M92","W79 vs W80"),
-                         ("M93","W83 vs W84"),("M94","W81 vs W82"),("M95","W86 vs W88"),("M96","W85 vs W87")]),
-    ("QF", "1/4决赛", [("M97","W89 vs W90"),("M98","W93 vs W94"),("M99","W91 vs W92"),("M100","W95 vs W96")]),
-    ("SF", "半决赛", [("M101","W97 vs W98"),("M102","W99 vs W100")]),
+    ("R16", "1/8决赛", R16_SLOTS),
+    ("QF", "1/4决赛", [("QF-1","W89 vs W90"),("QF-2","W93 vs W94"),("QF-3","W91 vs W92"),("QF-4","W95 vs W96")]),
+    ("SF", "半决赛", [("SF-1","W97 vs W98"),("SF-2","W99 vs W100")]),
     ("F", "决赛/季军", [("FINAL","W101 vs W102"),("BRONZE","L101 vs L102")]),
 ]
 
+# Format slot label with actual teams where played
+def format_bracket_slot(slot_id, slot_label, played_map, live_map, teams, F):
+    if slot_id in played_map:
+        m = played_map[slot_id]
+        sc = m["score"]
+        hn = teams.get(m["home"],{}).get("name", m["home"])
+        an = teams.get(m["away"],{}).get("name", m["away"])
+        hg, ag = sc.split("-")
+        h_cls = "b-winner" if int(hg) > int(ag) else ""
+        a_cls = "b-winner" if int(ag) > int(hg) else ""
+        fh, fa = F.get(hn,""), F.get(an,"")
+        return '<div class="bracket-match played"><div class="b-team"><span class="%s">%s %s</span><span class="b-score">%s</span></div><div class="b-team"><span class="%s">%s %s</span><span class="b-score">%s</span></div></div>' % (h_cls, fh, hn, hg, a_cls, fa, an, ag)
+    elif slot_id in live_map:
+        lm = live_map[slot_id]
+        hn = teams.get(lm.get("home",""),{}).get("name","?")
+        an = teams.get(lm.get("away",""),{}).get("name","?")
+        fh, fa = F.get(hn,""), F.get(an,"")
+        return '<div class="bracket-match live"><div class="b-team">%s %s <span class="b-score">%s</span></div><div class="b-team">%s %s <span class="b-score">%s</span></div><div class="b-time">🔴 %s\'</div></div>' % (fh, hn, lm.get("home_goals",0), fa, an, lm.get("away_goals",0), lm.get("minute",""))
+    else:
+        return '<div class="bracket-match"><div class="b-vs">%s</div></div>' % slot_label
+
 bracket_html = ""
 for round_key, round_name, slots in ROUNDS:
-    cls_w = f"br-{round_key.lower()}" if round_key in ("R32","R16","QF","SF") else "br-f"
+    cls_w = f"br-{round_key.lower()}"
     col = f'<div class="bracket-round {cls_w}"><div class="bracket-round-title">{round_name}</div>'
     for slot_id, slot_label in slots:
-        # Check if played or live
-        if slot_id in played_map:
-            m = played_map[slot_id]
-            sc = m["score"]
-            home_n = teams.get(m["home"],{}).get("name", m["home"])
-            away_n = teams.get(m["away"],{}).get("name", m["away"])
-            hg, ag = sc.split("-")
-            h_cls = "b-winner" if int(hg) > int(ag) else ""
-            a_cls = "b-winner" if int(ag) > int(hg) else ""
-            col += f"""<div class="bracket-match played">
-            <div class="b-team"><span class="{h_cls}">{F.get(home_n,'')} {home_n}</span><span class="b-score">{hg}</span></div>
-            <div class="b-team"><span class="{a_cls}">{F.get(away_n,'')} {away_n}</span><span class="b-score">{ag}</span></div>
-            <div class="b-time">#{slot_id}</div></div>"""
-        elif slot_id in live_map:
-            lm = live_map[slot_id]
-            col += f"""<div class="bracket-match live">
-            <div class="b-team">{F.get(teams.get(lm.get('home',''),{}).get('name',''),'')} {teams.get(lm.get('home',''),{}).get('name','?')} <span class="b-score">{lm.get('home_goals',0)}</span></div>
-            <div class="b-team">{F.get(teams.get(lm.get('away',''),{}).get('name',''),'')} {teams.get(lm.get('away',''),{}).get('name','?')} <span class="b-score">{lm.get('away_goals',0)}</span></div>
-            <div class="b-time">🔴 {lm.get('minute','')}'</div></div>"""
-        else:
-            col += f"""<div class="bracket-match">
-            <div class="b-vs">{slot_label}</div>
-            <div class="b-time">#{slot_id}</div></div>"""
+        col += format_bracket_slot(slot_id, slot_label, played_map, live_map, teams, F)
     col += "</div>"
     bracket_html += col
+
+# ── 即将开赛: 未赛match渲染为预测卡片 ──
+upcoming_matches_html = ""
+upcoming_count = 0
+now = datetime.now()
+for match_id, time_str in sorted(MATCH_SCHEDULE.items()):
+    parts = time_str.split()
+    d = parts[0]; t = parts[1] if len(parts)>1 else ""
+    try:
+        mo, dy = map(int, d.split("/"))
+        hh, mm = map(int, t.split(":"))
+        kickoff = datetime(2026, mo, dy, hh, mm)
+        if kickoff <= now: continue  # 已开球跳过
+    except: continue
+
+    mparts = match_id.split("-")
+    if len(mparts) != 2: continue  # 淘汰赛占位符跳过
+    home_id, away_id = mparts
+    if match_id in played_map: continue
+
+    hn = teams.get(home_id,{}).get("name", home_id)
+    an = teams.get(away_id,{}).get("name", away_id)
+
+    try:
+        p = predict(match_id)
+        if "error" in p: continue
+        pred = p["prediction"]
+        w, d, l = pred["win_pct"], pred["draw_pct"], pred["lose_pct"]
+        top = pred["top_scores"][0]["score"] if pred["top_scores"] else "?"
+        conf = pred["confidence"]
+        conf_cls = "conf-high" if conf=="高" else ("conf-mid" if conf=="中" else "conf-low")
+
+        # 方向标签
+        if w > d and w > l: dir_label = f"{hn}胜 {w:.0f}%"
+        elif l > w and l > d: dir_label = f"{an}胜 {l:.0f}%"
+        else: dir_label = f"平局 {d:.0f}%"
+
+        upcoming_matches_html += f"""<div class="upcoming-card">
+        <div class="up-card-header"><span class="up-card-time">{d} {t}</span><span class="up-card-conf {conf_cls}">{conf}</span></div>
+        <div class="up-card-teams">{F.get(hn,'')} {hn} <span class="up-card-vs">vs</span> {F.get(an,'')} {an}</div>
+        <div class="up-card-pred">
+          <span class="up-dir">{dir_label}</span>
+          <span class="up-score">🏆 {top}</span>
+        </div>
+        <div class="up-card-bars">
+          <span class="up-bar win-bar" style="width:{w}%"></span>
+          <span class="up-bar draw-bar" style="width:{d}%"></span>
+          <span class="up-bar lose-bar" style="width:{l}%"></span>
+        </div></div>"""
+        upcoming_count += 1
+        if upcoming_count >= 6: break
+    except: pass
+
+if not upcoming_matches_html:
+    upcoming_matches_html = '<div class="upcoming-empty">📅 暂无即将开赛的比赛</div>'
 
 # ── 按日期赛程列表 (折叠, 放在bracket下方) ──
 venue_tz = {
@@ -869,22 +937,40 @@ a{color:var(--blue);text-decoration:none}
 .pred-item.lose{background:var(--red-bg);color:var(--red)}
 .pred-score{font-size:12px;font-weight:700;color:var(--accent);margin-left:auto}
 
+/* ── Upcoming Matches ── */
+.upcoming-matches-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.upcoming-card{background:var(--bg-card);border-radius:8px;padding:12px 14px;border-left:4px solid var(--blue);transition:all .2s}
+.upcoming-card:hover{background:var(--bg-card-hover);transform:translateX(2px)}
+.up-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.up-card-time{font-size:11px;color:var(--accent);font-weight:700}
+.up-card-conf{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
+.conf-high{background:var(--green-bg);color:var(--green)}
+.conf-mid{background:var(--bg-card-hover);color:var(--amber)}
+.conf-low{background:var(--red-bg);color:var(--red)}
+.up-card-teams{font-size:14px;font-weight:600;margin-bottom:8px}
+.up-card-vs{font-size:10px;color:var(--text-muted);margin:0 4px}
+.up-card-pred{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.up-dir{font-size:12px;font-weight:700;color:var(--text-primary)}
+.up-score{font-size:11px;color:var(--accent);font-weight:600}
+.up-card-bars{display:flex;height:4px;border-radius:2px;overflow:hidden;gap:2px}
+.up-bar{height:100%;border-radius:1px}.win-bar{background:var(--green)}.draw-bar{background:var(--amber)}.lose-bar{background:var(--red)}
+.upcoming-empty{padding:20px;text-align:center;color:var(--text-muted);font-size:13px}
+
 /* ── Tournament Bracket ── */
 .bracket-scroll{overflow-x:auto;padding-bottom:16px;-webkit-overflow-scrolling:touch}
-.bracket-container{display:flex;gap:8px;min-width:900px;padding:8px 0}
-.bracket-round{display:flex;flex-direction:column;gap:4px;min-width:130px;flex-shrink:0}
-.bracket-round-title{font-size:10px;font-weight:700;color:var(--accent);text-align:center;padding:4px 0;white-space:nowrap}
-.bracket-match{background:var(--bg-card);border-radius:6px;padding:6px 8px;border-left:3px solid var(--border);font-size:10px;position:relative;min-height:44px;display:flex;flex-direction:column;justify-content:center}
+.bracket-container{display:flex;gap:6px;min-width:900px;padding:8px 0}
+.bracket-round{display:flex;flex-direction:column;gap:3px;min-width:135px;flex-shrink:0}
+.bracket-round-title{font-size:11px;font-weight:700;color:var(--accent);text-align:center;padding:6px 0;background:var(--bg-card);border-radius:4px;margin-bottom:2px}
+.bracket-match{background:var(--bg-card);border-radius:6px;padding:6px 8px;border-left:3px solid var(--border);font-size:10px;cursor:pointer;position:relative;min-height:40px;display:flex;flex-direction:column;justify-content:center;transition:all .15s}
+.bracket-match:hover{background:var(--bg-card-hover);border-left-color:var(--accent)}
 .bracket-match.played{border-left-color:var(--green)}
 .bracket-match.live{border-left-color:var(--red);animation:live-glow 2s infinite}
 .bracket-match .b-team{display:flex;align-items:center;gap:3px;padding:1px 0}
 .bracket-match .b-score{font-weight:800;color:var(--accent);font-family:var(--font-mono);margin-left:auto;font-size:11px}
 .bracket-match .b-winner{color:var(--green);font-weight:700}
-.bracket-match .b-vs{color:var(--text-muted);font-size:8px;text-align:center}
-.bracket-match .b-time{font-size:8px;color:var(--text-muted)}
-.bracket-match .b-pred{font-size:9px;color:var(--blue)}
-/* Round-specific widths */
-.br-r32{min-width:135px}.br-r16{min-width:130px}.br-qf{min-width:120px}.br-sf{min-width:110px}.br-f{min-width:105px}
+.bracket-match .b-vs{color:var(--text-muted);font-size:9px;text-align:center}
+.bracket-match .b-pk{font-size:8px;background:var(--amber);color:#000;padding:1px 4px;border-radius:4px;margin-left:auto}
+.br-r32{min-width:140px}.br-r16{min-width:130px}.br-qf{min-width:120px}.br-sf{min-width:110px}.br-f{min-width:100px}
 
 /* Group Stage Grid */
 .groups-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:16px}
@@ -1097,22 +1183,25 @@ html = f"""<!DOCTYPE html><html lang="zh"><head><meta charset="UTF-8"><meta name
 
 <!-- PANEL 1: 赛程晋级图 -->
 <div id="schedule" class="panel">
-  <div style="margin-bottom:12px">
-    <h2 style="font-size:16px;color:var(--accent);margin-bottom:4px">🏟️ 赛程晋级图</h2>
-    <p style="font-size:10px;color:var(--text-secondary)">小组赛积分 → 淘汰赛对阵 · 实时更新 · 横向滚动查看完整赛程</p>
+  <!-- ★ 即将开赛 -->
+  <div class="upcoming-section">
+    <h2 style="font-size:16px;color:var(--accent);margin-bottom:12px">⏰ 即将开赛</h2>
+    <div class="upcoming-matches-grid">{upcoming_matches_html}</div>
   </div>
-  <!-- 小组赛积分 -->
-  <h3 style="font-size:13px;color:var(--accent);margin:16px 0 8px 0">📋 小组赛积分</h3>
-  <div class="groups-grid">{groups_html}</div>
-  <!-- 淘汰赛对阵 -->
-  <h3 style="font-size:13px;color:var(--accent);margin:16px 0 8px 0">🏆 淘汰赛对阵</h3>
-  <div class="bracket-scroll">
-    <div class="bracket-container">{bracket_html}</div>
-  </div>
-  <p style="font-size:9px;color:var(--text-muted);margin-top:4px">每组前2名+8个最佳第3名晋级32强 · 绿色=已赛 · 红色=直播中</p>
-  <!-- 按日期赛程(折叠) -->
+
+  <!-- ★ 淘汰赛对阵 -->
+  <h3 style="font-size:14px;color:var(--accent);margin:24px 0 8px 0">🏆 淘汰赛对阵</h3>
+  <div class="bracket-scroll"><div class="bracket-container">{bracket_html}</div></div>
+
+  <!-- ★ 小组赛积分 (折叠) -->
   <details style="margin-top:20px">
-    <summary style="cursor:pointer;font-size:12px;color:var(--blue);font-weight:600">📅 按日期查看完整赛程</summary>
+    <summary style="cursor:pointer;font-size:13px;color:var(--accent);font-weight:600">📋 小组赛最终积分</summary>
+    <div class="groups-grid" style="margin-top:8px">{groups_html}</div>
+  </details>
+
+  <!-- ★ 已赛赛程 (折叠) -->
+  <details style="margin-top:16px">
+    <summary style="cursor:pointer;font-size:13px;color:var(--text-secondary);font-weight:600">📅 已完赛赛程 (按日期查看)</summary>
     <div style="margin-top:8px">{schedule_rows}</div>
   </details>
 </div>
