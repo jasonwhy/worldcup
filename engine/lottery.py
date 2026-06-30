@@ -778,7 +778,8 @@ def generate_all_opportunities(classified: list, config: PortfolioConfig = None)
             for direction, (prob, pick_name) in probs.items():
                 if prob <= 0: continue
                 spf_val = compute_value(mid, direction, prob)
-                if spf_val["is_value"] and spf_val["ev"] > 0:
+                is_anchor = (spf_val["odds"] < 2.5 and prob >= 45)
+                if (spf_val["is_value"] and spf_val["ev"] > 0) or is_anchor:
                     flag_name = "平局" if direction == "draw" else pick_name
                     hcap_note = _handicap_note(mid)
                     parlay_only_ops.append(BetOpportunity(
@@ -799,7 +800,8 @@ def generate_all_opportunities(classified: list, config: PortfolioConfig = None)
             for direction, (prob, pick_name) in probs.items():
                 if prob <= 0: continue
                 spf_val = compute_value(mid, direction, prob)
-                if spf_val["is_value"] and spf_val["ev"] > 0:
+                is_anchor = (spf_val["odds"] < 2.5 and prob >= 45)
+                if (spf_val["is_value"] and spf_val["ev"] > 0) or is_anchor:
                     flag_name = "平局" if direction == "draw" else pick_name
                     hcap_note = _handicap_note(mid)
                     opportunities.append(BetOpportunity(
@@ -851,9 +853,11 @@ def generate_all_opportunities(classified: list, config: PortfolioConfig = None)
                     continue
                 tg_edge = compute_tg_edge(goals_key, tg_sp, xg_total)
                 if tg_edge["is_value"] and tg_edge["ev"] > 0:
+                    tg_hcap = _handicap_note(mid)
                     opportunities.append(BetOpportunity(
                         match_id=mid, match_name=mn, kickoff=ko,
                         play_type="total_goals",
+                        handicap_line=tg_hcap[0] if tg_hcap else 0,
                         pick=f"总进球{goals_key}球",
                         pick_short=f"总进球{goals_key}球",
                         model_prob=tg_edge["model_implied"],
@@ -875,9 +879,11 @@ def generate_all_opportunities(classified: list, config: PortfolioConfig = None)
                 hf_edge = hf_prob - mkt_imp
                 hf_ev = (hf_prob / 100) * hf_odds - 1.0
                 if hf_ev > 0 and hf_edge >= 2.0:
+                    hcap_note = _handicap_note(mid)
                     opportunities.append(BetOpportunity(
                         match_id=mid, match_name=mn, kickoff=ko,
                         play_type="half_full",
+                        handicap_line=hcap_note[0] if hcap_note else 0,
                         pick=f"半全场-{hf_pick}", pick_short=f"半全{hf_pick}",
                         model_prob=round(hf_prob, 1), odds=hf_odds,
                         edge_pct=round(hf_edge, 1), ev=round(hf_ev, 3),
@@ -1141,16 +1147,22 @@ def select_portfolio(opportunities: list, config: PortfolioConfig = None) -> Por
 
     # 1. 过滤
     filtered = []
+    anchors_for_parlay = []  # 锚定豁免: 高概率低赔率可作串关锚
     for op in opportunities:
-        if op.edge_pct < config.min_edge_pct:
-            continue
         if op.odds < config.min_odds or op.odds > config.max_odds:
             continue
         if op.confidence == "低":
             continue
         if op.ev <= 0:
-            continue
-        filtered.append(op)
+            # 锚定豁免: 高概率低赔率可通过
+            if not (op.model_prob >= 45 and op.odds < 2.5 and op.play_type == "spf"):
+                continue
+        # 标准过滤
+        if op.edge_pct >= config.min_edge_pct:
+            filtered.append(op)
+        # 锚定豁免: model_prob>=45% 且 odds<2.5 的强队胜方向 (即使edge微负)
+        elif op.model_prob >= 45 and op.odds < 2.5 and op.play_type == "spf":
+            anchors_for_parlay.append(op)
 
     # 2. RQSPF优先: 同一比赛有SPF和RQSPF时, 若RQSPF在黄金区间而SPF不在, 仅保留RQSPF
     if config.rqspf_preference:
@@ -1170,16 +1182,21 @@ def select_portfolio(opportunities: list, config: PortfolioConfig = None) -> Por
                     suppressed.extend([o for o in ops if o.play_type == "spf"])
         filtered = [o for o in filtered if o not in suppressed]
 
-    # 3. 排序: 风险调整EV × Edge可靠性系数
-    # Edge可靠性: SPF单注(1.0) > RQSPF/TG(0.8) > 串关(0.6)
+    # 2.5 锚定豁免加入(高概率低赔率, 供串关使用)
+    filtered.extend(anchors_for_parlay)
+
+    # 3. 排序: 风险调整EV × Edge可靠性 × 概率奖励
     edge_reliability = {"spf": 1.0, "rqspf": 0.8, "total_goals": 0.8, "half_full": 0.7, "correct_score": 0.6}
     def sharpe_ev(op):
         variance_penalty = math.sqrt(max(0.1, op.odds - 1.0))
         base_type = op.play_type.split("-")[0].split("串")[0]
-        reliability = 0.6  # default: parlay
+        reliability = 0.6
         for key, r in edge_reliability.items():
             if key in op.play_type: reliability = r; break
-        return op.ev / variance_penalty * reliability
+        # ★ 概率奖励: 高概率anchor提升, 低概率冷门降权
+        prob_bonus = 1.0 + (op.model_prob - 30) / 100  # 50%→1.2, 35%→1.05, 20%→0.9
+        prob_bonus = max(0.6, min(1.5, prob_bonus))
+        return op.ev / variance_penalty * reliability * prob_bonus
     filtered.sort(key=sharpe_ev, reverse=True)
 
     # 3.5 同场对立方向检测: 禁止同一比赛同时押主胜+客胜/让球主胜+让球客胜
@@ -1233,9 +1250,15 @@ def select_portfolio(opportunities: list, config: PortfolioConfig = None) -> Por
     draw_count = 0
     total_spent = 0
 
-    # 5a. 先选锚定 (强队胜方向, 赔率1.5-2.8)
+    # 5a. 先选锚定 (高概率胜方向, 包括豁免锚定)
     anchor_filled = 0
-    for op in anchors:
+    # 扩展锚定池: 包含概率≥45%的SPF方向(即使edge微负)
+    extended_anchors = list(anchors) if anchors else []
+    for op in filtered:
+        if op not in extended_anchors and op.play_type == "spf" and op.model_prob >= 45 and op.odds < 3.0:
+            extended_anchors.append(op)
+    extended_anchors.sort(key=lambda o: o.model_prob, reverse=True)
+    for op in extended_anchors:
         if anchor_filled >= 2: break
         if match_bet_count.get(op.match_id, 0) >= config.max_bets_per_match: continue
         if total_spent + op.stake > config.budget: continue
