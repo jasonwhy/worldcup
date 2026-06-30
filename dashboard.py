@@ -185,7 +185,7 @@ for round_key, round_name, slots in ROUNDS:
 upcoming_matches_html = ""
 upcoming_count = 0
 now = datetime.now()
-for match_id, time_str in sorted(MATCH_SCHEDULE.items()):
+for match_id, time_str in sorted(MATCH_SCHEDULE.items(), key=lambda x: x[1]):
     parts = time_str.split()
     d = parts[0]; t = parts[1] if len(parts)>1 else ""
     try:
