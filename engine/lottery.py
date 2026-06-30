@@ -865,29 +865,26 @@ def generate_all_opportunities(classified: list, config: PortfolioConfig = None)
                         note=f"xG={xg_total:.1f}",
                     ))
 
-        # ── 半全场 ──
-        ht = c.get("htft")
-        if ht and ht.get("odds", 0) > 1.0:
-            ht_odds = ht["odds"]
-            market_imp = 1.0 / ht_odds * 100
-            # 半全场概率: 基于胜平负概率打折
-            # 半全场Poisson精确概率 (半场xG=全场×0.45)
-            ht_prob = _htft_poisson_prob(c["xg_home"], c["xg_away"], ht['pick'])
-            ht_edge = ht_prob - market_imp
-            ht_ev = (ht_prob / 100) * ht_odds - 1.0
-            if ht_ev > 0 and ht_odds <= config.max_odds:
-                opportunities.append(BetOpportunity(
-                    match_id=mid, match_name=mn, kickoff=ko,
-                    play_type="half_full",
-                    pick=f"半全场-{ht['pick']}",
-                    pick_short=f"半全{ht['pick']}",
-                    model_prob=round(ht_prob, 1), odds=ht_odds,
-                    edge_pct=round(ht_edge, 1), ev=round(ht_ev, 3),
-                    kelly_full_pct=0, stake=0,
-                    confidence=conf, delta=delta,
-                    market_implied=round(market_imp, 1),
-                ))
-
+        # ── 半全场: 全部9方向Poisson评估 ──
+        msp_data = _match_sp(mid)
+        if msp_data and msp_data.get("half_full"):
+            for hf_pick, hf_odds in msp_data["half_full"].items():
+                if hf_odds <= 1.0 or hf_odds > config.max_odds: continue
+                hf_prob = _htft_poisson_prob(c["xg_home"], c["xg_away"], hf_pick)
+                mkt_imp = 1.0 / hf_odds * 100
+                hf_edge = hf_prob - mkt_imp
+                hf_ev = (hf_prob / 100) * hf_odds - 1.0
+                if hf_ev > 0 and hf_edge >= 2.0:
+                    opportunities.append(BetOpportunity(
+                        match_id=mid, match_name=mn, kickoff=ko,
+                        play_type="half_full",
+                        pick=f"半全场-{hf_pick}", pick_short=f"半全{hf_pick}",
+                        model_prob=round(hf_prob, 1), odds=hf_odds,
+                        edge_pct=round(hf_edge, 1), ev=round(hf_ev, 3),
+                        kelly_full_pct=0, stake=0,
+                        confidence=conf, delta=delta,
+                        market_implied=round(mkt_imp, 1),
+                    ))
         # ── 比分 (仅高置信+SP数据) ──
         if conf == "高" and c.get("top_score"):
             score_sp = _match_score_sp(mid)
