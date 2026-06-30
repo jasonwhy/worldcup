@@ -222,11 +222,11 @@
       "opponent_avg_rank": 18
     },
     "recent_5": {
-      "w": 2,
+      "w": 3,
       "d": 1,
       "l": 0,
-      "gf": 11,
-      "ga": 4,
+      "gf": 13,
+      "ga": 5,
       "opponent_avg_rank": 20
     },
     "tournament_exp": 14,
@@ -327,10 +327,10 @@
     },
     "recent_5": {
       "w": 3,
-      "d": 0,
+      "d": 1,
       "l": 1,
-      "gf": 18,
-      "ga": 5,
+      "gf": 19,
+      "ga": 6,
       "opponent_avg_rank": 35
     },
     "tournament_exp": 12,
@@ -380,10 +380,10 @@
     },
     "recent_5": {
       "w": 3,
-      "d": 1,
+      "d": 2,
       "l": 0,
-      "gf": 17,
-      "ga": 7,
+      "gf": 18,
+      "ga": 8,
       "opponent_avg_rank": 22
     },
     "tournament_exp": 8,
@@ -536,10 +536,10 @@
     },
     "recent_5": {
       "w": 3,
-      "d": 1,
+      "d": 2,
       "l": 0,
-      "gf": 12,
-      "ga": 5,
+      "gf": 13,
+      "ga": 6,
       "opponent_avg_rank": 25
     },
     "tournament_exp": 6,
@@ -799,9 +799,9 @@
     "recent_5": {
       "w": 2,
       "d": 1,
-      "l": 0,
-      "gf": 11,
-      "ga": 6,
+      "l": 1,
+      "gf": 12,
+      "ga": 8,
       "opponent_avg_rank": 25
     },
     "key_players": {
@@ -1528,10 +1528,10 @@
     },
     "recent_5": {
       "w": 0,
-      "d": 1,
+      "d": 2,
       "l": 2,
-      "gf": 4,
-      "ga": 9,
+      "gf": 5,
+      "ga": 10,
       "opponent_avg_rank": 18
     },
     "key_players": {
