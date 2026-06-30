@@ -216,11 +216,11 @@ def predict(head_to_head: str) -> dict:
 
     delta = round(home_final["total"] - away_final["total"], 1)
 
-    # P1: 置信度标签 (v2.2: 基于输出概率, 非Δ)
+    # P1: 置信度标签 (v3.7: 淘汰赛降阈值, 允许接近比赛入选)
     top_pct = max(result["win_pct"], result["draw_pct"], result["lose_pct"])
     if top_pct >= 48:
         confidence = "高"
-    elif top_pct >= 40:
+    elif top_pct >= 33:   # 淘汰赛经常35-40%, 不排除边缘价值
         confidence = "中"
     else:
         confidence = "低——建议观望"
