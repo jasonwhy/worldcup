@@ -24,7 +24,7 @@ DRAW_BONUS = {
     "group_1": 1.6,   # 首轮 (降0.4: 模型平局率33%→对标实际30%)
     "group_2": 1.3,   # 次轮 (降0.3)
     "group_3": 1.0,   # 末轮：恢复正常
-    "ko": 0.8,        # 淘汰赛：必须分胜负
+    "ko": 2.5,        # 淘汰赛90min平局率更高(4场50%): 保守+加时安全网
 }
 
 # [v3.0] 加载校准文件 (calibrator写入, 引擎读取, 不直接改全局变量)
@@ -226,13 +226,14 @@ def build_prob_matrix(xg_a: float, xg_b: float, max_goals: int = 8,
         max_original = max(win_prob, draw_prob, lose_prob)
         if max_original > 0.50:
             strength = 0.5   # 一方明显占优, 平局加成减半
-            # [P2] 首轮中差距例外: 48队赛制下第三名可出线, 首轮Δ12-22出平率异常高
             if match_round == "group_1" and 12 <= score_gap <= 22:
                 strength = 0.65
+            elif match_round == "ko":
+                strength = 0.8   # 淘汰赛就算强队也保守(1-0足矣)
         elif max_original > 0.40:
-            strength = 0.75  # 略占优
+            strength = 0.85 if match_round == "ko" else 0.75
         else:
-            strength = 1.0   # 势均力敌, 完整加成
+            strength = 1.2 if match_round == "ko" else 1.0  # 淘汰赛势均力敌平局更高
 
         # [v3.6] 实力差感知 + 近战保护
         # 若原始平局率已达30-45%, 说明是真实接近比赛 → 不降权

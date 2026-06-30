@@ -102,14 +102,18 @@ def predict(head_to_head: str) -> dict:
 
     # P0: 比赛轮次检测 (通过双方已赛场次推断)
     groups = load_json("groups.json")
-    home_played = 0
+    home_games = 0
     for gid, gdata in groups.items():
         if home_id in gdata["teams"]:
-            home_played = gdata["standings"][home_id]["p"]
+            s = gdata["standings"][home_id]
+            home_games = s.get("w", 0) + s.get("d", 0) + s.get("l", 0)
             break
-    # 0场=首轮, 1场=次轮, 2场=末轮
-    round_map = {0: "group_1", 1: "group_2", 2: "group_3"}
-    match_round = round_map.get(home_played, "group_1")
+    # 小组赛: 0-2场已赛; ≥3场=已结束, 当前为淘汰赛
+    if home_games >= 3:
+        match_round = "ko"   # 淘汰赛
+    else:
+        round_map = {0: "group_1", 1: "group_2", 2: "group_3"}
+        match_round = round_map.get(home_games, "group_1")
 
     # P0: 温度数据 (基于场馆城市，简化映射)
     venue_temp = {
