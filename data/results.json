@@ -1,9 +1,9 @@
 {
   "updated": "2026-06-21T15:29:13",
-  "total_played": 78,
-  "direction_correct": 54,
-  "direction_total": 78,
-  "direction_rate": "69%",
+  "total_played": 79,
+  "direction_correct": 55,
+  "direction_total": 79,
+  "direction_rate": "70%",
   "matches": [
     {
       "date": "6/11",
@@ -628,6 +628,14 @@
       "date": "7/01",
       "prediction_correct": "✅",
       "note": "R32: 模型W50/D26/L24 实际home"
+    },
+    {
+      "home": "MEX",
+      "away": "ECU",
+      "score": "2-0",
+      "date": "7/01",
+      "prediction_correct": "✅",
+      "note": "R32: Jimenez双响 模型W41/D38/L21"
     }
   ]
 }
