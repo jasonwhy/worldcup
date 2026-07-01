@@ -1,9 +1,9 @@
 {
   "updated": "2026-06-21T15:29:13",
-  "total_played": 76,
-  "direction_correct": 52,
-  "direction_total": 76,
-  "direction_rate": "68%",
+  "total_played": 78,
+  "direction_correct": 54,
+  "direction_total": 78,
+  "direction_rate": "69%",
   "matches": [
     {
       "date": "6/11",
@@ -612,6 +612,22 @@
       "date": "6/30",
       "prediction_correct": "❌",
       "note": "R32: 平局→加时/PK 模型: 30/30/39"
+    },
+    {
+      "home": "CIV",
+      "away": "NOR",
+      "score": "1-2",
+      "date": "7/01",
+      "prediction_correct": "✅",
+      "note": "R32: 模型W33/D31/L36 实际away"
+    },
+    {
+      "home": "FRA",
+      "away": "SWE",
+      "score": "3-0",
+      "date": "7/01",
+      "prediction_correct": "✅",
+      "note": "R32: 模型W50/D26/L24 实际home"
     }
   ]
 }
