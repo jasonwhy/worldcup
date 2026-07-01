@@ -230,7 +230,7 @@ for match_id, time_str in sorted(MATCH_SCHEDULE.items(), key=lambda x: x[1]):
           <span class="up-bar lose-bar" style="width:{l}%"></span>
         </div></div>"""
         upcoming_count += 1
-        if upcoming_count >= 6: break
+        if upcoming_count >= 9: break  # 3天×最多3场
     except: pass
 
 if not upcoming_matches_html:
@@ -503,7 +503,7 @@ for match_id, time_str in sorted(MATCH_SCHEDULE.items()):
 bet_date_tabs = ""
 bet_date_panels = ""
 date_scores = {}
-today_approx = f"{now.month}/{now.day}"
+today_approx = f"{now.month}/{now.day:02d}"  # pad day to match "7/02" format
 for bdate, bmatches in all_dates.items():
     total_max_pct = 0
     count = 0
